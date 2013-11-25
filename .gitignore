@@ -1,0 +1,9 @@
+*bin
+/
+*.db
+*.ini
+*debug*
+*.class
+*.classpath
+*.project
+*lib/
