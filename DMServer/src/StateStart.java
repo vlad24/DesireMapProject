@@ -35,15 +35,15 @@ public class StateStart extends State{
         }
 
         public void addDesire(String login, String desireString) throws Exception {
-                throw new Exception("Unable now\n");
+                throw new Exception("Unable now\n Hint : log in or register");
         }
 
         public ResultSet getDesires(String login) throws Exception{
-                throw new Exception("Unable now\n");
+                throw new Exception("Unable now\n Hint : log in or register");
         }
 
         public ResultSet getInfo(String login) throws Exception {
-                throw new Exception("Unable now\n");
+                throw new Exception("Unable now\n Hint : log in or register");
         }
         
         public void exit() {
