@@ -20,9 +20,9 @@ public class HandlerRegister extends Handler{
 			String  birth = stringSet.get(4);
 			System.out.println("Received : " + login + password + name + sex + birth);
 			synchronized(this){
-				userThread.instrument.register(login, password, name, sex, birth);
+				ownerThread.instrument.register(login, password, name, sex, birth);
 			}
-			userThread.currentUser = login;
+			ownerThread.currentUser = login;
 			System.out.println("***" + login + " online");
 			confirmSuccess();
 		}
@@ -33,8 +33,8 @@ public class HandlerRegister extends Handler{
 	}
 	
 	@Override
-	protected boolean myJob(String input) {
-		return input.charAt(0) == 'R';
+	protected boolean myJob(char code) {
+		return code == 'R';
 	}
 
 }

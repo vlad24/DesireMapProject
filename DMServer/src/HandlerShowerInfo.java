@@ -14,12 +14,12 @@ public class HandlerShowerInfo extends Handler{
 		try{
 			ResultSet desires = null;
 			synchronized(this){
-				desires = userThread.instrument.getDesires(userThread.currentUser);
+				desires = ownerThread.instrument.getDesires(ownerThread.currentUser);
 				confirmSuccess();
 				CachedRowSetImpl cachedDesires = new CachedRowSetImpl();
 				cachedDesires.populate(desires);
-				userThread.socketOut.writeObject(cachedDesires);
-				System.out.println("*** THREAD " + userThread.currentUser + " SENT ResultSet of Info");
+				ownerThread.socketOut.writeObject(cachedDesires);
+				System.out.println("*** THREAD " + ownerThread.currentUser + " SENT ResultSet of Info");
 			}
 		}
 		catch(Exception error){
@@ -29,7 +29,7 @@ public class HandlerShowerInfo extends Handler{
 	}
 
 	@Override
-	protected boolean myJob(String input) {
-		return input.charAt(0) == 'I';
+	protected boolean myJob(char code) {
+		return code == 'I';
 	}
 }

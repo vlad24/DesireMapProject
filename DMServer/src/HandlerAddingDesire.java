@@ -10,7 +10,7 @@ public class HandlerAddingDesire extends Handler{
 			String newDesireString = input.substring(1);
 			try{
 				synchronized(this){
-					userThread.instrument.addDesire(userThread.currentUser, newDesireString);
+					ownerThread.instrument.addDesire(ownerThread.currentUser, newDesireString);
 				}
 				confirmSuccess();
 			}
@@ -21,8 +21,8 @@ public class HandlerAddingDesire extends Handler{
 	}
 	
 	@Override
-	protected boolean myJob(String input) {
-		return input.charAt(0) == 'A';
+	protected boolean myJob(char code) {
+		return code == 'A';
 	}
 
 }

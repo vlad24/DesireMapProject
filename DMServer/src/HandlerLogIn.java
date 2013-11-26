@@ -15,9 +15,9 @@ public class HandlerLogIn extends Handler{
 		String login = stringSet.get(0);
 		String password = stringSet.get(1);
 		synchronized(this){
-				userThread.instrument.logIn(login, password);
+				ownerThread.instrument.logIn(login, password);
 		}
-		userThread.currentUser = login;
+		ownerThread.currentUser = login;
 		System.out.println("***" + login + " online");
 		confirmSuccess();
 		}
@@ -28,7 +28,7 @@ public class HandlerLogIn extends Handler{
 	}
 
 	@Override
-	protected boolean myJob(String input) {
-		return input.charAt(0) == 'L';
+	protected boolean myJob(char code) {
+		return code == 'L';
 	}
 }

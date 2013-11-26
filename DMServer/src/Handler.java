@@ -3,18 +3,18 @@ import java.io.IOException;
 
 public abstract class Handler {
 	public Handler(DesireThread surroundingThread){
-		userThread = surroundingThread;
+		ownerThread = surroundingThread;
 		divider = new StringDivider();
 	}
-	protected DesireThread userThread;
+	protected DesireThread ownerThread;
 	protected StringDivider divider;
-	protected abstract boolean myJob(String input);
+	protected abstract boolean myJob(char code);
 	public abstract void handleString(String input);
 	
 	protected void confirmSuccess(){
 		try{
-			userThread.socketOut.writeBoolean(true);
-			userThread.socketOut.flush();
+			ownerThread.socketOut.writeBoolean(true);
+			ownerThread.socketOut.flush();
 			System.out.println("*** THREAD SENDED OBJECT TRUE");
 		}
 		catch(Exception error){
@@ -23,8 +23,8 @@ public abstract class Handler {
 	}
 	protected void confirmFail(){
 		try{
-			userThread.socketOut.writeBoolean(false);
-			userThread.socketOut.flush();
+			ownerThread.socketOut.writeBoolean(false);
+			ownerThread.socketOut.flush();
 			System.out.println("*** THREAD SENDED OBJECT FALSE");
 		}
 		catch(IOException error){

@@ -4,13 +4,14 @@ public class HandlerExiting extends Handler{
 		super(inThread);
 	}
 	
+
 	@Override
 	public void handleString(String input){
 		try{
-			System.out.println("***" + userThread.currentUser + " exiting");
-				userThread.currentUser = "?";
-				userThread.instrument.exit();
-				userThread.interrupt();
+			System.out.println("***" + ownerThread.currentUser + " exiting");
+				ownerThread.currentUser = "?";
+				ownerThread.instrument.exit();
+				ownerThread.interrupt();
 				confirmSuccess();
 		}
 		catch(Exception error){
@@ -19,8 +20,8 @@ public class HandlerExiting extends Handler{
 	}
 	
 	@Override
-	protected boolean myJob(String input) {
-		return input.charAt(0) == 'E';
+	protected boolean myJob(char code) {
+		return code == 'E';
 	}
 
 }

@@ -21,13 +21,13 @@ public class HandlerShowerDesires extends Handler{
 		System.out.println("***Showing desires");
 		try{
 			synchronized(this){
-				ResultSet desires = userThread.instrument.getDesires(userThread.currentUser);
+				ResultSet desires = ownerThread.instrument.getDesires(ownerThread.currentUser);
 				confirmSuccess();
 				//		CachedRowSetImpl cachedDesires = new CachedRowSetImpl();
 				//		cachedDesires.populate(desires);
 				ArrayList<String> cachedDesires = getListFromDesires(desires); //x
-				userThread.socketOut.writeObject(cachedDesires);
-				System.out.println("*** THREAD " + userThread.currentUser + " SENT ResultSet of desires");
+				ownerThread.socketOut.writeObject(cachedDesires);
+				System.out.println("*** THREAD " + ownerThread.currentUser + " SENT ResultSet of desires");
 			}
 		}
 		catch(Exception error){
@@ -37,7 +37,7 @@ public class HandlerShowerDesires extends Handler{
 	}
 
 	@Override
-	protected boolean myJob(String input) {
-		return input.charAt(0) == 'S';
+	protected boolean myJob(char code) {
+		return code == 'S';
 	}
 }

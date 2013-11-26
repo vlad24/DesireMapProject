@@ -19,20 +19,18 @@ public class DesireThread extends Thread{
 		socketIn = new BufferedReader(new InputStreamReader(interactiveSocket.getInputStream()));
 		socketOut = new ObjectOutputStream(interactiveSocket.getOutputStream());
 	}
-		
+	
+	
 	public void run(){
 		while(!isInterrupted()){
 			try {
 				System.out.println("*** THREAD " + currentUser + " : Waiting for a string");
 				String receivedString = socketIn.readLine();
-				System.out.println("Received : " + receivedString);
-				try{
+				if (receivedString != null){
+					//no chance to throw an exception!
 					tube.processString(receivedString);
 				}
-				catch(Exception error){
-					System.out.println(error.getMessage());
-				}
-			}//main try
+			}
 			catch(IOException ioError){
 				System.out.println("Connection error(socket, proceeding input)");
 				System.out.println(ioError.getMessage());
