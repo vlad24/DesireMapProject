@@ -3,26 +3,16 @@ public class HandlerAddingDesire extends Handler{
 	public HandlerAddingDesire(DesireThread inThread) {
 		super(inThread);
 	}
-	
+
 	@Override
-	public void handleString(String input){
-			System.out.println("*** Adding a desire");
-			String newDesireString = input.substring(1);
-			try{
-				synchronized(this){
-					ownerThread.instrument.addDesire(ownerThread.currentUser, newDesireString);
-				}
-				confirmSuccess();
-			}
-			catch(Exception error){
-				confirmFail();
-				System.out.println(error.getMessage());
-			}
+	public CommandForDesireThread handleString(String input){
+		String desireString = input.substring(1);
+		//Here in forth future we can analyze what category of desires we have and generate special commands based on learned
+		return (new CommandToAddDesire(ownerThread, desireString));
 	}
 	
 	@Override
 	protected boolean myJob(char code) {
 		return code == 'A';
 	}
-
 }

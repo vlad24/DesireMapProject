@@ -4,6 +4,7 @@ public class DesireInstrument {
 	
 	protected  State stateObject;
 	protected static DataBaseSQLite dataBase;
+	//--
 	static {
 		dataBase = new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/desireMapMain.db");
 		try {
@@ -48,4 +49,5 @@ public class DesireInstrument {
 	public void exit(){
 		stateObject.exit();
 	}	
+	
 }

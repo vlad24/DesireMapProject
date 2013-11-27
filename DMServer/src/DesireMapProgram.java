@@ -1,9 +1,10 @@
 import java.io.*;
 import java.net.*;
 public class DesireMapProgram {
+	
 	private static final int portNumber = 9252;
 	private static ServerSocket listeningSocket;
-
+	//--
 	public static void main(String[] args)
 	{
 		System.out.println("------- Some testing --------\n");
@@ -17,7 +18,7 @@ public class DesireMapProgram {
 				System.out.println("A new user has come!...\n");	
 				DesireThread threadForUser = new DesireThread(interactiveSocket);
 				System.out.println("Thread is made\n");
-				threadForUser.start();
+				threadForUser.start(); // it will interrupt when user leaves or wants
 			}
 		} catch (IOException error){
 			System.out.println(error.getMessage());
@@ -33,4 +34,5 @@ public class DesireMapProgram {
 		}
 		System.out.println("Program is successfully over.\n");
 	}
+	
 }
