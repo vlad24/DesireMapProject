@@ -1,5 +1,6 @@
 import java.sql.*;
 public class Test {
+	
         public static void jExec() {
                 try{
                         System.out.println("---------Test program on");
@@ -68,5 +69,20 @@ public class Test {
                         System.out.print(result.getString("cost") + "\n");
                 }
                 System.out.println(count);
+        }
+        
+        public static void testCoordinatesWorking() throws Exception{
+            DataBaseSQLite base= new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/testCARS.db");
+            base.connectToBase();
+            Statement selector  = base.getConnection().createStatement();
+            ResultSet result = selector.executeQuery("SELECT * FROM PRICES");
+            int count = 0;
+            while(result.next()){
+                    count++;
+                    System.out.print(result.getString("company") + " ");
+                    System.out.print(result.getString("model") + " ");
+                    System.out.print(result.getString("cost") + "\n");
+            }
+            System.out.println(count);
         }
 }

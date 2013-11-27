@@ -14,9 +14,10 @@ public class StateLoggedIn extends State{
                 throw new Exception("Unable now\n  Hint : you have been already logged in");
         }
 
-        public void addDesire(String login, String desireString) throws Exception {
+        public void addDesire(String login, String desireString, String tag, String latitude, String longitude) throws Exception {
+        		System.out.println("here in StateLoggedIn");
                 Statement inserter = DesireInstrument.dataBase.getConnection().createStatement();
-                inserter.execute("INSERT INTO DESIRES VALUES('" + login + "','" + desireString + "')");
+                inserter.execute("INSERT INTO DESIRES VALUES('" + login + "','" + desireString + "','" + tag + "','" + latitude + "','" + longitude + "')");
                 inserter.close();
         }
         

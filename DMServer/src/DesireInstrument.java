@@ -15,7 +15,8 @@ public class DesireInstrument {
 			//Creating table of login-name-sex-birth (personal information)
 			creator.execute("CREATE TABLE IF NOT EXISTS INFO(LOGIN TEXT PRIMARY KEY, NAME TEXT NOT NULL, SEX TEXT NOT NULL, BIRTH TEXT NOT NULL)");
 			//Creating table of login-desire (DESIRES) ((TEMPORARY))
-			creator.execute("CREATE TABLE IF NOT EXISTS DESIRES(LOGIN TEXT NOT NULL, DESIRE TEXT NOT NULL)");
+			creator.execute("CREATE TABLE IF NOT EXISTS DESIRES(LOGIN TEXT NOT NULL, DESIRE TEXT NOT NULL,"
+					+ " TAG TEXT NOT NULL, LATITUDE REAL NOT NULL, LONGITUDE REAL NOT NULL )");
 			creator.close();
 		} catch (ClassNotFoundException | SQLException error) {
 			error.printStackTrace();
@@ -34,8 +35,9 @@ public class DesireInstrument {
 		stateObject.logIn(login, password);
 	}
 	
-	public void addDesire(String login, String desireString) throws Exception {
-		stateObject.addDesire(login, desireString);
+	public void addDesire(String login, String desireString, String tag, String latitude, String longitude) throws Exception {
+		System.out.println("here in instrument");
+		stateObject.addDesire(login, desireString, tag, latitude, longitude);
 	}
 	
 	public ResultSet getDesires(String login) throws Exception{

@@ -34,7 +34,7 @@ public class StateStart extends State{
         	}
         }
 
-        public void addDesire(String login, String desireString) throws Exception {
+        public void addDesire(String login, String desireString, String tag, String latitude, String longitude) throws Exception {
                 throw new Exception("Unable now\n Hint : log in or register");
         }
 

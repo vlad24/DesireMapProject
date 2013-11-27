@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
@@ -42,8 +43,8 @@ public class UserProgram{
 				String toSend = "R" + login + "/" + password + "/" + name + "/" + sex + "/" + birth;
 				System.out.println("To send : " + toSend);
 				out.println(toSend);
-				System.out.println("The string is sent\n");
-				System.out.println(ins.readBoolean());
+				System.out.println("The string is sent");
+				System.out.println("Online :" + ins.readBoolean());
 				break;
 			}
 			case(2):{
@@ -54,40 +55,46 @@ public class UserProgram{
 				String toSend = "L" + login + "/" + password;
 				System.out.println("To send : " + toSend);
 				out.println(toSend);
-				System.out.println("The string is sent\n");
-				System.out.println(ins.readBoolean());
+				System.out.println("The string is sent");
+				System.out.println("Online : " + ins.readBoolean());
 				break;
 			}
 			case(3):{
 				System.out.println("Enter your desire :");
 				String line = scanner.next();
-				String toSend = "A" + line;
+				System.out.println("Enter your tag :");
+				String tag = scanner.next();
+				System.out.println("Enter your latitude :");
+				String lat = scanner.next();
+				System.out.println("Enter your longitude :");
+				String lon = scanner.next();
+				String toSend = "A" + line + "/" + tag + "/" + lat + "/" + lon;
 				System.out.println("To send:"  + toSend);
 				out.println(toSend);
-				System.out.println("The string is sent\n");
-				System.out.println(ins.readBoolean());
+				System.out.println("The string is sent");
+				System.out.println("Success: " + ins.readBoolean());
 				break;
 			}
 			case(4):{
 				System.out.println("To send: S");
 				out.println("S");
-				System.out.println("The string is sent\n");
-				if (ins.readBoolean()){
-					try{
-						System.out.println(" | Success");
-						ResultSet set = (ResultSet) ins.readObject();
-						while (set.next()){
-							String currentDesireString = set.getString(1);
-							System.out.println(currentDesireString);
-						}
-						System.out.println(" | That's all");
+				System.out.println("The string is sent");
+				try{
+					if (ins.readBoolean()){
+					System.out.println(" | Success");
+					ArrayList<String> set = (ArrayList<String>) ins.readObject();
+					for (int i = 0; i < set.size(); i++){
+						String currentDesireString = set.get(i);
+						System.out.println(currentDesireString);
 					}
-					catch(IOException error){
-						error.getMessage();
+					System.out.println(" | That's all");
+					}
+					else{
+						System.out.println(" | Not Success");
 					}
 				}
-				else {
-					System.out.println("| Fail");
+				catch(IOException error){
+					error.getMessage();
 				}
 				break;
 			}
