@@ -27,7 +27,7 @@ public class HandlerShowerDesires extends Handler{
 				//		cachedDesires.populate(desires);
 				ArrayList<String> cachedDesires = getListFromDesires(desires); //x
 				ownerThread.socketOut.writeObject(cachedDesires);
-				System.out.println("*** THREAD " + ownerThread.currentUser + " SENT ResultSet of desires");
+				System.out.println("*** THREAD " + ownerThread.currentUser + " SENT ArrayList of desires");
 			}
 		}
 		catch(Exception error){
