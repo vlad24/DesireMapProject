@@ -17,7 +17,7 @@ public class StateLoggedIn extends State{
         public void addDesire(String login, String desireString, String tag, String latitude, String longitude) throws Exception {
         		System.out.println("here in StateLoggedIn");
                 Statement inserter = DesireInstrument.dataBase.getConnection().createStatement();
-                inserter.execute("INSERT INTO DESIRES VALUES('" + login + "','" + desireString + "','" + tag + "','" + latitude + "','" + longitude + "')");
+                inserter.execute("INSERT INTO DESIRES VALUES('" + login + "','" + desireString + "','" + tag + "','" + latitude + "','" + longitude + "', datetime('now', 'localtime'))");
                 inserter.close();
         }
         
