@@ -1,17 +1,10 @@
 
 public class CommandToAddDesire extends CommandForDesireThread{
-	
-	private String desireString;
-	private String tag;
-	private String latitude;
-	private String longitude;
+	private Desire desire;
 	//--
-	public CommandToAddDesire(DesireThread newReceiver, String newDesireString, String newTag, String newLatitude, String newLongitude){
+	public CommandToAddDesire(DesireThread newReceiver, Desire nDesire){
 		receiver = newReceiver;
-		desireString = newDesireString;
-		tag = newTag;
-		latitude = newLatitude;
-		longitude = newLongitude;
+		desire = nDesire;
 	}
 	
 	@Override
@@ -19,8 +12,7 @@ public class CommandToAddDesire extends CommandForDesireThread{
 		System.out.println("*** Adding a desire");
 		try{
 			synchronized(receiver){
-				System.out.println("here in Command");
-				receiver.instrument.addDesire(receiver.currentUser, desireString, tag, latitude, longitude);
+				receiver.instrument.addDesire(desire);
 			}
 			receiver.confirmSuccess();
 		}

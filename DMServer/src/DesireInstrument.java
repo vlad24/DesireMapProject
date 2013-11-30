@@ -16,7 +16,9 @@ public class DesireInstrument {
 			creator.execute("CREATE TABLE IF NOT EXISTS INFO(LOGIN TEXT PRIMARY KEY, NAME TEXT NOT NULL, SEX TEXT NOT NULL, BIRTH TEXT NOT NULL)");
 			//Creating table of login-desire (DESIRES) ((TEMPORARY))
 			creator.execute("CREATE TABLE IF NOT EXISTS DESIRES(LOGIN TEXT NOT NULL, DESIRE TEXT NOT NULL,"
-					+ " TAG TEXT NOT NULL, LATITUDE REAL NOT NULL, LONGITUDE REAL NOT NULL )");
+					+ " TAG TEXT NOT NULL, LATITUDE REAL NOT NULL, LONGITUDE REAL NOT NULL , TIME TEXT NOT NULL)");
+			creator.execute("CREATE TABLE IF NOT EXISTS DESIRES_SPORT(LOGIN TEXT NOT NULL, DESIRE TEXT NOT NULL,"
+					+ " TAG TEXT NOT NULL, LATITUDE REAL NOT NULL, LONGITUDE REAL NOT NULL, TIME TEXT NOT NULL )");
 			creator.close();
 		} catch (ClassNotFoundException | SQLException error) {
 			error.printStackTrace();
@@ -35,9 +37,8 @@ public class DesireInstrument {
 		stateObject.logIn(login, password);
 	}
 	
-	public void addDesire(String login, String desireString, String tag, String latitude, String longitude) throws Exception {
-		System.out.println("here in instrument");
-		stateObject.addDesire(login, desireString, tag, latitude, longitude);
+	public void addDesire(Desire desire) throws Exception {
+		stateObject.addDesire(desire);
 	}
 	
 	public ResultSet getDesires(String login) throws Exception{
@@ -46,6 +47,10 @@ public class DesireInstrument {
 	
 	public ResultSet getInfo(String login) throws Exception{
 		return stateObject.getInfo(login);
+	}
+	
+	public ResultSet getSatisfiersToday(Desire desire, String radius) throws Exception{
+		return stateObject.getSatisfiersToday(desire, radius);
 	}
 	
 	public void exit(){

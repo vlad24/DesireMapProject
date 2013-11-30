@@ -14,10 +14,15 @@ public class StateLoggedIn extends State{
                 throw new Exception("Unable now\n  Hint : you have been already logged in");
         }
 
-        public void addDesire(String login, String desireString, String tag, String latitude, String longitude) throws Exception {
-        		System.out.println("here in StateLoggedIn");
+        public void addDesire(Desire desire) throws Exception {
+        		String login = desire.getMaster();
+        		String category = desire.getCategory();
+        		String desireString = desire.getDesireString();
+        		String tag = desire.getTag();
+        		String latitude = desire.getLatitude();
+        		String longitude = desire.getLongitude();
                 Statement inserter = DesireInstrument.dataBase.getConnection().createStatement();
-                inserter.execute("INSERT INTO DESIRES VALUES('" + login + "','" + desireString + "','" + tag + "','" + latitude + "','" + longitude + "', datetime('now', 'localtime'))");
+                inserter.execute("INSERT INTO DESIRES" + category + " VALUES('" + login + "','" + desireString + "','" + tag + "','" + latitude + "','" + longitude + "', datetime('now', 'localtime'))");
                 inserter.close();
         }
         
@@ -33,6 +38,30 @@ public class StateLoggedIn extends State{
                 ResultSet info = selector.executeQuery("SELECT NAME, SEX, BIRTH FROM INFO WHERE LOGIN = '" + login + "'");
                 //selector.close(); ?
                 return info;
+        }
+        
+        public ResultSet getSatisfiersToday(Desire desire, String radius) throws Exception{ // draft
+        	String neededFields = " login, latitude, longitude ";
+        	String deltaLatitude = " (LATITUDE - " + desire.getLatitude() + ") ";
+        	String deltaLongitude = " (LONGITUDE - " + desire.getLongitude() + ") ";
+        	String deltaLatitudeSquared = deltaLatitude + "*" + deltaLatitude;
+        	String deltaLongitudeSquared = deltaLongitude + "*" + deltaLongitude;
+        	String actualRadiusSquared = deltaLatitudeSquared + "+" + deltaLongitudeSquared;
+        	String tagMask = "'%" + desire.getTag() + "%'";
+        	String givenRadiusSquared = " (" + radius + " * " + radius + ") ";
+        	String desireWasPostedToday = " julianday(time) = julianday('now')";
+        	String tableSuffix = desire.getCategory();
+        	
+        	String satisfyQuery = "SELECT" + neededFields + "FROM DESIRES" + tableSuffix +
+        			" WHERE TAG LIKE " + tagMask + " AND " + 
+        			actualRadiusSquared + " < " + givenRadiusSquared + " AND " +  actualRadiusSquared + " > 0 ";
+        			//"AND" + desireWasPostedToday;
+        	
+        	System.out.println(satisfyQuery);
+        	
+        	Statement selector = DesireInstrument.dataBase.getConnection().createStatement();
+        	ResultSet satisfiersInfo = selector.executeQuery(satisfyQuery);
+			return satisfiersInfo;
         }
         
         public void exit() {

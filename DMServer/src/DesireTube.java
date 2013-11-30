@@ -15,6 +15,7 @@ public class DesireTube {
 		tube.add(new HandlerAddingDesire(inThread));
 		tube.add(new HandlerShowerDesires(inThread));
 		tube.add(new HandlerShowerInfo(inThread));
+		tube.add(new HandlerAddSatisfy(inThread));
 	}
 	
 	private Handler chooseHandler(char firstSymbol){
@@ -25,6 +26,7 @@ public class DesireTube {
 				return handler;
 			}
 			else{
+				System.out.println("I didnt match :" + handler.getClass().toString());
 				handler = iterator.next();
 			}
 		}
@@ -35,6 +37,7 @@ public class DesireTube {
 		//Here we suppose that our string is not null (it has been checked beforehand)
 		Handler forthHandler = chooseHandler(input.charAt(0));
 		if (forthHandler != null){
+			System.out.println(forthHandler.toString());
 			return (forthHandler.handleString(input));
 		}
 		else{

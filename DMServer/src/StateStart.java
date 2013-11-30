@@ -34,7 +34,7 @@ public class StateStart extends State{
         	}
         }
 
-        public void addDesire(String login, String desireString, String tag, String latitude, String longitude) throws Exception {
+        public void addDesire(Desire desire) throws Exception {
                 throw new Exception("Unable now\n Hint : log in or register");
         }
 
@@ -49,5 +49,12 @@ public class StateStart extends State{
         public void exit() {
                 changeState(new StateStart(owner));
         }
+
+		@Override
+		public ResultSet getSatisfiersToday(Desire desire, String radius)
+				throws Exception {
+			throw new Exception("Unable now\n Hint : log in or register");
+		}
+
         
 }
