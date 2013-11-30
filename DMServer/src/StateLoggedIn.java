@@ -26,9 +26,10 @@ public class StateLoggedIn extends State{
                 inserter.close();
         }
         
-        public ResultSet getDesires(String login) throws Exception {
+        public ResultSet getDesires(String login, String category) throws Exception {
                 Statement selector = DesireInstrument.dataBase.getConnection().createStatement();
-                ResultSet desires = selector.executeQuery("SELECT DESIRE FROM DESIRES WHERE LOGIN = '" + login + "'");
+                System.out.println("SELECT DESIRE FROM DESIRES" + category + " WHERE LOGIN = '" + login + "'");
+                ResultSet desires = selector.executeQuery("SELECT DESIRE FROM DESIRES" + category + " WHERE LOGIN = '" + login + "'");
                 //selector.close();? 
                 return desires;
         }
@@ -49,13 +50,13 @@ public class StateLoggedIn extends State{
         	String actualRadiusSquared = deltaLatitudeSquared + "+" + deltaLongitudeSquared;
         	String tagMask = "'%" + desire.getTag() + "%'";
         	String givenRadiusSquared = " (" + radius + " * " + radius + ") ";
-        	String desireWasPostedToday = " julianday(time) = julianday('now')";
+        	String desireWasPostedToday = " strftime('%d-%m-%Y', TIME) = strftime('%d-%m-%Y', 'now')";
         	String tableSuffix = desire.getCategory();
         	
         	String satisfyQuery = "SELECT" + neededFields + "FROM DESIRES" + tableSuffix +
         			" WHERE TAG LIKE " + tagMask + " AND " + 
-        			actualRadiusSquared + " < " + givenRadiusSquared + " AND " +  actualRadiusSquared + " > 0 ";
-        			//"AND" + desireWasPostedToday;
+        			actualRadiusSquared + " < " + givenRadiusSquared + " AND " +  actualRadiusSquared + " > 0 " +
+        			"AND" + desireWasPostedToday;
         	
         	System.out.println(satisfyQuery);
         	

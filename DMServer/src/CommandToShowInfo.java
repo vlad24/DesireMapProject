@@ -11,7 +11,7 @@ public class CommandToShowInfo extends CommandForDesireThread{
 		System.out.println("***Showing info");
 		try{
 			synchronized(receiver){
-				ResultSet desires = receiver.instrument.getDesires(receiver.currentUser);
+				ResultSet desires = receiver.instrument.getInfo(receiver.currentUser);
 				receiver.confirmSuccess();
 				CachedRowSetImpl cachedDesires = new CachedRowSetImpl();
 				cachedDesires.populate(desires);

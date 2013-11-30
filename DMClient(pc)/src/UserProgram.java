@@ -68,7 +68,7 @@ public class UserProgram{
 				String lat = scanner.next();
 				System.out.println("Enter your longitude :");
 				String lon = scanner.next();
-				String toSend = "A" + line + "/" + tag + "/" + lat + "/" + lon;
+				String toSend = "A" + "_SPORT" + "/" + line + "/" + tag + "/" + lat + "/" + lon;
 				System.out.println("To send:"  + toSend);
 				out.println(toSend);
 				System.out.println("The string is sent");
@@ -76,8 +76,11 @@ public class UserProgram{
 				break;
 			}
 			case(4):{
-				System.out.println("To send: S");
-				out.println("S");
+				System.out.println("Enter your category :");
+				String line = scanner.next();
+				String toSend = "S" + line;
+				System.out.println("To send: " + toSend);
+				out.println(toSend);
 				System.out.println("The string is sent");
 				try{
 					if (ins.readBoolean()){
@@ -120,6 +123,44 @@ public class UserProgram{
 				}
 				else {
 					System.out.println("Fail");
+				}
+				break;
+			}
+			case (6) :{
+				System.out.println("Enter your desire :");
+				String line = scanner.next();
+				System.out.println("Enter your tag :");
+				String tag = scanner.next();
+				System.out.println("Enter your latitude :");
+				String lat = scanner.next();
+				System.out.println("Enter your longitude :");
+				String lon = scanner.next();
+				System.out.println("Enter your radius :");
+				String rad = scanner.next();
+				String toSend = "G" + "_SPORT" + "/" + line + "/" + tag + "/" + lat + "/" + lon + "/" + rad;
+				System.out.println("To send:" + toSend);
+				out.println(toSend);
+				System.out.println("The string is sent");
+				System.out.println("First bool ( adding ) :");
+				System.out.println(ins.readBoolean());
+				try{
+					if (ins.readBoolean()){
+					System.out.println(" | Success");
+					ResultSet set = (ResultSet) ins.readObject();
+					while (set.next()){
+								String name = set.getString("login");
+								String latIn  = set.getString("latitude");
+								String lonIn = set.getString("longitude");
+								System.out.println(latIn + " "  + lonIn + " " + name);
+						}
+					System.out.println(" | That's all");
+					}
+					else{
+						System.out.println(" | Not Success");
+					}
+				}
+				catch(IOException error){
+					error.getMessage();
 				}
 				break;
 			}

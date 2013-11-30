@@ -41,8 +41,8 @@ public class DesireInstrument {
 		stateObject.addDesire(desire);
 	}
 	
-	public ResultSet getDesires(String login) throws Exception{
-		return stateObject.getDesires(login);
+	public ResultSet getDesires(String login, String category) throws Exception{
+		return stateObject.getDesires(login, category);
 	}
 	
 	public ResultSet getInfo(String login) throws Exception{

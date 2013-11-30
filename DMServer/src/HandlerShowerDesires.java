@@ -7,7 +7,8 @@ public class HandlerShowerDesires extends Handler{
 
 	@Override
 	public CommandForDesireThread handleString(String input){
-		return new CommandToShowDesires(ownerThread);		
+		String category = input.substring(1);
+		return new CommandToShowDesires(ownerThread, category);		
 	}
 
 	@Override

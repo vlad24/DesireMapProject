@@ -38,7 +38,7 @@ public class StateStart extends State{
                 throw new Exception("Unable now\n Hint : log in or register");
         }
 
-        public ResultSet getDesires(String login) throws Exception{
+        public ResultSet getDesires(String login, String category) throws Exception{
                 throw new Exception("Unable now\n Hint : log in or register");
         }
 
