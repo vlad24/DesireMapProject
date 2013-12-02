@@ -2,9 +2,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import com.sun.rowset.CachedRowSetImpl;
-
-
 public class CommandToShowDesires extends CommandForDesireThread{
 	
 	private DesireThread receiver;
@@ -30,9 +27,7 @@ public class CommandToShowDesires extends CommandForDesireThread{
 			synchronized(receiver){
 				ResultSet desires = receiver.instrument.getDesires(receiver.currentUser, category);
 				receiver.confirmSuccess();
-				//CachedRowSetImpl cachedDesires = new CachedRowSetImpl();
-				//cachedDesires.populate(desires);
-				ArrayList<String> cachedDesires = getListFromDesires(desires); // TO BE DELETED
+				ArrayList<String> cachedDesires = getListFromDesires(desires);
 				receiver.socketOut.writeObject(cachedDesires);
 				System.out.println("*** THREAD " + receiver.currentUser + " SENT ArrayList of desires");
 			}

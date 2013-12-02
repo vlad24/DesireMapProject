@@ -1,5 +1,8 @@
 import java.io.*;
 import java.net.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class DesireThread extends Thread{
 
@@ -51,6 +54,20 @@ public class DesireThread extends Thread{
 		else{
 			throw new IOException("NULL STRING GOT");
 		}
+	}
+	
+	protected ArrayList<ArrayList<String>> getArrayListFromResultSet(ResultSet resultRows, int columnsAmount) throws SQLException{
+		ArrayList<ArrayList<String>> table = new ArrayList<ArrayList<String>>();
+		int row = 0;
+		while(resultRows.next())
+		{
+			row++;
+			table.set(row,  new ArrayList<String>());
+			for (int column = 0; column < columnsAmount ; column++){ 
+				table.get(row).set(column, resultRows.getString(column));
+			}
+		}
+		return table;
 	}
 
 	public void run(){

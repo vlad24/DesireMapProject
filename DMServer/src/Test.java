@@ -8,6 +8,7 @@ public class Test {
                         testBaseTableCreation();
                         testBaseAdding();
                         testBaseSelecting();
+                        testArrayListModifying():
                         System.out.println("---------Tests are passed\n");
                 }
                 catch(Exception fail){
@@ -15,7 +16,7 @@ public class Test {
                 }
         }
 
-        public static void testDataBase() throws Exception{
+        public static final void testDataBase() throws Exception{
                 DataBaseSQLite base = new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/testCARS.db");
                 try {
                         base.connectToBase();
@@ -31,7 +32,7 @@ public class Test {
                 }
         }
 
-        public static void testBaseTableCreation() throws Exception{
+        public static final void testBaseTableCreation() throws Exception{
                 DataBaseSQLite base = new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/testCARS.db");
                 base.connectToBase();
                 Statement creator = base.getConnection().createStatement();
@@ -41,7 +42,7 @@ public class Test {
                 base.disconnect();
         }
 
-        public static void testBaseAdding() throws Exception{
+        public static final void testBaseAdding() throws Exception{
                 DataBaseSQLite base= new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/testCARS.db");
                 base.connectToBase();
                 String company = "opel";
@@ -56,7 +57,7 @@ public class Test {
                 base.disconnect();
         }
 
-        public static void testBaseSelecting() throws Exception{
+        public static final void testBaseSelecting() throws Exception{
                 DataBaseSQLite base= new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/testCARS.db");
                 base.connectToBase();
                 Statement selector  = base.getConnection().createStatement();
@@ -71,7 +72,7 @@ public class Test {
                 System.out.println(count);
         }
         
-        public static void testCoordinatesWorking() throws Exception{
+        public static final void testCoordinatesWorking() throws Exception{
             DataBaseSQLite base= new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/testCARS.db");
             base.connectToBase();
             Statement selector  = base.getConnection().createStatement();
@@ -85,4 +86,9 @@ public class Test {
             }
             System.out.println(count);
         }
+        
+        public static final void testArrayListModifying(){
+        	
+        }
+        
 }
