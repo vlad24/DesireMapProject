@@ -26,7 +26,6 @@ public class DesireTube {
 				return handler;
 			}
 			else{
-				System.out.println("I didnt match :" + handler.getClass().toString());
 				handler = iterator.next();
 			}
 		}
@@ -37,7 +36,7 @@ public class DesireTube {
 		//Here we suppose that our string is not null (it has been checked beforehand)
 		Handler forthHandler = chooseHandler(input.charAt(0));
 		if (forthHandler != null){
-			System.out.println(forthHandler.toString());
+			System.out.println(forthHandler.getClass().toString() + " working");
 			return (forthHandler.handleString(input));
 		}
 		else{
