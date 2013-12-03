@@ -1,8 +1,5 @@
 import java.io.*;
 import java.net.*;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class DesireThread extends Thread{
 
@@ -12,9 +9,10 @@ public class DesireThread extends Thread{
 	protected DesireInstrument instrument;
 	protected ObjectOutputStream socketOut;
 	protected BufferedReader socketIn;
+	protected ResultSetMaster resultSetConverter;
 	//--
 	public DesireThread(Socket givenSocket) throws IOException{//
-		System.out.println("*** Thread is being constructed\n");
+		System.out.println("*** Thread is initializing\n");
 		this.setDaemon(true);
 		currentUser = "?";
 		interactiveSocket = givenSocket;
@@ -22,6 +20,7 @@ public class DesireThread extends Thread{
 		tube = new DesireTube(this);
 		socketIn = new BufferedReader(new InputStreamReader(interactiveSocket.getInputStream()));
 		socketOut = new ObjectOutputStream(interactiveSocket.getOutputStream());
+		resultSetConverter = new ResultSetMaster();
 	}
 
 	protected void confirmSuccess(){
@@ -31,7 +30,7 @@ public class DesireThread extends Thread{
 			System.out.println("*** THREAD CONFIRMED SUCCESS");
 		}
 		catch(Exception error){
-			System.out.println("Problem with socket(confirm true)");
+			System.out.println("*** Problem with socket(confirm true)");
 		}
 	}
 
@@ -42,7 +41,7 @@ public class DesireThread extends Thread{
 			System.out.println("*** THREAD CONFIRMED FAIL");
 		}
 		catch(IOException error){
-			System.out.println("Problem with socket(confirm fail)");
+			System.out.println("*** Problem with socket(confirm fail)");
 		}
 	}
 
@@ -52,28 +51,14 @@ public class DesireThread extends Thread{
 			return receivedString;
 		}
 		else{
-			throw new IOException("NULL STRING GOT");
+			throw new IOException("****** NULL STRING GOT");
 		}
-	}
-	
-	protected ArrayList<ArrayList<String>> getArrayListFromResultSet(ResultSet resultRows, int columnsAmount) throws SQLException{
-		ArrayList<ArrayList<String>> table = new ArrayList<ArrayList<String>>();
-		int row = 0;
-		while(resultRows.next())
-		{
-			row++;
-			table.set(row,  new ArrayList<String>());
-			for (int column = 0; column < columnsAmount ; column++){ 
-				table.get(row).set(column, resultRows.getString(column));
-			}
-		}
-		return table;
 	}
 
 	public void run(){
 		while(!isInterrupted()){
 			try {
-				System.out.println("*** THREAD " + currentUser + " : Waiting for a string");
+				System.out.println("*** THREAD " + currentUser + " : Waiting for a client command...");
 				String receivedString = scanString();
 				CommandForDesireThread threadCommand = tube.processString(receivedString);
 				//Here we can store our commands somewhere and if needed undo them 
@@ -81,19 +66,19 @@ public class DesireThread extends Thread{
 					threadCommand.execute();
 				}
 				catch(Exception error){
-					System.out.println("***THREAD Command failed during execution");
+					System.out.println("****** THREAD Command failed during execution");
 					System.out.println(error.getMessage());
 				}
 			}
 			catch(IOException ioError){
-				System.out.println("Connection error(socket, proceeding input)");
+				System.out.println("****** Connection error(socket, proceeding input)");
 				System.out.println(ioError.getMessage());
 				ioError.printStackTrace();
 				try {
 					interactiveSocket.close();
 				} 
 				catch(IOException error){
-					System.out.println("Socket has not been closed.\n");
+					System.out.println("****** Socket has not been closed.\n");
 				}
 				finally{
 					interrupt();

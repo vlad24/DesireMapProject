@@ -7,9 +7,21 @@ import java.io.PrintWriter;
 import java.net.*;
 import java.sql.ResultSet;
 
+import com.sun.xml.internal.fastinfoset.tools.PrintTable;
+
 
 
 public class UserProgram{
+	
+	private static void printTable(ArrayList<ArrayList<String>> table){
+		for (int i = 0 ; i < table.size(); i++){
+			for (int j = 0 ; j < table.get(i).size() ; j++){
+				System.out.print(table.get(i).get(j) + " ");
+			}
+			System.out.println("");
+		}
+	}
+	
 	public static void main(String[] args) throws Exception{
 		InetAddress address = InetAddress.getByName("localhost");
 		Socket clientSocket = new Socket(address, 9252);
@@ -19,7 +31,7 @@ public class UserProgram{
 		ObjectInputStream ins = new ObjectInputStream(clientSocket.getInputStream());
 		
 		int answer = 1;
-		System.out.println("# 1 - register, 2 - log in, 3 - add desire, 4 - show desires, 5 - show info");
+		System.out.println("# 1 - register, 2 - log in, 3 - add desire, 4 - show desires, 5 - show info, 6 - find satisfiers");
 		while (answer != 0){
 			System.out.println("What to do : ");
 			answer = scanner.nextInt();
@@ -30,7 +42,8 @@ public class UserProgram{
 				break;
 			}
 			case(1):{
-				System.out.println("Register\n Enter login : ");
+				System.out.println("# REGISTERING");
+				System.out.println("Enter login : ");
 				String login = scanner.next();
 				System.out.println("Enter password : ");
 				String password = scanner.next();
@@ -48,6 +61,7 @@ public class UserProgram{
 				break;
 			}
 			case(2):{
+				System.out.println("# LOGGING IN");
 				System.out.println("Enter login : ");
 				String login = scanner.next();
 				System.out.println("Enter password : ");
@@ -60,15 +74,18 @@ public class UserProgram{
 				break;
 			}
 			case(3):{
+				System.out.println("# ADDING A DESIRE");
+				System.out.println("Enter your category :");
+				String category = scanner.next();
 				System.out.println("Enter your desire :");
-				String line = scanner.next();
+				String desireString = scanner.next();
 				System.out.println("Enter your tag :");
 				String tag = scanner.next();
 				System.out.println("Enter your latitude :");
 				String lat = scanner.next();
 				System.out.println("Enter your longitude :");
 				String lon = scanner.next();
-				String toSend = "A" + "_SPORT" + "/" + line + "/" + tag + "/" + lat + "/" + lon;
+				String toSend = "A" + category + "/" + desireString + "/" + tag + "/" + lat + "/" + lon;
 				System.out.println("To send:"  + toSend);
 				out.println(toSend);
 				System.out.println("The string is sent");
@@ -76,45 +93,39 @@ public class UserProgram{
 				break;
 			}
 			case(4):{
+				System.out.println("# SHOWING DESIRES OF SOME CATEGORY");
 				System.out.println("Enter your category :");
-				String line = scanner.next();
-				String toSend = "S" + line;
+				String category = scanner.next();
+				String toSend = "S" + category;
 				System.out.println("To send: " + toSend);
 				out.println(toSend);
 				System.out.println("The string is sent");
 				try{
 					if (ins.readBoolean()){
-					System.out.println(" | Success");
-					ArrayList<String> set = (ArrayList<String>) ins.readObject();
-					for (int i = 0; i < set.size(); i++){
-						String currentDesireString = set.get(i);
-						System.out.println(currentDesireString);
-					}
-					System.out.println(" | That's all");
+						System.out.println(" | Success");
+						ArrayList<ArrayList<String>> set = (ArrayList<ArrayList<String>>) ins.readObject();
+						printTable(set);
+						System.out.println(" | That's all");
 					}
 					else{
 						System.out.println(" | Not Success");
 					}
-				}
+				} 
 				catch(IOException error){
 					error.getMessage();
 				}
 				break;
 			}
 			case(5):{
+				System.out.println("# SHOWING YOUR PERSONAL INFO");
 				System.out.println("To send: I");
 				out.println("I");
 				System.out.println("The string is sent\n");
 				if (ins.readBoolean()){
 					try{
 						System.out.println(" | Success");
-						ResultSet set = (ResultSet) ins.readObject();
-						while (set.next()){
-									String name = set.getString("name");
-									String sex  = set.getString("sex");
-									String birth = set.getString("birth");
-									System.out.println(name + " "  + sex + " " + birth);
-							}
+						ArrayList<ArrayList<String>> table = (ArrayList<ArrayList<String>>) ins.readObject();
+						printTable(table);
 						System.out.println(" | That's all");
 					}
 					catch(IOException error){
@@ -127,6 +138,9 @@ public class UserProgram{
 				break;
 			}
 			case (6) :{
+				System.out.println("# SEARCHING FOR YOUR DESIRE SATISFIERS");
+				System.out.println("Enter your category :");
+				String category = scanner.next();
 				System.out.println("Enter your desire :");
 				String line = scanner.next();
 				System.out.println("Enter your tag :");
@@ -137,22 +151,17 @@ public class UserProgram{
 				String lon = scanner.next();
 				System.out.println("Enter your radius :");
 				String rad = scanner.next();
-				String toSend = "G" + "_SPORT" + "/" + line + "/" + tag + "/" + lat + "/" + lon + "/" + rad;
+				String toSend = "G" + category + "/" + line + "/" + tag + "/" + lat + "/" + lon + "/" + rad;
 				System.out.println("To send:" + toSend);
 				out.println(toSend);
 				System.out.println("The string is sent");
-				System.out.println("First bool ( adding ) :");
+				System.out.print("First bool ( adding ) :");
 				System.out.println(ins.readBoolean());
 				try{
 					if (ins.readBoolean()){
 					System.out.println(" | Success");
-					ResultSet set = (ResultSet) ins.readObject();
-					while (set.next()){
-								String name = set.getString("login");
-								String latIn  = set.getString("latitude");
-								String lonIn = set.getString("longitude");
-								System.out.println(latIn + " "  + lonIn + " " + name);
-						}
+					ArrayList<ArrayList<String>> table = (ArrayList<ArrayList<String>>) ins.readObject();
+					printTable(table);
 					System.out.println(" | That's all");
 					}
 					else{
@@ -173,5 +182,6 @@ public class UserProgram{
 		out.close();
 		scanner.close();
 		clientSocket.close();
+		System.out.println("# STREAMS AND THE SOCKET HAVE BEEN CLOSED");
 	}
 }

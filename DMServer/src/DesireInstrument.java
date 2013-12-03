@@ -7,6 +7,7 @@ public class DesireInstrument {
 	//--
 	static {
 		dataBase = new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/desireMapMain.db");
+		System.out.println("MAIN BD IS LOADED");
 		try {
 			dataBase.connectToBase();
 			Statement creator = dataBase.getConnection().createStatement();
@@ -19,7 +20,7 @@ public class DesireInstrument {
 					+ " TAG TEXT NOT NULL, LATITUDE REAL NOT NULL, LONGITUDE REAL NOT NULL , TIME TEXT NOT NULL)");
 			creator.execute("CREATE TABLE IF NOT EXISTS DESIRES_SPORT(LOGIN TEXT NOT NULL, DESIRE TEXT NOT NULL,"
 					+ " TAG TEXT NOT NULL, LATITUDE REAL NOT NULL, LONGITUDE REAL NOT NULL, TIME TEXT NOT NULL )");
-			creator.execute("CREATE TABLE IF NOT EXSISTS DESIRES_DATING (LOGIN TEXT NOT NULL, DESIRE TEXT NOT NULL,"
+			creator.execute("CREATE TABLE IF NOT EXISTS DESIRES_DATING (LOGIN TEXT NOT NULL, DESIRE TEXT NOT NULL,"
 					+ " TAG TEXT NOT NULL, LATITUDE REAL NOT NULL, LONGITUDE REAL NOT NULL, TIME TEXT NOT NULL )");
 			creator.close();
 		} catch (ClassNotFoundException | SQLException error) {
@@ -57,6 +58,6 @@ public class DesireInstrument {
 	
 	public void exit(){
 		stateObject.exit();
-	}	
+	}
 	
 }

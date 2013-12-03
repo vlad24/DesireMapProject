@@ -12,11 +12,11 @@ public class StringDivider{
 			end = str.indexOf('/', start + 1);
 		}
 		stringSet.add(str.substring(start + 1));
-//		System.out.println("Divider has got : ");
-//		for (int i = 0 ; i < stringSet.size(); i++){
-//			String s = stringSet.get(i);
-//			System.out.println(s);
-//		}
+		System.out.print("%%% Divider has got : ");
+		for (int i = 0 ; i < stringSet.size(); i++){
+			System.out.print(stringSet.get(i) + " ");
+		}
+		System.out.println();
 		return stringSet;		
 	}
 }

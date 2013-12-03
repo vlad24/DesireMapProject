@@ -9,15 +9,15 @@ public class DesireMapProgram {
 	{
 		System.out.println("------- Some testing --------\n");
 		Test.jExec();
-		System.out.println("Program is on.\n");			
+		System.out.println("# Program is on.\n");			
 		try {
 			listeningSocket = new ServerSocket(portNumber);
 			while(true){
-				System.out.println("Waiting for a new client...\n");
+				System.out.println("# Waiting for a new client...\n");
 				Socket interactiveSocket = listeningSocket.accept();
-				System.out.println("A new user has come!...\n");	
+				System.out.println("# A new user has come!...\n");	
 				DesireThread threadForUser = new DesireThread(interactiveSocket);
-				System.out.println("Thread is made\n");
+				System.out.println("# Thread is made\n");
 				threadForUser.start(); // it will interrupt when user leaves or wants
 			}
 		} catch (IOException error){
@@ -25,14 +25,15 @@ public class DesireMapProgram {
 		}
 		finally{
 			try {
+				DesireInstrument.dataBase.disconnect();
 				listeningSocket.close();
-				System.out.println("Server socket is successfully closed\n");
+				System.out.println("# Server socket is successfully closed\n");
 			} 
 			catch (IOException error) {
-				System.out.println("Listening socket can't be closed\n");
+				System.out.println("# Listening socket can't be closed. DANGER!\n");
 			}
 		}
-		System.out.println("Program is successfully over.\n");
+		System.out.println("# Program is successfully over.\n");
 	}
 	
 }

@@ -1,7 +1,5 @@
 import java.sql.ResultSet;
-
-import com.sun.rowset.CachedRowSetImpl;
-
+import java.util.ArrayList;
 
 public class CommandToGetSatisfiers extends CommandForDesireThread{
 	
@@ -21,10 +19,9 @@ public class CommandToGetSatisfiers extends CommandForDesireThread{
 			synchronized(receiver){
 				ResultSet satisfiers = receiver.instrument.getSatisfiersToday(desire, radius);
 				receiver.confirmSuccess();
-				CachedRowSetImpl cachedSatisfiers = new CachedRowSetImpl();
-				cachedSatisfiers.populate(satisfiers);
-				receiver.socketOut.writeObject(cachedSatisfiers);
-				System.out.println("*** THREAD " + receiver.currentUser + " SENT RESULT SET OF SATISFIERS");
+				ArrayList<ArrayList<String>> table = receiver.resultSetConverter.getArrayListFromResultSet(satisfiers);
+				receiver.socketOut.writeObject(table);
+				System.out.println("*** THREAD " + receiver.currentUser + " SENT TABLE OF SATISFIERS");
 			}
 		}
 		catch(Exception error){

@@ -7,11 +7,11 @@ public class StateLoggedIn extends State{
         }
         
         public void register(String login, String password, String name, String sex, String birthdate) throws Exception {
-                throw new Exception("Unable now\n Hint : exit first, please");
+                throw new Exception("!!! Unable now\n Hint : exit first, please");
         }
         
         public void logIn(String login, String password) throws Exception {
-                throw new Exception("Unable now\n  Hint : you have been already logged in");
+                throw new Exception("!!! Unable now\n Hint : you have been already logged in");
         }
 
         public void addDesire(Desire desire) throws Exception {

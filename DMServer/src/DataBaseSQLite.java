@@ -12,6 +12,7 @@ public class DataBaseSQLite extends DataBase{
 		Class.forName(driver);
 		connection = DriverManager.getConnection("jdbc:sqlite:" + baseName);
 		turnedOn = true;
+		System.out.println("+Connected to base " + baseName);
 	}
 
 	public Connection getConnection() {
@@ -23,6 +24,8 @@ public class DataBaseSQLite extends DataBase{
 			try {
 				connection.close();
 				turnedOn = false;
+				System.out.println("-Disconnected from base " + baseName);
+				
 			} catch (SQLException error) {
 				System.out.println("DB can't be closed");
 			}

@@ -1,4 +1,5 @@
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public class CommandToShowInfo extends CommandForDesireThread{
 			
@@ -12,7 +13,8 @@ public class CommandToShowInfo extends CommandForDesireThread{
 			synchronized(receiver){
 				ResultSet infoSet = receiver.instrument.getInfo(receiver.currentUser);
 				receiver.confirmSuccess();
-				receiver.socketOut.writeObject(receiver.getArrayListFromResultSet(infoSet, 3));
+				ArrayList<ArrayList<String>> table = receiver.resultSetConverter.getArrayListFromResultSet(infoSet);
+				receiver.socketOut.writeObject(table);
 				System.out.println("*** THREAD " + receiver.currentUser + " SENT ArrayList<ArrayList<String>> of Info");
 			}
 		}
