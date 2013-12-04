@@ -21,6 +21,7 @@ public class DesireTube {
 		tube.add(new HandlerShowerDesires(inThread));
 		tube.add(new HandlerShowerInfo(inThread));
 		tube.add(new HandlerAddSatisfy(inThread));
+		tube.add(new HandlerDeleting(inThread));
 	}
 	
 	private Handler chooseHandler(char firstSymbol){

@@ -5,9 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.*;
-import java.sql.ResultSet;
-
-import com.sun.xml.internal.fastinfoset.tools.PrintTable;
 
 
 
@@ -31,7 +28,7 @@ public class UserProgram{
 		ObjectInputStream ins = new ObjectInputStream(clientSocket.getInputStream());
 		
 		int answer = 1;
-		System.out.println("# 1 - register, 2 - log in, 3 - add desire, 4 - show desires, 5 - show info, 6 - find satisfiers");
+		System.out.println("# 1 - register, 2 - log in, 3 - add desire\n4 - show desires, 5 - show info, 6 - find satisfiers, 7 - delete desires from category");
 		while (answer != 0){
 			System.out.println("What to do : ");
 			answer = scanner.nextInt();
@@ -171,6 +168,17 @@ public class UserProgram{
 				catch(IOException error){
 					error.getMessage();
 				}
+				break;
+			}
+			case(7):{
+				System.out.println("# DELETING");
+				System.out.println("Enter your category :");
+				String category = scanner.next();
+				String toSend = "D" + category;
+				System.out.println("To send:" + toSend);
+				out.println(toSend);
+				System.out.println("The string is sent");
+				System.out.println(ins.readBoolean());
 				break;
 			}
 			default:{
