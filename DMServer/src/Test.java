@@ -1,3 +1,5 @@
+
+
 import java.sql.*;
 import java.util.ArrayList;
 public class Test {
@@ -9,7 +11,7 @@ public class Test {
 			testBaseTableCreation();
 			testBaseAdding();
 			testBaseSelecting();
-			//testArrayListCreatingFromResultSet();
+			//testDataBaseCreatingTablesInterface();
 			System.out.println("---------Tests are passed\n");
 		}
 		catch(Exception fail){
@@ -19,6 +21,7 @@ public class Test {
 	}
 
 	public static final void testDataBase() throws Exception{
+		System.out.println("'''''testDataBase");
 		DataBaseSQLite base = new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/testCARS.db");
 		try {
 			base.connectToBase();
@@ -35,6 +38,7 @@ public class Test {
 	}
 
 	public static final void testBaseTableCreation() throws Exception{
+		System.out.println("'''''testBaseTableCreation");
 		DataBaseSQLite base = new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/testCARS.db");
 		base.connectToBase();
 		Statement creator = base.getConnection().createStatement();
@@ -45,6 +49,7 @@ public class Test {
 	}
 
 	public static final void testBaseAdding() throws Exception{
+		System.out.println("'''''testBaseAdding");
 		DataBaseSQLite base= new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/testCARS.db");
 		base.connectToBase();
 		String company = "opel";
@@ -60,6 +65,7 @@ public class Test {
 	}
 
 	public static final void testBaseSelecting() throws Exception{
+		System.out.println("'''''testBaseSelecting");
 		DataBaseSQLite base= new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/testCARS.db");
 		base.connectToBase();
 		Statement selector  = base.getConnection().createStatement();
@@ -75,6 +81,7 @@ public class Test {
 	}
 
 	public static final void testCoordinatesWorking() throws Exception{
+		System.out.println("'''''testCoordinatesWorking");
 		DataBaseSQLite base= new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/testCARS.db");
 		base.connectToBase();
 		Statement selector  = base.getConnection().createStatement();
@@ -89,21 +96,15 @@ public class Test {
 		System.out.println(count);
 		base.disconnect();
 	}
-
-//	public static final void testArrayListCreatingFromResultSet() throws Exception{
-//		ResultSetMaster master = new ResultSetMaster();
-//		StateLoggedIn state = new StateLoggedIn(null);
-//		Desire wish = new Desire("vlad","_SPORT", "dance", "ourFirstTag", "2.3", "2.3");
-//		state.addDesire(wish);
-//		Desire desire = new Desire("sam","_SPORT", "beatbox", "ourFirstTag", "2.2", "2");
-//		ResultSet set = state.getSatisfiersToday(desire, "5");
-//		ArrayList<ArrayList<String>> list = master.getArrayListFromResultSet(set);
-//		for (int i = 0 ; i < list.size(); i++){
-//			for (int j = 0; j < list.get(i).size(); j++){
-//				System.out.print(list.get(i).get(j) + " ");
-//			}
-//			System.out.println("");
-//		}
+	
+//	public static final void testDataBaseCreatingTablesInterface() throws ClassNotFoundException, SQLException{
+//		System.out.println("'''''testDataBaseCreatingTablesInterface");
+//		DataBaseSQLite base = new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/testCARS.db");
+//		base.connectToBase();
+//		String[] types = {"TEXT", "TEXT", "TEXT"};
+//		String[] columns = {"NAME", "", "AGE"};
+//		base.createSimpleTable("WORK", columns, types);
+//		base.disconnect();
 //	}
 
 }

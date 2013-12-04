@@ -1,4 +1,6 @@
 
+
+
 public class CommandToAddDesire extends CommandForDesireThread{
 	private Desire desire;
 	//--

@@ -1,4 +1,5 @@
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class StateStart extends State{
 
@@ -7,7 +8,7 @@ public class StateStart extends State{
         }
         
         public void logIn(String login, String password) throws Exception {
-                Statement selector = DesireInstrument.dataBase.getConnection().createStatement();
+                Statement selector = DesireInstrument.getAccessToDesireBase().createStatement();
                 ResultSet setAfterSelection = selector.executeQuery("SELECT * FROM USERS WHERE LOGIN = '" + login + "' AND PASSWORD = '" + password + "'");
                 if (setAfterSelection.next()){
                         changeState(new StateLoggedIn(owner));
@@ -20,7 +21,7 @@ public class StateStart extends State{
         }
         
         public void register(String login, String password, String name, String sex, String birthdate) throws Exception{
-        	Statement inserter = DesireInstrument.dataBase.getConnection().createStatement();
+        	Statement inserter = DesireInstrument.getAccessToDesireBase().createStatement();
         	try{
         		inserter.execute("INSERT INTO USERS(LOGIN,PASSWORD) VALUES('" + login + "', '" + password + "')");                
         		inserter.execute("INSERT INTO INFO (LOGIN,NAME,SEX,BIRTH) VALUES('" + login + "', '" + name + "', '" + sex + "', '" + birthdate + "')");
@@ -35,15 +36,15 @@ public class StateStart extends State{
         }
 
         public void addDesire(Desire desire) throws Exception {
-                throw new Exception("Unable now\n Hint : log in or register");
+                throw new Exception("!!! Unable now\n Hint : log in or register");
         }
 
         public ResultSet getDesires(String login, String category) throws Exception{
-                throw new Exception("Unable now\n Hint : log in or register");
+                throw new Exception("!!! Unable now\n Hint : log in or register");
         }
 
         public ResultSet getInfo(String login) throws Exception {
-                throw new Exception("Unable now\n Hint : log in or register");
+                throw new Exception("!!! Unable now\n Hint : log in or register");
         }
         
         public void exit() {
@@ -53,7 +54,7 @@ public class StateStart extends State{
 		@Override
 		public ResultSet getSatisfiersToday(Desire desire, String radius)
 				throws Exception {
-			throw new Exception("Unable now\n Hint : log in or register");
+			throw new Exception("!!! Unable now\n Hint : log in or register");
 		}
 
         

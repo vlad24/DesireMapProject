@@ -1,4 +1,5 @@
 
+
 public class HandlerShowerInfo extends Handler{
 
 	public HandlerShowerInfo(DesireThread inThread) {

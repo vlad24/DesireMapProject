@@ -25,7 +25,7 @@ public class DesireMapProgram {
 		}
 		finally{
 			try {
-				DesireInstrument.dataBase.disconnect();
+				DesireInstrument.turnOffTheBase();
 				listeningSocket.close();
 				System.out.println("# Server socket is successfully closed\n");
 			} 

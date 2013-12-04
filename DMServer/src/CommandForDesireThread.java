@@ -1,4 +1,6 @@
 
+
+
 public abstract class CommandForDesireThread {
 	DesireThread receiver;
 	//--

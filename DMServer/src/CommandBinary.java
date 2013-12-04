@@ -1,4 +1,5 @@
 
+
 public class CommandBinary extends CommandForDesireThread{
 	private CommandForDesireThread firstCommand;
 	private CommandForDesireThread secondCommand;

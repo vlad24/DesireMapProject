@@ -21,13 +21,13 @@ public class StateLoggedIn extends State{
         		String tag = desire.getTag();
         		String latitude = desire.getLatitude();
         		String longitude = desire.getLongitude();
-                Statement inserter = DesireInstrument.dataBase.getConnection().createStatement();
+                Statement inserter = DesireInstrument.getAccessToDesireBase().createStatement();
                 inserter.execute("INSERT INTO DESIRES" + category + " VALUES('" + login + "','" + desireString + "','" + tag + "','" + latitude + "','" + longitude + "', datetime('now', 'localtime'))");
                 inserter.close();
         }
         
         public ResultSet getDesires(String login, String category) throws Exception {
-                Statement selector = DesireInstrument.dataBase.getConnection().createStatement();
+                Statement selector = DesireInstrument.getAccessToDesireBase().createStatement();
                 System.out.println("SELECT DESIRE FROM DESIRES" + category + " WHERE LOGIN = '" + login + "'");
                 ResultSet desires = selector.executeQuery("SELECT DESIRE FROM DESIRES" + category + " WHERE LOGIN = '" + login + "'");
                 //selector.close();? 
@@ -35,7 +35,7 @@ public class StateLoggedIn extends State{
         }
         
         public ResultSet getInfo(String login) throws Exception{
-                Statement selector = DesireInstrument.dataBase.getConnection().createStatement();
+                Statement selector = DesireInstrument.getAccessToDesireBase().createStatement();
                 ResultSet info = selector.executeQuery("SELECT NAME, SEX, BIRTH FROM INFO WHERE LOGIN = '" + login + "'");
                 //selector.close(); ?
                 return info;
@@ -52,15 +52,17 @@ public class StateLoggedIn extends State{
         	String givenRadiusSquared = " (" + radius + " * " + radius + ") ";
         	String desireWasPostedToday = " strftime('%d-%m-%Y', TIME) = strftime('%d-%m-%Y', 'now')";
         	String tableSuffix = desire.getCategory();
+        	String client = desire.getMaster();
+        	String satisfierIsNotClient = "login != '" + client + "' ";
         	
         	String satisfyQuery = "SELECT" + neededFields + "FROM DESIRES" + tableSuffix +
         			" WHERE TAG LIKE " + tagMask + " AND " + 
-        			actualRadiusSquared + " < " + givenRadiusSquared + " AND " +  actualRadiusSquared + " > 0 " +
+        			actualRadiusSquared + " < " + givenRadiusSquared + " AND " + satisfierIsNotClient +
         			"AND" + desireWasPostedToday;
         	
         	System.out.println(satisfyQuery);
         	
-        	Statement selector = DesireInstrument.dataBase.getConnection().createStatement();
+        	Statement selector = DesireInstrument.getAccessToDesireBase().createStatement();
         	ResultSet satisfiersInfo = selector.executeQuery(satisfyQuery);
 			return satisfiersInfo;
         }

@@ -9,5 +9,6 @@ public abstract class DataBase {
 	protected String driver;
 	protected String baseName;
 	protected Boolean turnedOn;
+	//protected abstract void createSimpleTable(String name, String[] columns, String[] specifiers) throws SQLException;
 	
 }

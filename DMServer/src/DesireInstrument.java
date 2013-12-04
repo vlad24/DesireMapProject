@@ -2,15 +2,15 @@ import java.sql.*;
 
 public class DesireInstrument {
 	
-	protected  State stateObject;
-	protected static DataBaseSQLite dataBase;
+	protected State stateObject;
+	private static DataBaseSQLite desireDataBase;
 	//--
 	static {
-		dataBase = new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/desireMapMain.db");
+		desireDataBase = new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/desireMapMain.db");
 		System.out.println("MAIN BD IS LOADED");
 		try {
-			dataBase.connectToBase();
-			Statement creator = dataBase.getConnection().createStatement();
+			desireDataBase.connectToBase();
+			Statement creator = desireDataBase.getConnection().createStatement();
 			//Creating table of logins-passwords (id information)
 			creator.execute("CREATE TABLE IF NOT EXISTS USERS(LOGIN TEXT PRIMARY KEY, PASSWORD TEXT NOT NULL)");
 			//Creating table of login-name-sex-birth (personal information)
@@ -26,6 +26,14 @@ public class DesireInstrument {
 		} catch (ClassNotFoundException | SQLException error) {
 			error.printStackTrace();
 		}
+	}
+	
+	protected static Connection getAccessToDesireBase(){
+		return desireDataBase.getConnection();
+	}
+	
+	protected static void turnOffTheBase(){
+		desireDataBase.disconnect();
 	}
 	
 	public DesireInstrument(){

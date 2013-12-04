@@ -1,4 +1,6 @@
 
+
+
 public class CommandToLogIn extends CommandForDesireThread{
 	
 	private String login;

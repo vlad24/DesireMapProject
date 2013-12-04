@@ -1,4 +1,6 @@
 
+
+
 public class CommandToRegister extends CommandForDesireThread{
 	
 	private String login;
