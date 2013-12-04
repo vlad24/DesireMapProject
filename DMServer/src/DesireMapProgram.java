@@ -1,5 +1,11 @@
 import java.io.*;
 import java.net.*;
+
+import testsPackage.TestMaster;
+import desireInstrumentPackage.DesireInstrument;
+import desireThreadPackage.DesireThread;
+
+
 public class DesireMapProgram {
 	
 	private static final int portNumber = 9252;
@@ -7,8 +13,7 @@ public class DesireMapProgram {
 	//--
 	public static void main(String[] args)
 	{
-		System.out.println("------- Some testing --------\n");
-		Test.jExec();
+		TestMaster.jExec();
 		System.out.println("# Program is on.\n");			
 		try {
 			listeningSocket = new ServerSocket(portNumber);
