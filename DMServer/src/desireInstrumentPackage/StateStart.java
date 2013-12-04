@@ -55,9 +55,13 @@ public class StateStart extends State{
         }
 
 		@Override
-		public ResultSet getSatisfiersToday(Desire desire, String radius)
-				throws Exception {
+		public ResultSet getSatisfiersToday(Desire desire, String radius) throws Exception {
 			throw new Exception("!!! Unable now\n Hint : log in or register");
+		}
+
+		@Override
+		public void clearUsersCategory(String login, String category) throws Exception {
+			 throw new Exception("!!! Unable now\n Hint : log in or register");
 		}
 
         

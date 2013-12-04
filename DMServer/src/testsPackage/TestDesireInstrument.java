@@ -16,15 +16,20 @@ public final class TestDesireInstrument {
 		desireRun2 = new Desire("tset", "_TEST", "lets run people", "run", "4.32", "3.21");
 		try {
 			instrument.register("test", "test", "test", "test", "test");
-		} catch (Exception e) {
-			System.out.println("test registered");
-		}
+		} catch (Exception e) {}
 	}
 	//--
+	
+	private static void clearDesires_Test() throws Exception{
+		instrument.clearUsersCategory("test", "_TEST");
+		instrument.clearUsersCategory("tset", "_TEST");
+	}
+	
 	protected static void executeTests() throws Exception {
 		System.out.println("--- Testing DesireInstrument ---");
 		testInstrumentExiting();
 		testInstrumnetLoggingIn();
+		clearDesires_Test();
 		testInstrumentAdding();
 		testInstrumentSatisfying();
 		System.out.println("--- Testing DesireInstrument is successfully finished ---");
@@ -48,7 +53,6 @@ public final class TestDesireInstrument {
 		int count = 0;
 		while(set.next()){
 			if (!set.getString("login").equals("test")){
-				System.out.println(set.getString("login"));
 				throw new Exception("Wrong result set of satisfiers");
 			}
 			count++;

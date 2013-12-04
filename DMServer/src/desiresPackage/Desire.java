@@ -8,7 +8,6 @@ public class Desire {
 		tag = nTag;
 		latitude = nLatitude;
 		longitude = nLongitude;
-		System.out.println("Desire has been created " + master + category + desireString + tag + latitude + longitude);
 	}
 
 	public String getCategory() {

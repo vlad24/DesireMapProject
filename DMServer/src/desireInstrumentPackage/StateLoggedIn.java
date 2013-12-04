@@ -29,6 +29,13 @@ public class StateLoggedIn extends State{
                 inserter.close();
         }
         
+		@Override
+		public void clearUsersCategory(String login, String category) throws Exception {
+			 Statement deleter = DesireInstrument.getAccessToDesireBase().createStatement();
+             deleter.executeUpdate("DELETE FROM DESIRES" + category + " WHERE LOGIN = '" + login + "'");
+             deleter.close(); 
+		}
+        
         public ResultSet getDesires(String login, String category) throws Exception {
                 Statement selector = DesireInstrument.getAccessToDesireBase().createStatement();
                 System.out.println("SELECT DESIRE FROM DESIRES" + category + " WHERE LOGIN = '" + login + "'");

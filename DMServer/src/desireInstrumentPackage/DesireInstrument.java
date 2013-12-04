@@ -10,8 +10,9 @@ public class DesireInstrument {
 	private static DataBaseSQLite desireDataBase;
 	//--
 	static {
+		System.out.println("LOADING DESIRE INSTRUMENT");
 		desireDataBase = new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/desireMapMain.db");
-		System.out.println("MAIN BD IS LOADED");
+		System.out.println("MAIN DB IS LOADED");
 		try {
 			desireDataBase.connectToBase();
 			Statement creator = desireDataBase.getConnection().createStatement();
@@ -54,6 +55,10 @@ public class DesireInstrument {
 	
 	public void addDesire(Desire desire) throws Exception {
 		stateObject.addDesire(desire);
+	}
+	
+	public void clearUsersCategory(String login, String category) throws Exception {
+		stateObject.clearUsersCategory(login, category);
 	}
 	
 	public ResultSet getDesires(String login, String category) throws Exception{

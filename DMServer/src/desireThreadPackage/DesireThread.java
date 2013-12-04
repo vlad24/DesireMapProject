@@ -23,6 +23,7 @@ public class DesireThread extends Thread{
 	public DesireThread(Socket givenSocket) throws IOException{//
 		System.out.println("*** Thread is initializing\n");
 		this.setDaemon(true);
+		setCurrentUser("?");
 		interactiveSocket = givenSocket;
 		instrument = new DesireInstrument();
 		tube = new DesireTube(this);
