@@ -1,14 +1,6 @@
 package desireThreadPackage;
 
 
-
-
-
-
-
-
-
-
 public class CommandToExit extends CommandForDesireThread{
 
 	public CommandToExit(DesireThread newReceiver){

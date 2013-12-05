@@ -40,9 +40,10 @@ public class DesireTube {
 
 	public CommandForDesireThread processString(String input){
 		//Here we suppose that our string is not null (it has been checked beforehand)
+		System.out.println("Searching for a handler for a request : " + input);
 		Handler forthHandler = chooseHandler(input.charAt(0));
 		if (forthHandler != null){
-			System.out.println(forthHandler.getClass().toString() + " working");
+			System.out.println(forthHandler.getClass().toString() + " reacted");
 			return (forthHandler.handleString(input));
 		}
 		else{

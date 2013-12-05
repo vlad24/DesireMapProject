@@ -26,6 +26,14 @@ public class ResultSetMaster {
 			}
 		}
 		System.out.println("$ Convertion completed");
+		System.out.println("$ Printing the result : ");
+		for (int i = 0; i < table.size(); i++){
+			for (int j = 0; j < table.get(i).size(); j++){
+				System.out.print(table.get(i).get(j) + " ");
+			}
+			System.out.println("");
+		}
 		return table;
 	}
+
 }
