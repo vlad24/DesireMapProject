@@ -52,7 +52,7 @@ public class StateLoggedIn extends State{
         }
         
         public ResultSet getSatisfiersToday(Desire desire, String radius) throws Exception{ // draft
-        	String neededFields = " login, latitude, longitude ";
+        	String neededFields = " login, desire, latitude, longitude ";
         	String deltaLatitude = " (LATITUDE - " + desire.getLatitude() + ") ";
         	String deltaLongitude = " (LONGITUDE - " + desire.getLongitude() + ") ";
         	String deltaLatitudeSquared = deltaLatitude + "*" + deltaLatitude;
@@ -60,7 +60,7 @@ public class StateLoggedIn extends State{
         	String actualRadiusSquared = deltaLatitudeSquared + "+" + deltaLongitudeSquared;
         	String tagMask = "'%" + desire.getTag() + "%'";
         	String givenRadiusSquared = " (" + radius + " * " + radius + ") ";
-        	String desireWasPostedToday = " strftime('%d-%m-%Y', TIME) = strftime('%d-%m-%Y', 'now')";
+        	String desireWasPostedToday = " strftime('%d-%m-%Y', TIME, 'localtime') = strftime('%d-%m-%Y', 'now', 'localtime')";
         	String tableSuffix = desire.getCategory();
         	String client = desire.getMaster();
         	String satisfierIsNotClient = "login != '" + client + "' ";
