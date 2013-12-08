@@ -26,6 +26,11 @@ public class ResultSetMaster {
 			}
 		}
 		System.out.println("$ Convertion completed");
+		printResultTable(table);
+		return table;
+	}
+	
+	private void printResultTable(ArrayList<ArrayList<String>> table){
 		System.out.println("$ Printing the result : ");
 		for (int i = 0 ; i < table.size(); i++){
 			for (int j = 0; j < table.get(i).size(); j++){
@@ -33,6 +38,5 @@ public class ResultSetMaster {
 			}
 			System.out.println("");
 		}
-		return table;
 	}
 }
