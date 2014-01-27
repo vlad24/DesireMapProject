@@ -7,6 +7,7 @@ public class StateLoggedIn extends State{
         
         public StateLoggedIn(DesireInstrument instrument) {
                 owner = instrument;
+                int y = 0;
         }
         
         public void register(String login, String password, String name, String sex, String birthdate) throws Exception {

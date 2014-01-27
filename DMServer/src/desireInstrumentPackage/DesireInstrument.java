@@ -11,7 +11,7 @@ public class DesireInstrument {
 	//--
 	static {
 		System.out.println("LOADING DESIRE INSTRUMENT");
-		desireDataBase = new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/desireMapMain.db");
+		desireDataBase = new DataBaseSQLite("C://Databases/desireMapMain.db");
 		System.out.println("MAIN DB IS LOADED");
 		try {
 			desireDataBase.connectToBase();
