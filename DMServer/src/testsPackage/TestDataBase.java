@@ -19,13 +19,13 @@ public final class TestDataBase {
 		}
 	////++++
 	private static final DataBaseSQLite initTestCase() throws ClassNotFoundException, SQLException{
-		DataBaseSQLite base = new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/testCARS.db");
+		DataBaseSQLite base = new DataBaseSQLite("C://Databases/testCARS.db");
 		base.connectToBase();
 		return base;
 	}
 	
 	private static final void testDataBaseOpening() throws Exception{
-		DataBaseSQLite base = new DataBaseSQLite("D://JavaProgramming/DesireMap/DMServer/testCARS.db");
+		DataBaseSQLite base = new DataBaseSQLite("C://Databases/testCARS.db");
 		try {
 			base.connectToBase();
 			if (!base.turnedOn){
