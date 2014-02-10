@@ -8,7 +8,7 @@ import desireThreadPackage.DesireThread;
 
 public class DesireMapProgram {
 	
-	private static final int portNumber = 9252;
+	private static final int portNumber = 9250;
 	private static ServerSocket listeningSocket;
 	//--
 	public static void main(String[] args)

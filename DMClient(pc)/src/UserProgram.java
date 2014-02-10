@@ -21,7 +21,7 @@ public class UserProgram{
 	
 	public static void main(String[] args) throws Exception{
 		InetAddress address = InetAddress.getByName("localhost");
-		Socket clientSocket = new Socket(address, 9252);
+		Socket clientSocket = new Socket(address, 9250);
 		
 		Scanner scanner = new Scanner(System.in);
 		PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
