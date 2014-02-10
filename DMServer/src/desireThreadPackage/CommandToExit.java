@@ -1,14 +1,5 @@
 package desireThreadPackage;
 
-
-
-
-
-
-
-
-
-
 public class CommandToExit extends CommandForDesireThread{
 
 	public CommandToExit(DesireThread newReceiver){
@@ -30,7 +21,5 @@ public class CommandToExit extends CommandForDesireThread{
 			receiver.confirmFail();
 			throw error;
 		}
-
 	}
-
 }
