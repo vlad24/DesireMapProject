@@ -1,5 +1,8 @@
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import testsPackage.TestMaster;
 import desireInstrumentPackage.DesireInstrument;
@@ -17,13 +20,13 @@ public class DesireMapProgram {
 		System.out.println("# Program is on.\n");			
 		try {
 			listeningSocket = new ServerSocket(portNumber);
+			Executor poolExecutor = Executors.newFixedThreadPool(2);
 			while(true){
 				System.out.println("# Waiting for a new client...\n");
 				Socket interactiveSocket = listeningSocket.accept();
-				System.out.println("# A new user has come!...\n");	
-				DesireThread threadForUser = new DesireThread(interactiveSocket);
-				System.out.println("# Thread is made\n");
-				threadForUser.start(); // it will interrupt when user leaves or wants
+				System.out.println("# A new user has come!...\n");
+				poolExecutor.execute(new DesireThread(interactiveSocket));
+				//new Thread(new DesireThread(interactiveSocket)).start(); // it will interrupt when user leaves or wants
 			}
 		} catch (IOException error){
 			System.out.println(error.getMessage());
