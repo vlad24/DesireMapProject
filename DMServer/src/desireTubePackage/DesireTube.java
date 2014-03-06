@@ -1,46 +1,40 @@
 package desireTubePackage;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import queryObjectPackage.QueryObject;
 
 import desireThreadPackage.CommandForDesireThread;
 import desireThreadPackage.CommandToExit;
 import desireThreadPackage.DesireThread;
+import codesPackage.Codes;
 
 public class DesireTube {
 
 	protected DesireThread userThread;
-	private LinkedList<Handler> tube;
+	private HashMap<Character, Handler> tube;
 	//--
 	public DesireTube(DesireThread inThread){
 		userThread = inThread;
-		tube = new LinkedList<Handler>();
-		tube.add(new HandlerExiting(inThread));
-		tube.add(new HandlerLogIn(inThread));
-		tube.add(new HandlerRegister(inThread));
-		tube.add(new HandlerAddingDesire(inThread));
-		tube.add(new HandlerShowerDesires(inThread));
-		tube.add(new HandlerShowerInfo(inThread));
-		tube.add(new HandlerAddSatisfy(inThread));
-		tube.add(new HandlerDeleting(inThread));
+		tube = new HashMap<Character,Handler>();
+//		tube.put(Codes.ActionCodes.exitCode, new HandlerExiting(inThread));
+//		tube.add(new HandlerLogIn(inThread));
+//		tube.add(new HandlerRegister(inThread));
+//		tube.add(new HandlerAddingDesire(inThread));
+//		tube.add(new HandlerShowerDesires(inThread));
+//		tube.add(new HandlerShowerInfo(inThread));
+//		tube.add(new HandlerAddSatisfy(inThread));
+//		tube.add(new HandlerDeleting(inThread));
 	}
 	
-	private Handler chooseHandler(char firstSymbol){
-		Iterator<Handler> iterator = tube.iterator();
-		Handler handler = iterator.next();
-		while(handler != null){
-			if (handler.myJob(firstSymbol)){
-				return handler;
-			}
-			else{
-				handler = iterator.next();
-			}
-		}
-		return null;
+	private Handler chooseHandler(char actionCode){
+		return(tube.get(actionCode));
 	}
 
-	public CommandForDesireThread processString(String input){
-		//Here we suppose that our string is not null (it has been checked beforehand)
-		Handler forthHandler = chooseHandler(input.charAt(0));
+	public CommandForDesireThread processClientQuery(QueryObject query){
+		System.out.println("Processing the client query");
+		Handler forthHandler = chooseHandler(query.getActionCode());
 		if (forthHandler != null){
 			System.out.println(forthHandler.getClass().toString() + " working");
 			return (forthHandler.handleString(input));
