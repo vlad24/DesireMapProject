@@ -1,7 +1,8 @@
 package desireInstrumentPackage;
 import java.sql.*;
 
-import desiresPackage.Desire;
+import queryObjectPackage.Desire;
+
 
 public class StateLoggedIn extends State{
         

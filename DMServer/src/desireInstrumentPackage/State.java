@@ -1,7 +1,8 @@
 package desireInstrumentPackage;
 import java.sql.*;
 
-import desiresPackage.Desire;
+import queryObjectPackage.Desire;
+
 
 public abstract class State{
 	protected DesireInstrument owner;

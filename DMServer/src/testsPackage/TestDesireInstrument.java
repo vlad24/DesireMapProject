@@ -2,8 +2,9 @@ package testsPackage;
 
 import java.sql.ResultSet;
 
+import queryObjectPackage.Desire;
+
 import desireInstrumentPackage.*;
-import desiresPackage.Desire;
 
 public final class TestDesireInstrument {
 	private static final DesireInstrument instrument;

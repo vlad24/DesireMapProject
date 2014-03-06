@@ -4,7 +4,8 @@ package desireThreadPackage;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import desiresPackage.Desire;
+import queryObjectPackage.Desire;
+
 
 public class CommandToGetSatisfiers extends CommandForDesireThread{
 	

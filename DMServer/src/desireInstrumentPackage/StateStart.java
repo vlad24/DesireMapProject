@@ -2,7 +2,8 @@ package desireInstrumentPackage;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import desiresPackage.Desire;
+import queryObjectPackage.Desire;
+
 
 public class StateStart extends State{
 

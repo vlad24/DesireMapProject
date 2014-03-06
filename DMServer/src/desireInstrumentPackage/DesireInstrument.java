@@ -1,8 +1,9 @@
 package desireInstrumentPackage;
 
 import java.sql.*;
+
+import queryObjectPackage.Desire;
 import dataBasePackage.DataBaseSQLite;
-import desiresPackage.Desire;
 
 public class DesireInstrument {
 	

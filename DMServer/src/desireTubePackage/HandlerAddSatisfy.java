@@ -2,12 +2,13 @@ package desireTubePackage;
 
 import java.util.ArrayList;
 
+import queryObjectPackage.Desire;
+
 import desireThreadPackage.CommandBinary;
 import desireThreadPackage.CommandForDesireThread;
 import desireThreadPackage.CommandToAddDesire;
 import desireThreadPackage.CommandToGetSatisfiers;
 import desireThreadPackage.DesireThread;
-import desiresPackage.Desire;
 
 
 public class HandlerAddSatisfy extends Handler{

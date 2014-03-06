@@ -1,6 +1,6 @@
 package desireThreadPackage;
 
-import desiresPackage.Desire;
+import queryObjectPackage.Desire;
 
 
 
