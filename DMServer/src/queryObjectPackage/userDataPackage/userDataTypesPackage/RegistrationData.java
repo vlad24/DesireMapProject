@@ -11,8 +11,8 @@ public final class RegistrationData extends UserData{
 	// private String references;
 	// private final Picture photo
 	
-	public RegistrationData(String nLogin, int nUserId, String newPassword, String newName, char newSex, String newBirth){
-		super('R', newBirth, nUserId);
+	public RegistrationData(char nActionCode, String nLogin, int nUserId, String newPassword, String newName, char newSex, String newBirth){
+		super(nActionCode, 'R', newBirth, nUserId);
 		password = newPassword;
 		name = newName;
 		sex = newSex;

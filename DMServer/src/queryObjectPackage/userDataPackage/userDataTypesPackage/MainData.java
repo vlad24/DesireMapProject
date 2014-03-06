@@ -12,8 +12,8 @@ public final class MainData extends UserData{
 	//public String references;
 	//public Picture photo;
 	////
-	public MainData(String nLogin, int nUserId, String newName, char newSex, String newBirth, int newRating){
-		super('M', nLogin, nUserId);
+	public MainData(char nActionCode, String nLogin, int nUserId, String newName, char newSex, String newBirth, int newRating){
+		super(nActionCode, 'M', nLogin, nUserId);
 		name = newName;
 		sex = newSex;
 		birth = newBirth;

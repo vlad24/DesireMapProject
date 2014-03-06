@@ -12,8 +12,8 @@ public abstract class UserData extends QueryObject{
 	protected final String login;
 	protected final int userId;
 	////
-	protected UserData(char nTypeCode, String newLogin, int newUserId) {
-		super(nTypeCode);
+	protected UserData(char nActionCode, char nTypeCode, String newLogin, int newUserId) {
+		super(nActionCode, nTypeCode);
 		login = newLogin;
 		userId = newUserId;
 	}

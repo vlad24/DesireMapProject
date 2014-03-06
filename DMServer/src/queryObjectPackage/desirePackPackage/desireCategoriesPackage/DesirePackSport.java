@@ -9,8 +9,8 @@ public final class DesirePackSport extends DesirePack{
 	private final String advantages;
 	//and so on
 	////
-	public DesirePackSport(String nLogin, String nDesireDescription, double nLatitude, double nLongitude, String newSportName, String newAdvantages){
-		super('s', nLogin, nDesireDescription, nLatitude, nLongitude);
+	public DesirePackSport(char nActionCode, String nLogin, String nDesireDescription, double nLatitude, double nLongitude, String newSportName, String newAdvantages){
+		super(nActionCode, 's', nLogin, nDesireDescription, nLatitude, nLongitude);
 		//
 		sportName = newSportName;
 		advantages = newAdvantages; 
