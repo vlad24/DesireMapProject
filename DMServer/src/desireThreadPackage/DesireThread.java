@@ -9,7 +9,7 @@ import java.net.Socket;
 import desireInstrumentPackage.DesireInstrument;
 import desireTubePackage.DesireTube;
 
-public class DesireThread extends Thread{
+public class DesireThread implements Runnable{
 
 	private Socket interactiveSocket;
 	private DesireTube tube;
@@ -22,7 +22,6 @@ public class DesireThread extends Thread{
 	
 	public DesireThread(Socket givenSocket) throws IOException{//
 		System.out.println("*** Thread is initializing\n");
-		this.setDaemon(true);
 		setCurrentUser("?");
 		interactiveSocket = givenSocket;
 		instrument = new DesireInstrument();
@@ -73,7 +72,7 @@ public class DesireThread extends Thread{
 	}
 
 	public void run(){
-		while(!isInterrupted()){
+		while(!Thread.currentThread().isInterrupted()){
 			try {
 				System.out.println("*** THREAD " + getCurrentUser() + " : Waiting for a client command...");
 				String receivedString = scanString();
@@ -98,9 +97,9 @@ public class DesireThread extends Thread{
 					System.out.println("****** Socket has not been closed.\n");
 				}
 				finally{
-					interrupt();
+					Thread.currentThread().interrupt();
 					System.out.println("*** THREAD INTERRUPTED");
-					System.out.println(isInterrupted());
+					System.out.println(Thread.currentThread().isInterrupted());
 				}
 			}
 		}//while

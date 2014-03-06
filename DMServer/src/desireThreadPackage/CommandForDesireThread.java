@@ -1,12 +1,6 @@
 package desireThreadPackage;
 
 
-
-
-
-
-
-
 public abstract class CommandForDesireThread {
 	DesireThread receiver;
 	//--

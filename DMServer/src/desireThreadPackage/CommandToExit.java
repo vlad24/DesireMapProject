@@ -1,14 +1,6 @@
 package desireThreadPackage;
 
 
-
-
-
-
-
-
-
-
 public class CommandToExit extends CommandForDesireThread{
 
 	public CommandToExit(DesireThread newReceiver){
@@ -20,9 +12,9 @@ public class CommandToExit extends CommandForDesireThread{
 			System.out.println("*** " + receiver.getCurrentUser() + " exiting");
 			receiver.setCurrentUser("?");
 			receiver.instrument.exit();
-			receiver.interrupt();
+			Thread.currentThread().interrupt();
 			receiver.confirmSuccess();
-			if (receiver.isInterrupted())
+			if (Thread.currentThread().isInterrupted())
 				System.out.println("*** THREAD HAS BEEN INTERRUPTED");
 			//Cleaning the data base is going to appear here, it can generate exceptions
 		}
