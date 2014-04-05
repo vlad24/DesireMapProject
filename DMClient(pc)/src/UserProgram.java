@@ -1,107 +1,155 @@
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
 import java.io.ObjectInputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.*;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.Scanner;
+
+import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
+import desireMapApplicationPackage.desireContentPackage.Coordinates;
+import desireMapApplicationPackage.desireContentPackage.DesireContent;
+import desireMapApplicationPackage.desireContentPackage.DesireContentDating;
+import desireMapApplicationPackage.desireContentPackage.DesireContentSport;
+import desireMapApplicationPackage.inputArchitecturePackage.Cryteria;
+import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.AddPack;
+import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.DeletePack;
+import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.ExitPack;
+import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.LoginPack;
+import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.MessageDeliverPack;
+import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.MessageSendPack;
+import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.RegistrationPack;
+import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.ShowInfoPack;
+import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.ShowPersonalDesiresPack;
+import desireMapApplicationPackage.messageSystemPackage.Message;
+import desireMapApplicationPackage.outputArchitecturePackage.DesireSet;
+import desireMapApplicationPackage.outputArchitecturePackage.MessageSet;
+import desireMapApplicationPackage.userDataPackage.LoginData;
+import desireMapApplicationPackage.userDataPackage.MainData;
+import desireMapApplicationPackage.userDataPackage.RegistrationData;
 
 
 
 public class UserProgram{
 	
-	private static void printTable(ArrayList<ArrayList<String>> table){
-		for (int i = 0 ; i < table.size(); i++){
-			for (int j = 0 ; j < table.get(i).size() ; j++){
-				System.out.print(table.get(i).get(j) + " ");
-			}
-			System.out.println("");
-		}
+	public static Scanner scanner = new Scanner(System.in);
+	public static String currentUser = "?";
+	public static boolean loggedIn = false;
+	
+	public static int askInt(String name){
+		System.out.println("Enter " + name + ": ");
+		int s = scanner.nextInt();
+		return s;
 	}
 	
+	public static String askString(String name){
+		System.out.println("Enter " + name + ": ");
+		String s = scanner.next();
+		return s;
+	}
+	
+	public static double askDouble(String name){
+		System.out.println("Enter " + name + ": ");
+		double s = scanner.nextDouble();
+		return s;
+	}
+		
 	public static void main(String[] args) throws Exception{
 		InetAddress address = InetAddress.getByName("localhost");
 		Socket clientSocket = new Socket(address, 9252);
-		
-		Scanner scanner = new Scanner(System.in);
-		PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
+		ObjectOutputStream outs = new ObjectOutputStream(clientSocket.getOutputStream());
+		outs.flush();
 		ObjectInputStream ins = new ObjectInputStream(clientSocket.getInputStream());
-		
 		int answer = 1;
-		System.out.println("# 1 - register, 2 - log in, 3 - add desire\n4 - show desires, 5 - show info, 6 - find satisfiers, 7 - delete desires from category");
+		System.out.println("# 1 - register, 2 - log in, 3 - add desire\n4 - show desires, 5 - show info," +
+				" 6 - find satisfiers, 7 - delete desires from category\n 8 - send message 9 - deliver messages");
 		while (answer != 0){
-			System.out.println("What to do : ");
-			answer = scanner.nextInt();
+			answer = askInt("action");
 			switch(answer){
 			case(0):{
-				out.println("E");
+				currentUser = "?";
+				loggedIn = false;
+				outs.writeObject(new ExitPack());
+				outs.flush();
 				System.out.println(ins.readBoolean());
 				break;
 			}
 			case(1):{
 				System.out.println("# REGISTERING");
-				System.out.println("Enter login : ");
-				String login = scanner.next();
-				System.out.println("Enter password : ");
-				String password = scanner.next();
-				System.out.println("Enter name : ");
-				String name = scanner.next();
-				System.out.println("Enter sex : ");
-				String sex = scanner.next();
-				System.out.println("Enter birthdate : ");
-				String birth = scanner.next();
-				String toSend = "R" + login + "/" + password + "/" + name + "/" + sex + "/" + birth;
-				System.out.println("To send : " + toSend);
-				out.println(toSend);
-				System.out.println("The string is sent");
-				System.out.println("Online :" + ins.readBoolean());
+				String login = askString("login");
+				String password = askString("password");
+				String name = askString("name");
+				char sex = askString("sex").charAt(0);
+				String birth = askString("birth");
+				RegistrationPack regPack = new RegistrationPack(new RegistrationData(login, password, name, sex, birth));
+				outs.writeObject(regPack);
+				outs.flush();
+				System.out.println("! Sent");
+				boolean serverAnswer =  ins.readBoolean();
+				loggedIn = serverAnswer;
+				System.out.println("Online :" + serverAnswer);
+				if (serverAnswer){
+					currentUser = login;
+				}
 				break;
 			}
 			case(2):{
 				System.out.println("# LOGGING IN");
-				System.out.println("Enter login : ");
-				String login = scanner.next();
-				System.out.println("Enter password : ");
-				String password = scanner.next();
-				String toSend = "L" + login + "/" + password;
-				System.out.println("To send : " + toSend);
-				out.println(toSend);
-				System.out.println("The string is sent");
-				System.out.println("Online : " + ins.readBoolean());
+				String login = askString("login");
+				String password = askString("password");
+				LoginPack logPack = new LoginPack(new LoginData(login, password));
+				outs.writeObject(logPack);
+				outs.flush();
+				System.out.println("! Sent");
+				Boolean serverAnswer =  ins.readBoolean();
+				loggedIn = serverAnswer;
+				System.out.println("Online :" + serverAnswer);
+				if (serverAnswer){
+					currentUser = login;
+				}
 				break;
 			}
 			case(3):{
-				System.out.println("# ADDING A DESIRE");
-				System.out.println("Enter your category :");
-				String category = scanner.next();
-				System.out.println("Enter your desire :");
-				String desireString = scanner.next();
-				System.out.println("Enter your tag :");
-				String tag = scanner.next();
-				System.out.println("Enter your latitude :");
-				String lat = scanner.next();
-				System.out.println("Enter your longitude :");
-				String lon = scanner.next();
-				String toSend = "A" + category + "/" + desireString + "/" + tag + "/" + lat + "/" + lon;
-				System.out.println("To send:"  + toSend);
-				out.println(toSend);
-				System.out.println("The string is sent");
-				System.out.println("Success: " + ins.readBoolean());
+				if (loggedIn){
+					System.out.println("# ADDING A DESIRE");
+					int catCode= askInt("category code 0 1");
+					String desDes = askString("desire description");
+					//String tag = askString("tag");
+					double lat = askDouble("latitude");
+					double lon = askDouble("longitude");
+					Coordinates coord = new Coordinates(lat, lon);
+					switch (catCode){
+					case (CodesMaster.Categories.SportCode):
+					{
+						String sport = askString("sport");
+						int advantages = askInt("advantages");
+						outs.writeObject(new AddPack(new DesireContentSport(currentUser, 0, desDes, coord, sport, advantages)));
+						System.out.println("Success : " + ins.readBoolean());
+						break;
+					}
+					case (CodesMaster.Categories.DatingCode):
+					{
+						char pSex = askString("partnerSex").charAt(0);
+						int age = askInt("age");
+						outs.writeObject(new AddPack(new DesireContentDating(currentUser, 0, desDes, coord, pSex, age)));
+						System.out.println("Success : " + ins.readBoolean());
+						break;
+					}
+					}
+				}
 				break;
 			}
 			case(4):{
 				System.out.println("# SHOWING DESIRES OF SOME CATEGORY");
-				System.out.println("Enter your category :");
-				String category = scanner.next();
-				String toSend = "S" + category;
-				System.out.println("To send: " + toSend);
-				out.println(toSend);
-				System.out.println("The string is sent");
+				int catCode = askInt("category code 0 1");
+				outs.writeObject(new ShowPersonalDesiresPack(new Cryteria(11,11,catCode)));
+				System.out.println("! Sent");
 				try{
 					if (ins.readBoolean()){
 						System.out.println(" | Success");
-						ArrayList<ArrayList<String>> set = (ArrayList<ArrayList<String>>) ins.readObject();
-						printTable(set);
+						DesireSet set = (DesireSet)ins.readObject();
+						for (DesireContent cont : set.dSet){
+							System.out.println(cont.login + " " + cont.desireID + " " + cont.description);
+						}
 						System.out.println(" | That's all");
 					}
 					else{
@@ -115,14 +163,13 @@ public class UserProgram{
 			}
 			case(5):{
 				System.out.println("# SHOWING YOUR PERSONAL INFO");
-				System.out.println("To send: I");
-				out.println("I");
-				System.out.println("The string is sent\n");
+				outs.writeObject(new ShowInfoPack());
+				System.out.println("! Sent\n");
 				if (ins.readBoolean()){
 					try{
 						System.out.println(" | Success");
-						ArrayList<ArrayList<String>> table = (ArrayList<ArrayList<String>>) ins.readObject();
-						printTable(table);
+						MainData data = (MainData)ins.readObject();
+						System.out.println(data.login + " " + data.name + " " + data.sex + " " + data.birth + " " + data.rating);
 						System.out.println(" | That's all");
 					}
 					catch(IOException error){
@@ -130,64 +177,58 @@ public class UserProgram{
 					}
 				}
 				else {
-					System.out.println("Fail");
+					System.out.println("-Fail");
 				}
 				break;
 			}
 			case (6) :{
-				System.out.println("# SEARCHING FOR YOUR DESIRE SATISFIERS");
-				System.out.println("Enter your category :");
-				String category = scanner.next();
-				System.out.println("Enter your desire :");
-				String line = scanner.next();
-				System.out.println("Enter your tag :");
-				String tag = scanner.next();
-				System.out.println("Enter your latitude :");
-				String lat = scanner.next();
-				System.out.println("Enter your longitude :");
-				String lon = scanner.next();
-				System.out.println("Enter your radius :");
-				String rad = scanner.next();
-				String toSend = "G" + category + "/" + line + "/" + tag + "/" + lat + "/" + lon + "/" + rad;
-				System.out.println("To send:" + toSend);
-				out.println(toSend);
-				System.out.println("The string is sent");
-				System.out.print("First bool ( adding ) :");
-				System.out.println(ins.readBoolean());
-				try{
-					if (ins.readBoolean()){
-					System.out.println(" | Success");
-					ArrayList<ArrayList<String>> table = (ArrayList<ArrayList<String>>) ins.readObject();
-					printTable(table);
-					System.out.println(" | That's all");
-					}
-					else{
-						System.out.println(" | Not Success");
-					}
-				}
-				catch(IOException error){
-					error.getMessage();
-				}
 				break;
 			}
 			case(7):{
-				System.out.println("# DELETING");
-				System.out.println("Enter your category :");
-				String category = scanner.next();
-				String toSend = "D" + category;
-				System.out.println("To send:" + toSend);
-				out.println(toSend);
-				System.out.println("The string is sent");
-				System.out.println(ins.readBoolean());
+				if (loggedIn){
+					System.out.println("# DELETING DESIRES");
+					String setString = askString("Set of desiresID : ");
+					DeletePack dPack = new DeletePack(setString); 
+					outs.writeObject(dPack);
+					if (ins.readBoolean()){
+						System.out.println("+Deleted");
+					}
+					else{
+						System.out.println("-Fail");
+					}
+				}
+				else{
+					System.out.println("- Log in, please");
+				}
 				break;
 			}
-			default:{
-				answer = 0;
+			case(8):{
+				if (loggedIn){
+					String mess = askString("message");
+					String whoTo = askString("receiver");
+					Message message = new Message(whoTo, currentUser, mess);
+					MessageSendPack pack = new MessageSendPack(message);
+					outs.writeObject(pack);
+					outs.flush();
+				}
+				break;
+			}
+			case(9):{
+				MessageDeliverPack pack = new MessageDeliverPack();
+				outs.writeObject(pack);
+				outs.flush();
+				System.out.println("+Deliver query has been posted");
+				MessageSet set = (MessageSet) ins.readObject();
+				System.out.println("+MessageSet has been got");
+				for(Message m : set.messages){
+					System.out.println("| From: " + m.sender + " | To: " + m.receiver + "\nText :" + m.text);
+				}
+				break;
 			}
 			}
 		}
 		ins.close();
-		out.close();
+		outs.close();
 		scanner.close();
 		clientSocket.close();
 		System.out.println("# STREAMS AND THE SOCKET HAVE BEEN CLOSED");
