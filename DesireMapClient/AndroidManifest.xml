@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="pack.desiremap_client"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="15" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="pack.desiremap_client.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="pack.desiremap_client.DesireMenuActivity" >
+        </activity>
+        <activity android:name="pack.desiremap_client.PersonalInfoActivity" >
+        </activity>
+        <activity android:name="pack.desiremap_client.AddDesireActivity" >
+        </activity>
+        <activity android:name="pack.desiremap_client.MyDesiresActivity" >
+        </activity>
+        <activity android:name="RegistrationActivity" >
+        </activity>
+        <activity android:name="RegistrationPersonalInfoActivity" >
+        </activity>
+        <activity android:name="AddDesireCategoryActivity" >
+        </activity>
+        <activity android:name="MapActivity" >
+            <category android:name="yandex.intent.category.MAPKIT" />
+        </activity>
+        <activity android:name="MyDesiresCategoryActivity" >
+        </activity>
+    </application>
+
+</manifest>

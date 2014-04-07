@@ -1,0 +1,10 @@
+<ru.yandex.yandexmapkit.MapView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/map"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentTop="true"
+    android:apiKey="TjNIMWGdwGrtbGUxooYgIZrSfHMb1MEtsPPY~IH1GXvOhUzHiUbCK3Uqa6Dpn4MGPZBYmHmp2vhbeNLbzoiOS9ZKlqqoN~Cr5UeGTr2zxh8="
+    tools:context=".MainActivity" />

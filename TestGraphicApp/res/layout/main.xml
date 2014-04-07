@@ -1,0 +1,175 @@
+<overscroll.MyOverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none" >
+
+    <LinearLayout
+        android:id="@+id/MainLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView
+            android:id="@+id/hscroll1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:id="@+id/LinearLayout1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:src="@drawable/altai" />
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:layout_marginLeft="15dp"
+                    android:src="@drawable/kaliningrad" />
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:layout_marginLeft="15dp"
+                    android:src="@drawable/matera" />
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:layout_marginLeft="15dp"
+                    android:src="@drawable/uta" />
+            </LinearLayout>
+        </uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView>
+
+        <uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView
+            android:id="@+id/hscroll2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:id="@+id/LinearLayout1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:src="@drawable/altai" />
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:layout_marginLeft="15dp"
+                    android:src="@drawable/kaliningrad" />
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:layout_marginLeft="15dp"
+                    android:src="@drawable/matera" />
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:layout_marginLeft="15dp"
+                    android:src="@drawable/uta" />
+            </LinearLayout>
+        </uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView>
+
+        <uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView
+            android:id="@+id/hscroll3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:id="@+id/LinearLayout1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:src="@drawable/altai" />
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:layout_marginLeft="15dp"
+                    android:src="@drawable/kaliningrad" />
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:layout_marginLeft="15dp"
+                    android:src="@drawable/matera" />
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:layout_marginLeft="15dp"
+                    android:src="@drawable/uta" />
+            </LinearLayout>
+        </uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView>
+
+        <uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView
+            android:id="@+id/hscroll4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true">
+
+
+            <LinearLayout
+                android:id="@+id/LinearLayout1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:src="@drawable/altai" />
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:layout_marginLeft="15dp"
+                    android:src="@drawable/kaliningrad" />
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:layout_marginLeft="15dp"
+                    android:src="@drawable/matera" />
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="192dp"
+                    android:layout_height="195dp"
+                    android:layout_marginLeft="15dp"
+                    android:src="@drawable/uta" />
+            </LinearLayout>
+        </uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView>
+    </LinearLayout>
+
+</overscroll.MyOverScrollView>

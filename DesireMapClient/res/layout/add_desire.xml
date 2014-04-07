@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="383dp" >
+
+        <Button
+            android:id="@+id/bMainMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="22dp"
+            android:text="Главное меню" />
+
+        <TextView
+            android:id="@+id/textDesires"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bMainMenu"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="29dp"
+            android:text="Введите желание:" />
+
+        <EditText
+            android:id="@+id/newDesire"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textDesires"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:ems="10" />
+
+        <Button
+            android:id="@+id/bSendDesire"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_below="@+id/newDesire"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="19dp"
+            android:text="ОК" />
+
+        <RelativeLayout
+            android:id="@+id/addDesireRelativeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/newDesire"
+            android:layout_below="@+id/bSendDesire"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="46dp" >
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</ScrollView>

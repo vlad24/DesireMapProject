@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<overscroll.MyOverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <overscroll.NotScrollListView
+            android:id="@+id/lvMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </overscroll.NotScrollListView>
+    </LinearLayout>
+
+</overscroll.MyOverScrollView>
