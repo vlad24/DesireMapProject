@@ -2,21 +2,35 @@
 <overscroll.MyOverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scroll_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:scrollbars="none" >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:clickable="false"
         android:gravity="center"
         android:orientation="vertical" >
 
-        <overscroll.NotScrollListView
+        <LinearLayout
+            android:id="@+id/menuLinearLayout"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="100dp" >
+        </LinearLayout>
+
+        <ListView
             android:id="@+id/lvMain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
-        </overscroll.NotScrollListView>
+        </ListView>
+        <LinearLayout
+            android:id="@id/menuLinearLayout"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="100dp" >
+        </LinearLayout>
     </LinearLayout>
 
 </overscroll.MyOverScrollView>

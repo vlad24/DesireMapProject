@@ -7,11 +7,11 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 public class ScrollUtility {
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
+    public static int setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {
             // pre-condition
-            return;
+            return -1;
         }
 
         int totalHeight = 0;
@@ -26,5 +26,6 @@ public class ScrollUtility {
         params.height = (totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1)))/3;
         listView.setLayoutParams(params);
         listView.requestLayout();
+        return params.height;
     }
 }

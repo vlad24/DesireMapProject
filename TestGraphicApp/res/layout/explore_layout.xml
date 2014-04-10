@@ -1,0 +1,50 @@
+<overscroll.MyOverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none" >
+
+    <LinearLayout
+        android:id="@+id/ExploreLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView
+            android:id="@+id/hscroll1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true" >
+
+            <include layout="@layout/explore_linear_layout" />
+        </uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView>
+
+        <uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView
+            android:id="@+id/hscroll2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true" >
+
+            <include layout="@layout/explore_linear_layout" />
+        </uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView>
+
+        <uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView
+            android:id="@+id/hscroll3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true" >
+
+            <include layout="@layout/explore_linear_layout" />
+        </uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView>
+
+        <uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView
+            android:id="@+id/hscroll4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true" >
+
+            <include layout="@layout/explore_linear_layout" />
+        </uk.co.chrisjenx.paralloid.views.ParallaxHorizontalScrollView>
+    </LinearLayout>
+
+</overscroll.MyOverScrollView>

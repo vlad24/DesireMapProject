@@ -16,7 +16,7 @@ public class ExploreFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		View view =  inflater.inflate(R.layout.main, container, false);
+		View view =  inflater.inflate(R.layout.explore_layout, null);
 		
         ParallaxHorizontalScrollView hscrollView1 = (ParallaxHorizontalScrollView) view.findViewById(R.id.hscroll1);
         hscrollView1.parallaxViewBackgroundBy(hscrollView1, getResources().getDrawable(R.drawable.green67e46f), .2f);
