@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TestGraphicApp</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="open">Открыть</string>
+    <string name="close">Меню</string>
+
+    <color name="black">#3d4140</color>
+    <color name="purple_light">#ffffff</color> 
+    <color name="purple_dark">#353838</color> 
+    <string-array name="menu_items">
+        <item>Мои желания</item>
+        <item>В округе</item>
+        <item>Сообщения</item>
+        <item>Выйти</item>
+    </string-array>
+    
+    <array name="menu_drawer_icons">
+        <item>@drawable/mydesires</item>
+        <item>@drawable/chat</item>
+        <item>@drawable/mail</item>
+        <item>@drawable/exit</item>
+    </array>
+    
+</resources>
