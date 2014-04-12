@@ -9,6 +9,7 @@ import blur.FastBlur;
 import fragments.ChatFragment;
 import fragments.ExploreFragment;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -38,6 +39,7 @@ public class MainActivity extends FragmentActivity {
 
 	private ChatFragment chatFragment;
 	private ExploreFragment exploreFragment;
+	private Fragment currentFragment;
 
 	private ListView menuList;
 	private DrawerLayout drawerLayout;
@@ -103,6 +105,7 @@ public class MainActivity extends FragmentActivity {
 		.add(R.id.content_frame_layout, chatFragment)
 		.add(R.id.content_frame_layout, exploreFragment)
 		.hide(chatFragment)
+		.hide(exploreFragment)
 		.commit();
 
 		getActionBar().setDisplayShowCustomEnabled(true);
@@ -156,18 +159,31 @@ public class MainActivity extends FragmentActivity {
 
 			@Override
 			public void run() {
+				drawerLayout.closeDrawers();
 				FragmentManager manager = getSupportFragmentManager();
-				FragmentTransaction ft = manager.beginTransaction()
-						.hide(chatFragment)
-						.hide(exploreFragment);
+				FragmentTransaction ft = manager.beginTransaction();
+				ft.setCustomAnimations(R.animator.slide_in, R.animator.slide_out);
+				Fragment nextFragment = null;
+
 				switch(position){
 				case 1:
-					ft.show(exploreFragment);
+					nextFragment = exploreFragment;
 					break;
 				case 2:
-					ft.show(chatFragment);
+					nextFragment = chatFragment;
 					break;
 				}
+				if(nextFragment.isVisible())
+					return;
+				
+				nextFragment.getView().bringToFront();
+				if(currentFragment != null){
+					currentFragment.getView().bringToFront();
+					ft.hide(currentFragment);
+				}
+				ft.show(nextFragment);
+				currentFragment = nextFragment;
+				
 				ft.commit();
 				menuList.setItemChecked(position, true);
 			}
