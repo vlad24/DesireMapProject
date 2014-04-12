@@ -5,26 +5,34 @@
     android:layout_height="match_parent" >
 
     <FrameLayout
-        android:id="@+id/content_frame_layout"
+        android:id="@+id/blur_content_frame_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
+
+        <ImageView
+            android:id="@+id/blur_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="gone" >
+        </ImageView>
+        
+        <FrameLayout
+            android:id="@+id/content_frame_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
     <ListView
         android:id="@+id/lvMain"
         android:layout_width="220dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/list_background"
         android:choiceMode="singleChoice"
         android:divider="@color/list_divider"
         android:dividerHeight="1dp"
-        android:listSelector="@drawable/list_selector"
-        android:background="@color/list_background" />
-
-    <ImageView
-        android:id="@+id/blur_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:visibility="gone" />
+        android:listSelector="@drawable/list_selector" />
 
 </android.support.v4.widget.DrawerLayout>
