@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.util.HashSet;
 
 import desireMapApplicationPackage.desireContentPackage.DesireContent;
+import desireMapApplicationPackage.quadtree.DataQuadTreeNode;
+import desireMapApplicationPackage.quadtree.QuadTreeNodeBox;
 
 public class DesireSet implements Serializable{
 	public DesireSet(){
-		dSet = new HashSet<DesireContent>();
+		dTree = new DataQuadTreeNode();
 	}
-	public HashSet<DesireContent> dSet;
+	public DataQuadTreeNode dTree;
 }

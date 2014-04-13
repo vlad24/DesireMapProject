@@ -1,6 +1,7 @@
 package desireMapApplicationPackage.handlerTubePackage;
 import java.util.ArrayList;
 
+import desireMapApplicationPackage.actionQueryObjectPackage.ActionQueryObject;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
 import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.Handler;
@@ -14,7 +15,6 @@ import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerReg
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerSatisfy;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerShowInfo;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerShowPersonalDesires;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.ActionQueryObject;
 
 public class HandlerTube {
 	protected DesireThread userThread;

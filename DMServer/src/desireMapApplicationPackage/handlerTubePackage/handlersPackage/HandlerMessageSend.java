@@ -1,11 +1,11 @@
 package desireMapApplicationPackage.handlerTubePackage.handlersPackage;
 
+import desireMapApplicationPackage.actionQueryObjectPackage.ActionQueryObject;
+import desireMapApplicationPackage.actionQueryObjectPackage.MessageSendPack;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireThreadPackage.CommandToSendMessage;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
 import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.ActionQueryObject;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.MessageSendPack;
 
 public class HandlerMessageSend extends Handler{
 

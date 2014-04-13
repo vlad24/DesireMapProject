@@ -7,12 +7,11 @@ import java.net.Socket;
 import java.util.Deque;
 import java.util.LinkedList;
 
-import desireMapApplicationPackage.desireContentPackage.DesireContent;
+import desireMapApplicationPackage.actionQueryObjectPackage.ActionQueryObject;
+import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
+import desireMapApplicationPackage.actionQueryObjectPackage.SatisfyPack;
 import desireMapApplicationPackage.handlerTubePackage.HandlerTube;
-import desireMapApplicationPackage.inputArchitecturePackage.Cryteria;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.ActionQueryObject;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.DeletePack;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.SatisfyPack;
 import desireMapApplicationPackage.messageSystemPackage.ChatKing;
 import desireMapApplicationPackage.messageSystemPackage.Message;
 import desireMapApplicationPackage.outputArchitecturePackage.DesireSet;
@@ -51,20 +50,20 @@ public class DesireThread implements Runnable{
 		stateObject.logIn(logData);
 	}
 	
-	public void addDesire(DesireContent desireContent) throws Exception{
-		stateObject.addDesire(desireContent);
+	public int addDesire(AddPack addPack) throws Exception{
+		return stateObject.addDesire(addPack);
 	}
 	
 	public void delete(DeletePack pack) throws Exception{
 		stateObject.delete(pack);
 	}
 		
-	public SatisfySet getSatisfiers(SatisfyPack sPack){
+	public SatisfySet getSatisfiers(SatisfyPack sPack) throws Exception{
 		try {
-			return stateObject.getSatisfiers(sPack);
+			SatisfySet result = stateObject.getSatisfiers(sPack);
+			return result;
 		} catch (Exception error) {
-			error.printStackTrace();
-			return null;
+			throw error;
 		}
 	}
 	
@@ -72,8 +71,8 @@ public class DesireThread implements Runnable{
 		return stateObject.getInfo();
 	}
 	
-	public DesireSet getPersonalDesires(Cryteria cryteria) throws Exception{
-		return stateObject.getPersonalDesires(cryteria);
+	public DesireSet getPersonalDesires(int category) throws Exception{
+		return stateObject.getPersonalDesires(category);
 	}
 
 	public void registerTalker(boolean deliverNeed){
@@ -139,6 +138,17 @@ public class DesireThread implements Runnable{
 		}
 		catch(IOException error){
 			System.out.println("*** Problem with socket in confirm fail");
+		}
+	}
+	
+	protected void sendID(int id){
+		try{
+			socketOut.writeInt(id);
+			socketOut.flush();
+			System.out.println("*** THREAD SENT THE ID : " + id);
+		}
+		catch(IOException error){
+			System.out.println("*** Problem with socket in sending id");
 		}
 	}
 

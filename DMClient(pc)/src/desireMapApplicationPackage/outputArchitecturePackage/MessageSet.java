@@ -7,7 +7,7 @@ import desireMapApplicationPackage.messageSystemPackage.Message;
 
 public class MessageSet implements Serializable{
 	public MessageSet(Queue<Message> newMessages){
-		newMessages = messages;
+		messages = newMessages;
 	}
 	public Queue<Message> messages;
 }

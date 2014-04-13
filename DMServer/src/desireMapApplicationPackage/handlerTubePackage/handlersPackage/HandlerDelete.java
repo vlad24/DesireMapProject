@@ -1,11 +1,11 @@
 package desireMapApplicationPackage.handlerTubePackage.handlersPackage;
 
+import desireMapApplicationPackage.actionQueryObjectPackage.ActionQueryObject;
+import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireThreadPackage.CommandToDelete;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
 import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.ActionQueryObject;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.DeletePack;
 
 public class HandlerDelete extends Handler{
 

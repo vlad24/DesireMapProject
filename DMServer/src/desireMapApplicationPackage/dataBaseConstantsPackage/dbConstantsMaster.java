@@ -18,9 +18,10 @@ public final class dbConstantsMaster {
 			"desireID Integer PRIMARY KEY NOT NULL," +
 			"login String NOT NULL REFERENCES USERS(login) ON DELETE CASCADE ON UPDATE CASCADE, " +
 			"desireDescription String NOT NULL, " +
-			"tag String NOT NULL, " +
-			"latitude REAL NOT NULL, " +
-			"longitude REAL NOT NULL, " +
+			"category Integer NOT NULL, " +
+			"latitude Real NOT NULL, " +
+			"longitude Real NOT NULL, " +
+			"tile String NOT NULL, " +
 			"time String NOT NULL" +
 			");";
 	

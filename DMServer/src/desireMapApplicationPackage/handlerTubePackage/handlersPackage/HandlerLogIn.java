@@ -1,12 +1,12 @@
 package desireMapApplicationPackage.handlerTubePackage.handlersPackage;
 
 
+import desireMapApplicationPackage.actionQueryObjectPackage.ActionQueryObject;
+import desireMapApplicationPackage.actionQueryObjectPackage.LoginPack;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireThreadPackage.CommandToLogIn;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
 import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.ActionQueryObject;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.LoginPack;
 
 public class HandlerLogIn extends Handler{
 

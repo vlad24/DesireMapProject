@@ -1,11 +1,11 @@
 package desireMapApplicationPackage.handlerTubePackage.handlersPackage;
 
+import desireMapApplicationPackage.actionQueryObjectPackage.ActionQueryObject;
+import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireThreadPackage.CommandToAddDesire;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
 import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.ActionQueryObject;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.AddPack;
 
 
 public class HandlerAdd extends Handler{

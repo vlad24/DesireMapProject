@@ -1,11 +1,11 @@
 package desireMapApplicationPackage.handlerTubePackage.handlersPackage;
 
+import desireMapApplicationPackage.actionQueryObjectPackage.ActionQueryObject;
+import desireMapApplicationPackage.actionQueryObjectPackage.RegistrationPack;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireThreadPackage.CommandToRegister;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
 import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.ActionQueryObject;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.RegistrationPack;
 
 public class HandlerRegister extends Handler{
 

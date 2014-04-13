@@ -1,6 +1,6 @@
 package desireMapApplicationPackage.desireThreadPackage;
 
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.AddPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 
 public class CommandToAddDesire extends CommandForDesireThread{
 	private AddPack addPack;
@@ -14,13 +14,14 @@ public class CommandToAddDesire extends CommandForDesireThread{
 	public void execute() throws Exception {
 		System.out.println("*** Adding ");
 		try{
+			int generatedID = 0;
 			synchronized(receiver){
-				receiver.addDesire(addPack.desireContent);
+				generatedID = receiver.addDesire(addPack);
 			}
-			receiver.confirmSuccess();
+			receiver.sendID(generatedID);
 		}
 		catch(Exception error){
-			receiver.confirmFail();
+			receiver.sendID(-1);
 			throw error;
 		}
 	}

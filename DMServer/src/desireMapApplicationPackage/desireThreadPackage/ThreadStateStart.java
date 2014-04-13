@@ -3,12 +3,11 @@ package desireMapApplicationPackage.desireThreadPackage;
 import java.util.Deque;
 
 import desireMapApplicationPackage.messageSystemPackage.Message;
-import desireMapApplicationPackage.desireContentPackage.Coordinates;
+import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
+import desireMapApplicationPackage.actionQueryObjectPackage.SatisfyPack;
 import desireMapApplicationPackage.desireContentPackage.DesireContent;
 import desireMapApplicationPackage.desireInstrumentPackage.DesireInstrument;
-import desireMapApplicationPackage.inputArchitecturePackage.Cryteria;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.DeletePack;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.SatisfyPack;
 import desireMapApplicationPackage.outputArchitecturePackage.DesireSet;
 import desireMapApplicationPackage.outputArchitecturePackage.SatisfySet;
 import desireMapApplicationPackage.userDataPackage.LoginData;
@@ -48,7 +47,7 @@ public class ThreadStateStart extends ThreadState{
         	}
         }
 
-        public void addDesire(DesireContent desireContent) throws Exception {
+        public int addDesire(AddPack pack) throws Exception {
                 throw new Exception("- Unable now\n Hint : log in or register");
         }
 
@@ -76,7 +75,7 @@ public class ThreadStateStart extends ThreadState{
 		}
 
 		@Override
-		public DesireSet getPersonalDesires(Cryteria cryteria) throws Exception {
+		public DesireSet getPersonalDesires(int category) throws Exception {
 			throw new Exception("- Unable now\n Hint : log in or register");
 		}
 

@@ -3,26 +3,20 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.HashSet;
 import java.util.Scanner;
 
+import desireMapApplicationPackage.actionQueryObjectPackage.*;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireContentPackage.Coordinates;
 import desireMapApplicationPackage.desireContentPackage.DesireContent;
 import desireMapApplicationPackage.desireContentPackage.DesireContentDating;
 import desireMapApplicationPackage.desireContentPackage.DesireContentSport;
-import desireMapApplicationPackage.inputArchitecturePackage.Cryteria;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.AddPack;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.DeletePack;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.ExitPack;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.LoginPack;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.MessageDeliverPack;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.MessageSendPack;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.RegistrationPack;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.ShowInfoPack;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.ShowPersonalDesiresPack;
 import desireMapApplicationPackage.messageSystemPackage.Message;
 import desireMapApplicationPackage.outputArchitecturePackage.DesireSet;
 import desireMapApplicationPackage.outputArchitecturePackage.MessageSet;
+import desireMapApplicationPackage.outputArchitecturePackage.SatisfySet;
+import desireMapApplicationPackage.quadtree.DataQuadTreeNode;
 import desireMapApplicationPackage.userDataPackage.LoginData;
 import desireMapApplicationPackage.userDataPackage.MainData;
 import desireMapApplicationPackage.userDataPackage.RegistrationData;
@@ -122,16 +116,16 @@ public class UserProgram{
 					{
 						String sport = askString("sport");
 						int advantages = askInt("advantages");
-						outs.writeObject(new AddPack(new DesireContentSport(currentUser, 0, desDes, coord, sport, advantages)));
-						System.out.println("Success : " + ins.readBoolean());
+						outs.writeObject(new AddPack(new DesireContentSport(currentUser, 0, desDes, coord, sport, advantages), "10"));
+						System.out.println("Success : id = " + ins.readInt());
 						break;
 					}
 					case (CodesMaster.Categories.DatingCode):
 					{
 						char pSex = askString("partnerSex").charAt(0);
 						int age = askInt("age");
-						outs.writeObject(new AddPack(new DesireContentDating(currentUser, 0, desDes, coord, pSex, age)));
-						System.out.println("Success : " + ins.readBoolean());
+						outs.writeObject(new AddPack(new DesireContentDating(currentUser, 0, desDes, coord, pSex, age), "11"));
+						System.out.println("Success : " + ins.readInt());
 						break;
 					}
 					}
@@ -141,15 +135,13 @@ public class UserProgram{
 			case(4):{
 				System.out.println("# SHOWING DESIRES OF SOME CATEGORY");
 				int catCode = askInt("category code 0 1");
-				outs.writeObject(new ShowPersonalDesiresPack(new Cryteria(11,11,catCode)));
+				outs.writeObject(new ShowPersonalDesiresPack(catCode));
 				System.out.println("! Sent");
 				try{
 					if (ins.readBoolean()){
 						System.out.println(" | Success");
 						DesireSet set = (DesireSet)ins.readObject();
-						for (DesireContent cont : set.dSet){
-							System.out.println(cont.login + " " + cont.desireID + " " + cont.description);
-						}
+						set.dTree.print();
 						System.out.println(" | That's all");
 					}
 					else{
@@ -182,6 +174,33 @@ public class UserProgram{
 				break;
 			}
 			case (6) :{
+				System.out.println("# Finding satisfiers");
+				HashSet<String> tiles = new HashSet<String>();
+				int dID = askInt("desireID");
+				tiles.add("10");
+				tiles.add("11");
+				tiles.add("12");
+				outs.writeObject(new SatisfyPack(dID, tiles));
+				System.out.println("! Sent\n");
+				if (ins.readBoolean()){
+					try{
+						System.out.println(" | Success");
+						SatisfySet set = (SatisfySet)ins.readObject();
+						if (set != null){
+							set.dTree.print();
+							System.out.println(" | That's all");
+						}
+						else{
+							System.out.println("Empty set");
+						}
+					}
+					catch(IOException error){
+						error.getMessage();
+					}
+				}
+				else {
+					System.out.println("-Fail");
+				}
 				break;
 			}
 			case(7):{
@@ -233,4 +252,5 @@ public class UserProgram{
 		clientSocket.close();
 		System.out.println("# STREAMS AND THE SOCKET HAVE BEEN CLOSED");
 	}
+
 }

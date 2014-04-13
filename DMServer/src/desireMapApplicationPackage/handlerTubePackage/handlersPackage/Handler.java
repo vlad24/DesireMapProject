@@ -1,8 +1,8 @@
 package desireMapApplicationPackage.handlerTubePackage.handlersPackage;
 
+import desireMapApplicationPackage.actionQueryObjectPackage.ActionQueryObject;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
 import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.ActionQueryObject;
 
 
 public abstract class Handler {

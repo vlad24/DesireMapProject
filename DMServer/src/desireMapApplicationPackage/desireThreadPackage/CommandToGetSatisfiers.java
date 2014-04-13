@@ -1,7 +1,7 @@
 package desireMapApplicationPackage.desireThreadPackage;
 
 
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.SatisfyPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.SatisfyPack;
 import desireMapApplicationPackage.outputArchitecturePackage.SatisfySet;
 
 public class CommandToGetSatisfiers extends CommandForDesireThread{
@@ -17,12 +17,15 @@ public class CommandToGetSatisfiers extends CommandForDesireThread{
 	public void execute() throws Exception {
 		System.out.println("***Getting satisfiers");
 		try{
-			synchronized(this){
 				SatisfySet satisfiers = receiver.getSatisfiers(satisfyPack);
-				receiver.confirmSuccess();
-				receiver.socketOut.writeObject(satisfiers);
-				System.out.println("*** THREAD " + receiver.getUserName() + " SENT SATISFIERS");
-			}
+				if (satisfiers != null){
+					receiver.confirmSuccess();
+					receiver.socketOut.writeObject(satisfiers);
+					System.out.println("*** THREAD " + receiver.getUserName() + " SENT SATISFIERS");
+				}
+				else{
+					throw new Exception("...no satisfiers");
+				}
 		}
 		catch(Exception error){
 			receiver.confirmFail();

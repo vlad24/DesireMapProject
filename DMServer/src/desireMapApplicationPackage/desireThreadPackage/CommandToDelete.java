@@ -1,6 +1,6 @@
 package desireMapApplicationPackage.desireThreadPackage;
 
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.DeletePack;
+import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
 
 public class CommandToDelete extends CommandForDesireThread{
 	private DeletePack deletePack;

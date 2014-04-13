@@ -1,4 +1,4 @@
-package desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage;
+package desireMapApplicationPackage.actionQueryObjectPackage;
 
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.messageSystemPackage.Message;

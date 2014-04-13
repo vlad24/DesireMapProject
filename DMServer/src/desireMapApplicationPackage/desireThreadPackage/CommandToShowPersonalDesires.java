@@ -1,7 +1,6 @@
 package desireMapApplicationPackage.desireThreadPackage;
 
 
-import desireMapApplicationPackage.inputArchitecturePackage.Cryteria;
 import desireMapApplicationPackage.outputArchitecturePackage.DesireSet;
 
 
@@ -9,19 +8,20 @@ import desireMapApplicationPackage.outputArchitecturePackage.DesireSet;
 public class CommandToShowPersonalDesires extends CommandForDesireThread{
 	
 	private DesireThread receiver;
-	private Cryteria cryteria;
+	private int category;
 	
-	public CommandToShowPersonalDesires(DesireThread newReceiver, Cryteria newCryteria){
+	public CommandToShowPersonalDesires(DesireThread newReceiver, int newCategory){
 		receiver = newReceiver;
-		cryteria = newCryteria;
+		category = newCategory;
 	}
 	
 	@Override
 	public void execute() throws Exception {
 		System.out.println("***Showing personal desires");
 		try{
-			synchronized(receiver){
-				DesireSet dSet = receiver.getPersonalDesires(cryteria);
+			synchronized(this){
+				DesireSet dSet = receiver.getPersonalDesires(category);
+				System.out.println("+dSet is formed");
 				receiver.confirmSuccess();
 				receiver.socketOut.writeObject(dSet);
 				System.out.println("*** THREAD " + receiver.getUserName() + " SENT desireSet");

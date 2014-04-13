@@ -3,11 +3,10 @@ package desireMapApplicationPackage.desireThreadPackage;
 
 import java.util.Deque;
 
-import desireMapApplicationPackage.desireContentPackage.DesireContent;
+import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
+import desireMapApplicationPackage.actionQueryObjectPackage.SatisfyPack;
 import desireMapApplicationPackage.desireInstrumentPackage.DesireInstrument;
-import desireMapApplicationPackage.inputArchitecturePackage.Cryteria;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.DeletePack;
-import desireMapApplicationPackage.inputArchitecturePackage.actionQueryObjectPackage.SatisfyPack;
 import desireMapApplicationPackage.messageSystemPackage.ChatKing;
 import desireMapApplicationPackage.messageSystemPackage.Message;
 import desireMapApplicationPackage.outputArchitecturePackage.DesireSet;
@@ -34,8 +33,8 @@ public class ThreadStateLoggedIn extends ThreadState{
 		}
 		
 		@Override
-		public void addDesire(DesireContent desireContent) throws Exception {
-			DesireInstrument.addDesireAtDB(desireContent);
+		public int addDesire(AddPack pack) throws Exception {
+			return DesireInstrument.addDesireAtDB(pack);
 		}
 
 		@Override
@@ -45,13 +44,14 @@ public class ThreadStateLoggedIn extends ThreadState{
 		
 		@Override
 		public SatisfySet getSatisfiers(SatisfyPack sPack) throws Exception {
-			return DesireInstrument.getSatisfiersAtDB();
+			SatisfySet set = DesireInstrument.getSatisfiersAtDB(sPack, null); 
+			changeState(new ThreadStateMapScanning(owner, sPack.tiles));
+			return set;
 		}
 
 		@Override
-		public DesireSet getPersonalDesires(Cryteria cryteria) throws Exception {
-			System.out.println(owner.getUserName());
-			return DesireInstrument.getPersonalDesiresAtDB(owner.getUserName(), cryteria);
+		public DesireSet getPersonalDesires(int category) throws Exception {
+			return DesireInstrument.getPersonalDesiresAtDB(owner.getUserName(), category);
 		}
 		
         public MainData getInfo() throws Exception{
