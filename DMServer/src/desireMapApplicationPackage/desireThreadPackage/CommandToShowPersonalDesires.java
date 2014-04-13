@@ -1,7 +1,7 @@
 package desireMapApplicationPackage.desireThreadPackage;
 
 
-import desireMapApplicationPackage.outputArchitecturePackage.DesireSet;
+import desireMapApplicationPackage.outputSetPackage.DesireSet;
 
 
 

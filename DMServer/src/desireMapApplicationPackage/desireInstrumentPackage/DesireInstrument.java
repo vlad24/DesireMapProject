@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -14,8 +16,8 @@ import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.dataBaseConstantsPackage.dbConstantsMaster;
 import desireMapApplicationPackage.dataBasePackage.DataBaseSQLite;
 import desireMapApplicationPackage.desireContentPackage.DesireContent;
-import desireMapApplicationPackage.outputArchitecturePackage.DesireSet;
-import desireMapApplicationPackage.outputArchitecturePackage.SatisfySet;
+import desireMapApplicationPackage.outputSetPackage.DesireSet;
+import desireMapApplicationPackage.outputSetPackage.SatisfySet;
 import desireMapApplicationPackage.userDataPackage.MainData;
 import desireMapApplicationPackage.userDataPackage.RegistrationData;
 
@@ -135,28 +137,29 @@ public class DesireInstrument {
 		}
 	}
 	
-	public static int addDesireAtDB(AddPack pack) throws Exception {
-			int thisDesireID = DesireIDGeneratorSingleton.getInstance().getNextID();
-			System.out.println("+ID has been generated");
+	public static String addDesireAtDB(AddPack pack) throws Exception {
+			StringBuilder builder = new StringBuilder();
+			String user = pack.desireContent.login;
+			Calendar calendar = Calendar.getInstance();
+    		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    		builder.append("d:");
+    		builder.append(user);
+    		builder.append(sdf.format(calendar.getTime()));
+    		String thisDesireID = builder.toString();
+			System.out.println("+ID has been generated :" + thisDesireID);
 			tube.tryToAdd(thisDesireID, pack);
 			return thisDesireID;
 	}
 	
 	//loaded tiles can be null
-	public static SatisfySet getSatisfiersAtDB(SatisfyPack sPack, HashSet<String> loadedTiles){
-		int id = sPack.sDesireID;
-		System.out.println("ID : " + id);
-		String tileLikeCondition = getLikeString(sPack.tiles);
-		String tileNotLikeCondition = getNotLikeString(loadedTiles);
-		String timeCondition = "(time > datetime('now', '-120 hours')) ";
-		try(Statement selector = getAccessToDesireBase().createStatement()){
-			String catQuery = "SELECT category FROM DESIRES_MAIN WHERE desireID = " + id + ";";
-			ResultSet catSet = selector.executeQuery(catQuery);
-			if (catSet.next()){
-				int categoryCode = catSet.getInt("category");
-				catSet.close();
-				String suffix = dataBaseSuffixes.get(categoryCode);
-				String fullQuery = "SELECT * FROM DESIRES_MAIN inner join DESIRES"+ suffix + " using (desireID) WHERE desireID = " + id + ";";
+	public static SatisfySet getSatisfiersAtDB(String desireID, Integer categoryCode, HashSet<String> tilesToScan, HashSet<String> tilesToIgnore){
+		if (categoryCode != null){
+			String suffix = dataBaseSuffixes.get(categoryCode);
+			String tileLikeCondition = getLikeString(tilesToScan);
+			String tileNotLikeCondition = getNotLikeString(tilesToIgnore);
+			String timeCondition = "(time > datetime('now', '-120 hours')) ";
+			try(Statement selector = getAccessToDesireBase().createStatement()){
+				String fullQuery = "SELECT * FROM DESIRES_MAIN inner join DESIRES"+ suffix + " using (desireID) WHERE desireID = " + desireID + ";";
 				ResultSet centerSet = selector.executeQuery(fullQuery);
 				switch(categoryCode){
 				case(CodesMaster.Categories.SportCode):{
@@ -166,6 +169,7 @@ public class DesireInstrument {
 					centerSet.close();
 					String sportQuery = "SELECT * FROM ((DESIRES_SPORT inner join DESIRES_MAIN using (desireID)) inner join INFO using (login)) WHERE " + tileNotLikeCondition + tileLikeCondition + "AND (" + timeCondition + ") AND ABS(advantages - " + adv +") < 2) AND (sport LIKE '%" + sport + "%');";
 					ResultSet satSet =  selector.executeQuery(sportQuery);
+					System.out.println(sportQuery);
 					SatisfySet result = rsMaster.convertToSatisfySetAndClose(satSet, categoryCode);
 					return result;
 				}
@@ -184,14 +188,15 @@ public class DesireInstrument {
 					return null;
 				}
 				}
+
 			}
-			else{
-				System.out.println("-Id is wrong");
+			catch(Exception error){
+				System.out.println("-Error at get satisfiers : " + error.getMessage());
 				return null;
 			}
 		}
-		catch(Exception error){
-			System.out.println("-Error at get satisfiers : " + error.getMessage());
+		else{
+			System.out.println("-Category is wrong");
 			return null;
 		}
 	}
@@ -235,6 +240,22 @@ public class DesireInstrument {
 			throw error;
 		}
 	}
+
+	public static Integer getCategoryTableByID(String desireID) throws SQLException {
+		try(Statement selector = getAccessToDesireBase().createStatement()){
+			String catQuery = "SELECT category FROM DESIRES_MAIN WHERE desireID = " + desireID + ";";
+			ResultSet catSet = selector.executeQuery(catQuery);
+			if (catSet.next()){
+				Integer categoryCode = catSet.getInt("category");
+				catSet.close();
+				return categoryCode;
+			}
+			else {
+				return null;
+			}
+		}
+	}
+
 
 
 }

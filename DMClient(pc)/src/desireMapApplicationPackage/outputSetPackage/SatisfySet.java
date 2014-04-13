@@ -1,4 +1,4 @@
-package desireMapApplicationPackage.outputArchitecturePackage;
+package desireMapApplicationPackage.outputSetPackage;
 
 import java.util.ArrayList;
 import java.util.HashMap;

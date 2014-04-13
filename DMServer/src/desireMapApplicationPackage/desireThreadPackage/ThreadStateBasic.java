@@ -6,19 +6,20 @@ import java.util.Deque;
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
 import desireMapApplicationPackage.actionQueryObjectPackage.SatisfyPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.TilesPack;
 import desireMapApplicationPackage.desireInstrumentPackage.DesireInstrument;
 import desireMapApplicationPackage.messageSystemPackage.ChatKing;
 import desireMapApplicationPackage.messageSystemPackage.Message;
-import desireMapApplicationPackage.outputArchitecturePackage.DesireSet;
-import desireMapApplicationPackage.outputArchitecturePackage.MessageSet;
-import desireMapApplicationPackage.outputArchitecturePackage.SatisfySet;
+import desireMapApplicationPackage.outputSetPackage.DesireSet;
+import desireMapApplicationPackage.outputSetPackage.MessageSet;
+import desireMapApplicationPackage.outputSetPackage.SatisfySet;
 import desireMapApplicationPackage.userDataPackage.LoginData;
 import desireMapApplicationPackage.userDataPackage.MainData;
 import desireMapApplicationPackage.userDataPackage.RegistrationData;
 
-public class ThreadStateLoggedIn extends ThreadState{
+public class ThreadStateBasic extends ThreadState{
 	
-        public ThreadStateLoggedIn(DesireThread inThread) {
+        public ThreadStateBasic(DesireThread inThread) {
                 owner = inThread;
         }
 
@@ -33,7 +34,7 @@ public class ThreadStateLoggedIn extends ThreadState{
 		}
 		
 		@Override
-		public int addDesire(AddPack pack) throws Exception {
+		public String addDesire(AddPack pack) throws Exception {
 			return DesireInstrument.addDesireAtDB(pack);
 		}
 
@@ -44,8 +45,9 @@ public class ThreadStateLoggedIn extends ThreadState{
 		
 		@Override
 		public SatisfySet getSatisfiers(SatisfyPack sPack) throws Exception {
-			SatisfySet set = DesireInstrument.getSatisfiersAtDB(sPack, null); 
-			changeState(new ThreadStateMapScanning(owner, sPack.tiles));
+			int categoryCode = DesireInstrument.getCategoryTableByID(sPack.sDesireID);
+			SatisfySet set = DesireInstrument.getSatisfiersAtDB(sPack.sDesireID, categoryCode, sPack.tiles, null); 
+			changeState(new ThreadStateMapScanning(owner, sPack));
 			return set;
 		}
 
@@ -95,7 +97,12 @@ public class ThreadStateLoggedIn extends ThreadState{
 		}
 		
 		public void postMessage(Message message) throws Exception {
-			ChatKing.getInstance().postMessage(message);
+			ChatKing.getInstance().postMessage(message, true);
+		}
+
+		@Override
+		public SatisfySet updateSatisfiers(TilesPack tilesPack)	throws Exception {
+			throw new Exception("!!! Unable now\n Hint : exit first, please");
 		}
 
 

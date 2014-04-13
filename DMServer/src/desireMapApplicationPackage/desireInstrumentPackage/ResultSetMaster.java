@@ -10,8 +10,8 @@ import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireContentPackage.Coordinates;
 import desireMapApplicationPackage.desireContentPackage.DesireContentDating;
 import desireMapApplicationPackage.desireContentPackage.DesireContentSport;
-import desireMapApplicationPackage.outputArchitecturePackage.DesireSet;
-import desireMapApplicationPackage.outputArchitecturePackage.SatisfySet;
+import desireMapApplicationPackage.outputSetPackage.DesireSet;
+import desireMapApplicationPackage.outputSetPackage.SatisfySet;
 import desireMapApplicationPackage.userDataPackage.MainData;
 
 
@@ -97,11 +97,11 @@ public class ResultSetMaster {
 				return null;
 			}
 			else{
-				Message mes = new Message(set.getString("receiver"), set.getString("sender"), set.getString("messageText"));
+				Message mes = new Message(set.getString("receiver"), set.getString("sender"), set.getString("messageText"), set.getString("messageID"));
 				Deque<Message> deque = new LinkedList<Message>();
 				deque.add(mes);
 				while (set.next()){
-					mes = new Message(set.getString("receiver"), set.getString("sender"), set.getString("messageText"));
+					mes = new Message(set.getString("receiver"), set.getString("sender"), set.getString("messageText"), set.getString("messageID"));
 					deque.add(mes);
 				}
 				return deque;

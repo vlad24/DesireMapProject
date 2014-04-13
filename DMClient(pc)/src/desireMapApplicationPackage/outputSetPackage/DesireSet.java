@@ -1,4 +1,4 @@
-package desireMapApplicationPackage.outputArchitecturePackage;
+package desireMapApplicationPackage.outputSetPackage;
 
 import java.io.Serializable;
 import java.util.HashSet;

@@ -14,6 +14,7 @@ public final class CodesMaster {
 		public static final char AddSatisfyCode = 'G';
 		public static final char MessageDeliverCode = 'M';
 		public static final char MessageSendCode = 'C';
+		public static final char TilesCode = 'T';
 	}
 	public static class Categories{
 		public static final int DatingCode = 0;

@@ -17,10 +17,10 @@ public class CategoryTube {
 			tube.add(new CategoryManagerDating());
 		}
 		
-		public void tryToAdd(int desId, AddPack pack) throws SQLException{
-			System.out.println("Pushing to tube");
+		public void tryToAdd(String thisDesireID, AddPack pack) throws SQLException{
+			System.out.println("Pushing to category tube");
 			for (CategoryManager categoryManager : tube){
-				categoryManager.tryToAddDesire(desId, pack);
+				categoryManager.tryToAddDesire(thisDesireID, pack);
 			}
 		}
 }

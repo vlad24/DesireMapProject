@@ -1,5 +1,7 @@
 package desireMapApplicationPackage.desireThreadPackage;
 
+import desireMapApplicationPackage.actionQueryObjectPackage.TilesPack;
+
 
 
 public abstract class CommandForDesireThread {

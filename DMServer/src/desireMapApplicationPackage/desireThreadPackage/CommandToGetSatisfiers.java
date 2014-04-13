@@ -2,7 +2,7 @@ package desireMapApplicationPackage.desireThreadPackage;
 
 
 import desireMapApplicationPackage.actionQueryObjectPackage.SatisfyPack;
-import desireMapApplicationPackage.outputArchitecturePackage.SatisfySet;
+import desireMapApplicationPackage.outputSetPackage.SatisfySet;
 
 public class CommandToGetSatisfiers extends CommandForDesireThread{
 	private final DesireThread receiver;

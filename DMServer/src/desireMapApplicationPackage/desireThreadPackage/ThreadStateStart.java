@@ -6,10 +6,11 @@ import desireMapApplicationPackage.messageSystemPackage.Message;
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
 import desireMapApplicationPackage.actionQueryObjectPackage.SatisfyPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.TilesPack;
 import desireMapApplicationPackage.desireContentPackage.DesireContent;
 import desireMapApplicationPackage.desireInstrumentPackage.DesireInstrument;
-import desireMapApplicationPackage.outputArchitecturePackage.DesireSet;
-import desireMapApplicationPackage.outputArchitecturePackage.SatisfySet;
+import desireMapApplicationPackage.outputSetPackage.DesireSet;
+import desireMapApplicationPackage.outputSetPackage.SatisfySet;
 import desireMapApplicationPackage.userDataPackage.LoginData;
 import desireMapApplicationPackage.userDataPackage.MainData;
 import desireMapApplicationPackage.userDataPackage.RegistrationData;
@@ -28,7 +29,7 @@ public class ThreadStateStart extends ThreadState{
         		//
         		try{
         			DesireInstrument.logInAtDB(login, password);
-        			changeState(new ThreadStateLoggedIn(owner));
+        			changeState(new ThreadStateBasic(owner));
         		}
         		catch(Exception error){
         			System.out.println("Instrument hasn't logged in");
@@ -39,7 +40,7 @@ public class ThreadStateStart extends ThreadState{
         public void register(RegistrationData regData) throws Exception{
         	try{
         		DesireInstrument.registerAtDB(regData);
-        		changeState(new ThreadStateLoggedIn(owner));
+        		changeState(new ThreadStateBasic(owner));
         	}
         	catch(Exception error){
         		System.out.println("Instrument hasn't logged in");
@@ -47,7 +48,7 @@ public class ThreadStateStart extends ThreadState{
         	}
         }
 
-        public int addDesire(AddPack pack) throws Exception {
+        public String addDesire(AddPack pack) throws Exception {
                 throw new Exception("- Unable now\n Hint : log in or register");
         }
 
@@ -72,6 +73,10 @@ public class ThreadStateStart extends ThreadState{
 		@Override
 		public SatisfySet getSatisfiers(SatisfyPack sPack) throws Exception {
 			throw new Exception("- Unable now\n Hint : log in or register");
+		}
+		
+		public SatisfySet updateSatisfiers(TilesPack tilesPack)	throws Exception {
+			throw new Exception("!!! Unable now ");
 		}
 
 		@Override

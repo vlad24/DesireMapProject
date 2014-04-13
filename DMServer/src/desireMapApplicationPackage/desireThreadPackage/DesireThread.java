@@ -11,11 +11,12 @@ import desireMapApplicationPackage.actionQueryObjectPackage.ActionQueryObject;
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
 import desireMapApplicationPackage.actionQueryObjectPackage.SatisfyPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.TilesPack;
 import desireMapApplicationPackage.handlerTubePackage.HandlerTube;
 import desireMapApplicationPackage.messageSystemPackage.ChatKing;
 import desireMapApplicationPackage.messageSystemPackage.Message;
-import desireMapApplicationPackage.outputArchitecturePackage.DesireSet;
-import desireMapApplicationPackage.outputArchitecturePackage.SatisfySet;
+import desireMapApplicationPackage.outputSetPackage.DesireSet;
+import desireMapApplicationPackage.outputSetPackage.SatisfySet;
 import desireMapApplicationPackage.userDataPackage.LoginData;
 import desireMapApplicationPackage.userDataPackage.MainData;
 import desireMapApplicationPackage.userDataPackage.RegistrationData;
@@ -28,7 +29,7 @@ public class DesireThread implements Runnable{
 	protected ObjectOutputStream socketOut;
 	protected ObjectInputStream socketIn;
 	private final HandlerTube tube;
-	protected Deque<Message> localMessages;
+	public Deque<Message> localMessages;
 	
 	public DesireThread(Socket givenSocket) throws IOException{
 		System.out.println("*** Thread is initializing\n");
@@ -50,7 +51,7 @@ public class DesireThread implements Runnable{
 		stateObject.logIn(logData);
 	}
 	
-	public int addDesire(AddPack addPack) throws Exception{
+	public String addDesire(AddPack addPack) throws Exception{
 		return stateObject.addDesire(addPack);
 	}
 	
@@ -61,6 +62,15 @@ public class DesireThread implements Runnable{
 	public SatisfySet getSatisfiers(SatisfyPack sPack) throws Exception{
 		try {
 			SatisfySet result = stateObject.getSatisfiers(sPack);
+			return result;
+		} catch (Exception error) {
+			throw error;
+		}
+	}
+	
+	public SatisfySet updateSatisfiers(TilesPack tilesPack) throws Exception {
+		try {
+			SatisfySet result = stateObject.updateSatisfiers(tilesPack);
 			return result;
 		} catch (Exception error) {
 			throw error;
@@ -141,11 +151,11 @@ public class DesireThread implements Runnable{
 		}
 	}
 	
-	protected void sendID(int id){
+	protected void sendID(String generatedID){
 		try{
-			socketOut.writeInt(id);
+			socketOut.writeUTF(generatedID);
 			socketOut.flush();
-			System.out.println("*** THREAD SENT THE ID : " + id);
+			System.out.println("*** THREAD SENT THE ID : " + generatedID);
 		}
 		catch(IOException error){
 			System.out.println("*** Problem with socket in sending id");
@@ -198,5 +208,6 @@ public class DesireThread implements Runnable{
 			}
 		}//while
 	}//run
+
 	
 }

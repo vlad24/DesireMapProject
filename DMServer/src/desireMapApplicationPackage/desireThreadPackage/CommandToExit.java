@@ -12,6 +12,7 @@ public class CommandToExit extends CommandForDesireThread{
 	public void execute() throws Exception {
 		try{
 			System.out.println("*** " + receiver.getUserName() + " exiting");
+			
 			receiver.unregisterTalker();
 			receiver.setCurrentUser("?");
 			receiver.exit();

@@ -11,12 +11,12 @@ import desireMapApplicationPackage.desireContentPackage.DesireContentSport;
 public class CategoryManagerSport extends CategoryManager{
 	//string sportName, int advantages
 
-	protected void tryToAddDesire(int desId, AddPack pack) throws SQLException {
+	protected void tryToAddDesire(String desId, AddPack pack) throws SQLException {
 		if(myContent(pack.desireContent)){
 			DesireContentSport sportContent = (DesireContentSport) pack.desireContent;
 			Statement adder =  DesireInstrument.getAccessToDesireBase().createStatement();
 			System.out.println("__ADDING IN DESIRES_SPORT");
-			adder.execute("INSERT INTO DESIRES_SPORT VALUES("+ desId + ", '" + sportContent.sportName +"', " + sportContent.advantages + ");");
+			adder.execute("INSERT INTO DESIRES_SPORT VALUES('"+ desId + "', '" + sportContent.sportName +"', " + sportContent.advantages + ");");
 			adder.close();
 		}
 	}

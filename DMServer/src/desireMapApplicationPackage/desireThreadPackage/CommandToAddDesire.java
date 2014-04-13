@@ -14,14 +14,14 @@ public class CommandToAddDesire extends CommandForDesireThread{
 	public void execute() throws Exception {
 		System.out.println("*** Adding ");
 		try{
-			int generatedID = 0;
+			String generatedID = "";
 			synchronized(receiver){
 				generatedID = receiver.addDesire(addPack);
 			}
 			receiver.sendID(generatedID);
 		}
 		catch(Exception error){
-			receiver.sendID(-1);
+			receiver.sendID("");
 			throw error;
 		}
 	}

@@ -2,7 +2,6 @@ package desireMapApplicationPackage.quadtree;
 
 import java.io.Serializable;
 
-import com.google.android.gms.maps.model.LatLng;
 
 public class QuadTreeNodeBox implements Serializable{
 	public final double x0;

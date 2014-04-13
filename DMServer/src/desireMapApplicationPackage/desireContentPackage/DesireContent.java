@@ -2,9 +2,6 @@ package desireMapApplicationPackage.desireContentPackage;
 
 import java.io.Serializable;
 
-import com.google.android.gms.maps.model.LatLng;
-
-
 public class DesireContent implements Serializable{
 	
 	public final String login;
