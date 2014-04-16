@@ -15,6 +15,7 @@ import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerReg
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerSatisfy;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerShowInfo;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerShowPersonalDesires;
+import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerTiles;
 
 public class HandlerTube {
 	protected DesireThread userThread;
@@ -31,6 +32,7 @@ public class HandlerTube {
 		tube.add(new HandlerMessageSend(inThread));
 		tube.add(new HandlerRegister(inThread));
 		tube.add(new HandlerAdd(inThread));
+		tube.add(new HandlerTiles(inThread));
 		tube.add(new HandlerSatisfy(inThread));
 		tube.add(new HandlerShowPersonalDesires(inThread));
 		tube.add(new HandlerShowInfo(inThread));
