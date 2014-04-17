@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chat_relative_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:focusableInTouchMode="true"
     android:background="@color/listViewBg"
     android:orientation="vertical" >
 
@@ -41,6 +43,7 @@
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="0dip"
+        android:focusableInTouchMode="true"
         android:layout_above="@id/bottom_write_bar"
         android:layout_alignParentTop="true"
         android:cacheColorHint="#00000000"

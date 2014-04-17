@@ -3,17 +3,8 @@ package com.example.testgraphicdrawerapp;
 
 import java.util.ArrayList;
 
-import slidingmenu.MenuCustomDrawerListAdapter;
-import slidingmenu.MenuDrawerItem;
-import blur.FastBlur;
-import fragments.ChatFragment;
-import fragments.ExploreFragment;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
+import logic.GPSTracker;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -25,20 +16,32 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
+import fragments.ChatFragment;
+import fragments.ExploreFragment;
+import fragments.MapFragment;
+import graphics.blur.FastBlur;
+import graphics.slidingmenu.MenuCustomDrawerListAdapter;
+import graphics.slidingmenu.MenuDrawerItem;
 
 public class MainActivity extends FragmentActivity {
 
 	private ChatFragment chatFragment;
 	private ExploreFragment exploreFragment;
+	private MapFragment mapFragment;
 	private Fragment currentFragment;
 
 	private ListView menuList;
@@ -63,6 +66,7 @@ public class MainActivity extends FragmentActivity {
 	private MenuCustomDrawerListAdapter adapter;
 
 	private Handler handler;
+	private GPSTracker gps;
 	private String TAG = "DrawerAppMainActivity";
 
 	@Override
@@ -73,8 +77,11 @@ public class MainActivity extends FragmentActivity {
 		mTitle = mDrawerTitle = getTitle();
 
 		handler = new Handler();
+		gps = new GPSTracker(this);
 		chatFragment = new ChatFragment();
 		exploreFragment = new ExploreFragment();
+		mapFragment = new MapFragment();
+
 
 		blurImageView = (ImageView) findViewById(R.id.blur_image);
 		screenView = getWindow().getDecorView().findViewById(android.R.id.content);
@@ -87,6 +94,7 @@ public class MainActivity extends FragmentActivity {
 				.obtainTypedArray(R.array.menu_drawer_icons);
 
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		drawerLayout.setScrimColor(getResources().getColor(android.R.color.transparent));
 		menuList = (ListView) findViewById(R.id.lvMain);
 
 		menuDrawerItems = new ArrayList<MenuDrawerItem>();
@@ -104,8 +112,10 @@ public class MainActivity extends FragmentActivity {
 		.beginTransaction()
 		.add(R.id.content_frame_layout, chatFragment)
 		.add(R.id.content_frame_layout, exploreFragment)
+		.add(R.id.content_frame_layout, mapFragment)
 		.hide(chatFragment)
 		.hide(exploreFragment)
+		.hide(mapFragment)
 		.commit();
 
 		getActionBar().setDisplayShowCustomEnabled(true);
@@ -116,23 +126,7 @@ public class MainActivity extends FragmentActivity {
 				R.drawable.ic_navigation_drawer, //nav menu toggle icon
 				R.string.open,
 				R.string.close);
-		//		mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
-		//                R.drawable.ic_navigation_drawer, //nav menu toggle icon
-		//                R.string.open, // nav drawer open - description for accessibility
-		//                R.string.close // nav drawer close - description for accessibility
-		//        ){
-		//            public void onDrawerClosed(View view) {
-		//                getActionBar().setTitle(mTitle);
-		//                // calling onPrepareOptionsMenu() to show action bar icons
-		//                invalidateOptionsMenu();
-		//            }
-		// 
-		//            public void onDrawerOpened(View drawerView) {
-		//                getActionBar().setTitle(mDrawerTitle);
-		//                // calling onPrepareOptionsMenu() to hide action bar icons
-		//                invalidateOptionsMenu();
-		//            }
-		//        };
+
 		drawerLayout.setDrawerListener(drawerToggle);
 
 		if (savedInstanceState == null) {
@@ -162,20 +156,38 @@ public class MainActivity extends FragmentActivity {
 				drawerLayout.closeDrawers();
 				FragmentManager manager = getSupportFragmentManager();
 				FragmentTransaction ft = manager.beginTransaction();
-				ft.setCustomAnimations(R.animator.slide_in, R.animator.slide_out);
 				Fragment nextFragment = null;
 
 				switch(position){
+				case 0:{
+					gps.getLocation();
+					Log.d(TAG, "latitude: "+gps.getLatitude()+" longitude: "+gps.getLongitude());
+					mapFragment.refresh(gps.getLatitude(), gps.getLongitude());
+					nextFragment = mapFragment;
+					break;
+				}
 				case 1:
 					nextFragment = exploreFragment;
 					break;
 				case 2:
 					nextFragment = chatFragment;
 					break;
+				case 3:
+					//					try {
+					//						Client.exit();
+					//					} catch (Exception e) {
+					//						e.printStackTrace();
+					//					}
+					break;
+				case 4:	
+					break;
 				}
+
+				ft.setCustomAnimations(R.animator.slide_in, R.animator.slide_out);
+
 				if(nextFragment.isVisible())
 					return;
-				
+
 				nextFragment.getView().bringToFront();
 				if(currentFragment != null){
 					currentFragment.getView().bringToFront();
@@ -183,7 +195,7 @@ public class MainActivity extends FragmentActivity {
 				}
 				ft.show(nextFragment);
 				currentFragment = nextFragment;
-				
+
 				ft.commit();
 				menuList.setItemChecked(position, true);
 			}
@@ -323,7 +335,6 @@ public class MainActivity extends FragmentActivity {
 
 			Canvas canvas = new Canvas(overlay);
 
-			//	canvas.translate(-view.getLeft()/scaleFactor, -view.getTop()/scaleFactor);
 			canvas.scale(1 / scaleFactor, 1 / scaleFactor);
 			Paint paint = new Paint();
 			paint.setFlags(Paint.FILTER_BITMAP_FLAG);
