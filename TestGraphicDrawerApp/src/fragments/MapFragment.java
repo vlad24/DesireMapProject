@@ -9,11 +9,15 @@ import logic.clusterization.ClusterPoint;
 import logic.clusterization.ClusterizationAlgorithm;
 
 import com.example.testgraphicdrawerapp.R;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.GoogleMap.SnapshotReadyCallback;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -30,12 +34,12 @@ import desireMapApplicationPackage.quadtree.QuadTreeNode;
 import desireMapApplicationPackage.quadtree.QuadTreeNodeBox;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,9 +52,7 @@ import android.widget.Toast;
 public class MapFragment extends Fragment implements OnMarkerClickListener, OnCameraChangeListener, OnMapClickListener {
 
 
-	private double latitude;
-	private double longitude;
-	private SupportMapFragment fragment;
+	private MapView mapView;
 	private GoogleMap map;
 	private TextView tapTextView;
 	private QuadTreeNode worldRoot;
@@ -71,13 +73,21 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 	private Thread clusteringThread;
 	private Thread fadingThread;
 	private IconGenerator iconGenerator;
+	private Bitmap backgroundBitmap;
+	private Bitmap bmOverlay;
+	private String TAG = "MapFragment";
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
 		View v = inflater.inflate(R.layout.map_layout, container, false);
-		v.setDrawingCacheEnabled(true);
+		
+		mapView = (MapView) v.findViewById(R.id.mapview);
+		mapView.onCreate(savedInstanceState);
+		
+		initializeMap();
+
 		tapTextView = (TextView) v.findViewById(R.id.tap_text);
 		QuadTreeNodeBox world = new QuadTreeNodeBox(-90, -180, 90, 180);
 		worldRoot = new QuadTreeNode(world, "0", 0);
@@ -153,18 +163,6 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 		return v;
 	}
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		FragmentManager fm = getChildFragmentManager();
-		fragment = (SupportMapFragment) fm.findFragmentById(R.id.map);
-		if (fragment == null) {
-			fragment = SupportMapFragment.newInstance();
-			fm.beginTransaction().replace(R.id.map, fragment).commit();
-		}
-	}
-
-
 
 	public void refresh(double latitude, double longitude){
 
@@ -203,11 +201,21 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 
 	private void initializeMap(){
+		map = mapView.getMap();
 		map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 		map.setBuildingsEnabled(true);
 		map.setOnMapClickListener(this);
 		map.setOnCameraChangeListener(this);
 		map.setOnMarkerClickListener(this);
+		
+		// Needs to call MapsInitializer before doing any CameraUpdateFactory calls
+		try {
+			MapsInitializer.initialize(this.getActivity());
+		} catch (GooglePlayServicesNotAvailableException e) {
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 	private void animateCreatingMarker(final Marker marker){
@@ -291,7 +299,20 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 	}
 	
-	
+	public Bitmap getMapImage(int width, int height) {  
+
+		Log.d(TAG, "in getImage");
+        /* Capture drawing cache as bitmap */  
+//        mapView.setDrawingCacheEnabled(true);  
+//        Bitmap bmp = Bitmap.createBitmap(mapView.getDrawingCache());  
+//        mapView.setDrawingCacheEnabled(false); 
+		Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+		Canvas c = new Canvas(bmp);
+		mapView.draw(c);
+        return bmp;  
+    }  
+
+
 	@Override
 	public boolean onMarkerClick(final Marker marker) {
 
@@ -325,12 +346,23 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 		return true;
 	}
 
+
 	@Override
 	public void onResume() {
+		mapView.onResume();
 		super.onResume();
-		if (map == null) {
-			map = fragment.getMap();
-			initializeMap();
-		}
 	}
+ 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		mapView.onDestroy();
+	}
+ 
+	@Override
+	public void onLowMemory() {
+		super.onLowMemory();
+		mapView.onLowMemory();
+	}
+
 }

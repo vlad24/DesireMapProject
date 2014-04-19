@@ -3,6 +3,8 @@ package com.example.testgraphicdrawerapp;
 
 import java.util.ArrayList;
 
+import com.google.android.gms.maps.MapView;
+
 import logic.GPSTracker;
 
 import android.annotation.TargetApi;
@@ -30,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 import fragments.ChatFragment;
 import fragments.ExploreFragment;
 import fragments.MapFragment;
@@ -43,14 +46,15 @@ public class MainActivity extends FragmentActivity {
 	private ExploreFragment exploreFragment;
 	private MapFragment mapFragment;
 	private Fragment currentFragment;
+	private int currentFragmentPosition;
 
+	private View screenView;
 	private ListView menuList;
 	private DrawerLayout drawerLayout;
 	private BlurActionBarDrawerToggle drawerToggle;
 	private ActionBarDrawerToggle mDrawerToggle;
 
 	private ImageView blurImageView;
-	private View screenView;
 
 	// nav drawer title
 	private CharSequence mDrawerTitle;
@@ -82,9 +86,8 @@ public class MainActivity extends FragmentActivity {
 		exploreFragment = new ExploreFragment();
 		mapFragment = new MapFragment();
 
-
-		blurImageView = (ImageView) findViewById(R.id.blur_image);
 		screenView = getWindow().getDecorView().findViewById(android.R.id.content);
+		blurImageView = (ImageView) findViewById(R.id.blur_image);
 
 		// load slide menu items
 		navMenuTitles = getResources().getStringArray(R.array.menu_items);
@@ -198,6 +201,7 @@ public class MainActivity extends FragmentActivity {
 
 				ft.commit();
 				menuList.setItemChecked(position, true);
+				currentFragmentPosition = position;
 			}
 
 		});
@@ -311,12 +315,15 @@ public class MainActivity extends FragmentActivity {
 			blurImage.setVisibility(View.VISIBLE);
 			blurImage.bringToFront();
 
-			//get screenshot of screenView
-			Bitmap bmp = Bitmap.createBitmap(screenView.getWidth(), screenView.getHeight(), Bitmap.Config.ARGB_8888);
-			Canvas c = new Canvas(bmp);
-			screenView.draw(c);
-
-			blurImage.setImageBitmap(blur(bmp));	
+			
+			if(currentFragmentPosition != 0){
+				//get screenshot of screenView
+				Bitmap bmp = Bitmap.createBitmap(screenView.getWidth(), screenView.getHeight(), Bitmap.Config.ARGB_8888);
+				Canvas c = new Canvas(bmp);
+				screenView.draw(c);
+				blurImage.setImageBitmap(blur(bmp));
+			}
+			
 
 		}
 
@@ -330,8 +337,10 @@ public class MainActivity extends FragmentActivity {
 
 			float scaleFactor = 8;
 			int radius = 2;
+			int inputWidth = bkg.getWidth();
+			int inputHeight = bkg.getHeight();
 
-			Bitmap overlay = Bitmap.createBitmap((int)(bkg.getWidth()/scaleFactor),(int)(bkg.getHeight()/scaleFactor), Bitmap.Config.ARGB_8888);
+			Bitmap overlay = Bitmap.createBitmap((int)(inputWidth/scaleFactor),(int)(inputHeight/scaleFactor), Bitmap.Config.ARGB_8888);
 
 			Canvas canvas = new Canvas(overlay);
 
@@ -341,13 +350,14 @@ public class MainActivity extends FragmentActivity {
 
 			canvas.drawBitmap(bkg, 0, 0, paint);
 
+			//	bkg.recycle();
 			overlay = FastBlur.doBlur(overlay, radius, true);
-			return getResizedBitmap(overlay, bkg.getHeight(), bkg.getWidth());
+			return getResizedBitmap(overlay, inputWidth, inputHeight, true);
 
 		}
 
 
-		public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
+		public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth, boolean willDelete) {
 
 			int width = bm.getWidth();
 
@@ -368,6 +378,9 @@ public class MainActivity extends FragmentActivity {
 			// RECREATE THE NEW BITMAP
 
 			Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
+
+			//			if(willDelete)
+			//				bm.recycle();
 
 			return resizedBitmap;
 		}

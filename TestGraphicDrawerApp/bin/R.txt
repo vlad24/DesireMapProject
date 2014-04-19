@@ -401,7 +401,7 @@ int id listImage 0x7f070057
 int id listMode 0x7f070006
 int id list_item 0x7f07002d
 int id lvMain 0x7f070048
-int id map 0x7f070054
+int id mapview 0x7f070054
 int id message_text 0x7f070043
 int id middle 0x7f070016
 int id never 0x7f07000e

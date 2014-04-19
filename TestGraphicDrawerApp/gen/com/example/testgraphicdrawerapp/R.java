@@ -1376,7 +1376,7 @@ containing a value of this type.
         public static final int listMode=0x7f070006;
         public static final int list_item=0x7f07002d;
         public static final int lvMain=0x7f070048;
-        public static final int map=0x7f070054;
+        public static final int mapview=0x7f070054;
         public static final int message_text=0x7f070043;
         public static final int middle=0x7f070016;
         public static final int never=0x7f07000e;
