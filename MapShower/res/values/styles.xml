@@ -12,10 +12,9 @@
         -->
     </style>
 
+    <color name="pane_btn_bg_selected">#9099cc00</color>
     <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-    </style>
+  
 
     <style name="iconGenText">
         <item name="android:textSize">14sp</item>

@@ -9,8 +9,10 @@ import pack.clusterization.ClusterizationAlgorithm;
 import pack.quadtree.QuadTreeNode;
 import pack.quadtree.QuadTreeNodeBox;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
@@ -18,17 +20,27 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -42,6 +54,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.maps.android.SphericalUtil;
 import com.google.maps.android.ui.IconGenerator;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 
 public class GoogleMapActivity extends FragmentActivity implements OnMapClickListener, OnCameraChangeListener, OnMarkerClickListener {
@@ -49,7 +62,7 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 	private double latitude;
 	private double longitude;
 	private GoogleMap map;
-	private SupportMapFragment fm;
+	private MapView mapView;
 	private TextView tapTextView;
 	private QuadTreeNode worldRoot;
 	private int quadDepth;
@@ -68,6 +81,9 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 	private Thread clusteringThread;
 	private Thread fadingThread;
 	private IconGenerator iconGenerator;
+	SlidingUpPanelLayout slidingLayout;
+	private LinearLayout panelLayout;
+	private int panelHeightPx;
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -76,7 +92,25 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 		latitude = intent.getDoubleExtra("latitude", 0);
 		longitude = intent.getDoubleExtra("longitude",0);
 
+//		Resources r = getResources();
+//		panelHeightPx = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 68, r.getDisplayMetrics());
+
+		slidingLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+		slidingLayout.setCoveredFadeColor(Color.argb(0, 0, 0, 0));
+	//	slidingLayout.setPanelHeight(panelHeightPx);
+		slidingLayout.setOverlayed(true);
+		panelLayout = (LinearLayout) findViewById(R.id.PanelView);
+		panelLayout.setVisibility(View.GONE);
+
 		tapTextView = (TextView) findViewById(R.id.tap_text);
+		try {
+			MapsInitializer.initialize(this);
+		} catch (GooglePlayServicesNotAvailableException e) {
+			e.printStackTrace();
+		}
+		mapView = (MapView) findViewById(R.id.mapview);
+		mapView.onCreate(savedInstanceState);
+
 		QuadTreeNodeBox world = new QuadTreeNodeBox(-90, -180, 90, 180);
 		worldRoot = new QuadTreeNode(world, "0", 0);
 
@@ -126,7 +160,7 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 			}
 
 		});
-		
+
 		fadingThread = new Thread(new Runnable(){
 
 			@Override
@@ -142,10 +176,10 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 							oldClusterMarkerList.clear();
 						}
 					}
-					
+
 				});
 			}
-			
+
 		});
 
 	}
@@ -160,10 +194,10 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 		//		final int finalIconHeight = icon.getHeight();
 		//		final int iconWidth = icon.getWidth();
 
+		marker.setVisible(true);
 		handler.post(new Runnable() {
 			@Override
 			public void run() {
-				marker.setVisible(true);
 				long elapsed = SystemClock.uptimeMillis() - startTime;
 				float t = interpolator.getInterpolation((float) elapsed / duration);
 				marker.setAlpha(t);
@@ -204,9 +238,8 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 
 	private void initializeMap(){
 		try{
-			fm = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-			if(fm != null){
-				map = fm.getMap();
+			if(mapView != null){
+				map = mapView.getMap();
 				map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 				map.setBuildingsEnabled(true);
 				map.setOnMapClickListener(this);
@@ -255,6 +288,11 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 
 	@Override
 	public void onMapClick(LatLng coord) {
+				Animation bottomDown = AnimationUtils.loadAnimation(this,
+			            R.animator.bottom_down);
+				panelLayout.startAnimation(bottomDown);
+				panelLayout.setVisibility(View.GONE);
+
 		tapTextView.setText("coordinates:"+coord.latitude+" "+coord.longitude+"\nquad: "+worldRoot.geoPointToQuad(coord, quadDepth)+"\nnewRadius: "+newRadius);
 	}
 
@@ -270,7 +308,7 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 			if(Math.abs(zoomChanging) > 0.7){
 				zoomChanging = 0;
 				newRadius = SphericalUtil.computeDistanceBetween(currentRegion.latLngBounds.northeast, currentRegion.latLngBounds.southwest)/10;
-				
+
 				fadingThread.run();
 				clusteringThread.run();
 
@@ -284,7 +322,11 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 
 	@Override
 	public boolean onMarkerClick(final Marker marker) {
-
+		Animation bottomUp = AnimationUtils.loadAnimation(this,
+				R.animator.bottom_up);
+		panelLayout.startAnimation(bottomUp);
+		panelLayout.setVisibility(View.VISIBLE);
+	
 
 		//		final long startTime = SystemClock.uptimeMillis();
 		//		final long duration = 2000;
@@ -313,5 +355,31 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 		//			}
 		//		});
 		return true;
+	}
+
+	@Override
+	protected void onResume() {
+		mapView.onResume();
+		super.onResume();
+
+	}
+
+	@Override
+	protected void onPause() {
+		mapView.onResume();
+		super.onPause();
+
+	}
+
+	@Override
+	protected void onDestroy() {
+		mapView.onDestroy();
+		super.onDestroy();
+	}
+
+	@Override
+	public void onLowMemory() {
+		super.onLowMemory();
+		mapView.onLowMemory();
 	}
 }
