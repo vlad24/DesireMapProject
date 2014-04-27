@@ -271,7 +271,7 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 	@Override
 	public void onMapClick(LatLng coord) {
-		tapTextView.setText("coordinates:"+coord.latitude+" "+coord.longitude+"\nquad: "+worldRoot.geoPointToQuad(coord, quadDepth)+"\nnewRadius: "+newRadius);
+		tapTextView.setText("coordinates:"+coord.latitude+" "+coord.longitude+"\nquad: "+worldRoot.geoPointToQuad(coord.latitude, coord.longitude, quadDepth)+"\nnewRadius: "+newRadius);
 	}
 
 	@Override

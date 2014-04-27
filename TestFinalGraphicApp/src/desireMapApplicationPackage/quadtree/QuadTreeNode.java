@@ -13,7 +13,7 @@ public class QuadTreeNode {
 	private QuadTreeNodeBox nodeBox;
 	public final String nodeID;
 	public final int depth;
-	public static int maxDepth = 30;
+	public final static int maxDepth = 30;
 
 	public QuadTreeNode(QuadTreeNodeBox nodeBox, String nodeID, int depth){
 		this.nodeBox = nodeBox;
@@ -54,30 +54,28 @@ public class QuadTreeNode {
 		return southEastNode;
 
 	}
-
-	public String geoPointToQuad(LatLng point, int depth){
+	
+	public String geoPointToQuad(double latitude, double longitude, int depth){
 
 		if(this.depth == depth)
 			return nodeID;
 
 		if(this.depth < maxDepth){
-			QuadTreeNode currentNode = subdivide(point.latitude, point.longitude);
-			return currentNode.geoPointToQuad(point, depth);
+			QuadTreeNode currentNode = subdivide(latitude, longitude);
+			return currentNode.geoPointToQuad(latitude, longitude, depth);
 		}
 		
 		return "";
 	}
 	
+	
 	public HashSet<String> getMapTiles(LatLng leftBottom, LatLng rightTop, int depth){
 		HashSet<String> mapTiles = new HashSet<String>();
 		
-		LatLng leftTop = new LatLng(leftBottom.latitude, rightTop.longitude);
-		LatLng rightBottom = new LatLng(rightTop.latitude, leftBottom.longitude);
-		
-		mapTiles.add(geoPointToQuad(leftBottom, depth));
-		mapTiles.add(geoPointToQuad(rightTop, depth));
-		mapTiles.add(geoPointToQuad(leftTop, depth));
-		mapTiles.add(geoPointToQuad(rightBottom, depth));
+		mapTiles.add(geoPointToQuad(leftBottom.latitude, leftBottom.longitude, depth));
+		mapTiles.add(geoPointToQuad(leftBottom.latitude, rightTop.longitude, depth));
+		mapTiles.add(geoPointToQuad(rightTop.latitude, rightTop.longitude, depth));
+		mapTiles.add(geoPointToQuad(rightTop.latitude, leftBottom.longitude, depth));
 		return mapTiles;
 	}
 	

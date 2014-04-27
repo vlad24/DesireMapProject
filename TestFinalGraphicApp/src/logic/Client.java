@@ -28,6 +28,8 @@ import desireMapApplicationPackage.desireContentPackage.DesireContent;
 import desireMapApplicationPackage.messageSystemPackage.ClientMessage;
 import desireMapApplicationPackage.outputSetPackage.DesireSet;
 import desireMapApplicationPackage.outputSetPackage.SatisfySet;
+import desireMapApplicationPackage.quadtree.QuadTreeNode;
+import desireMapApplicationPackage.quadtree.QuadTreeNodeBox;
 import desireMapApplicationPackage.userDataPackage.AndroidData;
 import desireMapApplicationPackage.userDataPackage.LoginData;
 import desireMapApplicationPackage.userDataPackage.MainData;
@@ -52,9 +54,12 @@ public class Client {
 	private static GoogleCloudMessaging gcm;
 	private static Thread clientThread;
 	private static ClientRunnable clientRunnable;
+	private static QuadTreeNode worldRoot;
 	
 	static{
 		socketIsEmpty = true;
+		QuadTreeNodeBox world = new QuadTreeNodeBox(-90, -180, 90, 180);
+		worldRoot = new QuadTreeNode(world, "0", 0);
 		clientRunnable = new ClientRunnable();
 		clientThread = new Thread(clientRunnable);
 		clientThread.start();
@@ -224,7 +229,11 @@ public class Client {
 		public String sendDesire(DesireContent newContent) throws Exception{
 			//		if(isCorrect(desireString)&&(latitude!=0)&&(longitude!=0)){
 			Log.d(TAG, "try to sendDesire()");
-			AddPack addPack = new AddPack(newContent, "100312");
+			String quadCoordinate = worldRoot.geoPointToQuad(newContent.coordinates.latitude,
+					                                         newContent.coordinates.longitude, 
+					                                         QuadTreeNode.maxDepth);
+			
+			AddPack addPack = new AddPack(newContent, quadCoordinate);
 			out.writeObject(addPack);
 			out.reset();
 			String IDdesire = in.readUTF();

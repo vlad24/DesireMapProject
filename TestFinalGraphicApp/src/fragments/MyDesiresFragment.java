@@ -697,6 +697,7 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 				else Toast.makeText(getActivity(), "Опиши свой уровень в двух словах", Toast.LENGTH_SHORT).show();
 			}
 		}else{
+			gps.getLocation();
 			Coordinates coord = new Coordinates(gps.getLatitude(), gps.getLongitude());
 			DesireContentSport newContent = new DesireContentSport(Client.getName(), null, sportDescriptionString,
 					coord, null,
@@ -715,7 +716,8 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 		if(!datingDescriptionString.isEmpty()){
 			int partnerAgeFrom = fromAgeWheel.getCurrentItem()+18;
 			int partnerAgeTo = toAgeWheel.getCurrentItem()+18;
-
+			
+			gps.getLocation();
 			Coordinates coord = new Coordinates(gps.getLatitude(), gps.getLongitude());
 			DesireContentDating newContent = new DesireContentDating(Client.getName(), null, datingDescriptionString,
 					coord, null,
