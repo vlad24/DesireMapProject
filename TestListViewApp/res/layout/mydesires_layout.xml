@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFE9A3" >
+
+    <RelativeLayout
+        android:id="@+id/listNavPanel"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#EAF1F3"
+        android:visibility="gone" >
+
+        <Button
+            android:id="@+id/backBtn"
+            android:layout_width="65dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:text="Back" />
+
+        <Button
+            android:id="@+id/addBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:text="+" />
+
+        <Button
+            android:id="@+id/removeOkBtn"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:text="OK"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/removeBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/addBtn"
+            android:text="X" />
+    </RelativeLayout>
+
+    <include
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/listNavPanel"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        layout="@layout/adding_sport_panel_layout"
+        android:visibility="gone" />
+
+    <include
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/listNavPanel"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        layout="@layout/adding_dating_panel_layout"
+        android:visibility="gone" />
+    
+    <include
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/listNavPanel"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        layout="@layout/info_sport_panel_layout"
+        android:visibility="gone" />
+    
+     <include
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/listNavPanel"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        layout="@layout/info_dating_panel_layout"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/lvMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible" >
+    </ListView>
+
+    <ListView
+        android:id="@+id/lvDesires"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/listNavPanel"
+        android:visibility="gone" >
+    </ListView>
+
+</RelativeLayout>

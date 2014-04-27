@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TestGraphicApp</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+  
+    
+       <string-array name="categories">
+        <item>Спорт</item>
+        <item>Знакомства</item>
+        <item>Общение</item>
+    </string-array>
+    
+    <string-array name="Sport">
+        <item>Сгонять на турнички</item>
+        <item>Поиграть в волейбольчик</item>
+        <item>Сходить на самбо</item>
+    </string-array>
+   
+</resources>
