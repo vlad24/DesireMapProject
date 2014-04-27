@@ -17,8 +17,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 
 public class LoginActivity extends Activity implements OnClickListener {
 
@@ -30,9 +32,9 @@ public class LoginActivity extends Activity implements OnClickListener {
 	private Button signinButton;
 	private RelativeLayout signinEditPanelLayout;
 	private RelativeLayout signupEditPanelLayout;
+	private char signupMale = 'M';
 
-	private EditText signinLogin;
-	private EditText signinPassword;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +49,6 @@ public class LoginActivity extends Activity implements OnClickListener {
 		signupEditPanelLayout = (RelativeLayout) findViewById(R.id.signupEditPanel);
 
 		signinButton = (Button) findViewById(R.id.btnSignin);
-		signinLogin = (EditText) findViewById(R.id.signinLoginEditText);
-		signinPassword = (EditText) findViewById(R.id.signinPasswordEditText);
-
 		signupButton = (Button) findViewById(R.id.btnSignup);
 
 		Animation bottomUp = AnimationUtils.loadAnimation(this,
@@ -68,6 +67,23 @@ public class LoginActivity extends Activity implements OnClickListener {
 		registerButton.setOnClickListener(this);
 		signinButton.setOnClickListener(this);
 		signupButton.setOnClickListener(this);
+		
+		RadioGroup radiogroup = (RadioGroup) findViewById(R.id.maleRegistrationRadioGroup);
+
+		radiogroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				switch (checkedId) {
+				case R.id.signupRadioMan:
+					signupMale = 'M';
+					break;
+				case R.id.signupRadioWoman:
+					signupMale = 'W';
+					break;
+				}
+			}
+		});
 	}
 
 	@Override
@@ -143,6 +159,8 @@ public class LoginActivity extends Activity implements OnClickListener {
 		case R.id.btnSignin: 
 			Toast.makeText(this, "signin button", Toast.LENGTH_SHORT).show();
 			try {
+				EditText signinLogin = (EditText) findViewById(R.id.signinLoginEditText);
+				EditText signinPassword = (EditText) findViewById(R.id.signinPasswordEditText);
 				sendLogin(this, signinLogin.getText().toString(), signinPassword.getText().toString());
 			} catch (Exception e) {
 				Toast.makeText(this, "Connection Error", Toast.LENGTH_SHORT).show();
@@ -152,6 +170,18 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 		case R.id.btnSignup:
 			Toast.makeText(this, "here sign up + gcm", Toast.LENGTH_SHORT).show();
+			try {
+				EditText signupName = (EditText) findViewById(R.id.signupNameEditText);
+				EditText signupLogin = (EditText) findViewById(R.id.signupLoginEditText);
+				EditText signupPassword = (EditText) findViewById(R.id.signupPasswordEditText);	
+				EditText signupBirthdate = (EditText) findViewById(R.id.signupAgeEditText);
+				
+				sendRegistration(this, signupLogin.getText().toString(), signupPassword.getText().toString(),
+	                      signupName.getText().toString(), signupMale, signupBirthdate.getText().toString());
+			} catch (Exception e) {
+				Toast.makeText(this, "Connection Error", Toast.LENGTH_SHORT).show();
+				e.printStackTrace();
+			}	
 			break;
 		default: break;
 
@@ -198,6 +228,31 @@ public class LoginActivity extends Activity implements OnClickListener {
 			protected Boolean doInBackground(Void... params) {
 				try {
 					return Client.sendLogin(context, login, password);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+
+			@Override
+			protected void onPostExecute(Boolean result) {
+				Toast.makeText(LoginActivity.this, Boolean.toString(result), Toast.LENGTH_SHORT).show();
+				if(result){
+					Client.setName(login);
+					Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+					startActivity(intent);
+				}
+			}
+		}.execute();
+	}
+	
+	private void sendRegistration(final Context context, final String login, final String password,
+			                      final String name, final char male, final String birthdate){
+		new AsyncTask<Void, Void, Boolean>() {
+			@Override
+			protected Boolean doInBackground(Void... params) {
+				try {
+					return Client.sendRegistration(context, login, password, name, male, birthdate);
 				} catch (Exception e) {
 					e.printStackTrace();
 					return false;

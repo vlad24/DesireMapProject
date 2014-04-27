@@ -17,8 +17,8 @@ public final class CodesMaster {
 		public static final char TilesCode = 'T';
 	}
 	public static class Categories{
-		public static final int DatingCode = 1;
 		public static final int SportCode = 0;
+		public static final int DatingCode = 1;
 	}
 	
 	public static boolean someAddCode(char codeSymbol){

@@ -10,6 +10,7 @@ import com.example.testfinalgraphicapp.LoginActivity;
 import com.example.testfinalgraphicapp.MainActivity;
 import com.example.testfinalgraphicapp.R;
 
+import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireContentPackage.Coordinates;
 import desireMapApplicationPackage.desireContentPackage.DesireContent;
 import desireMapApplicationPackage.desireContentPackage.DesireContentDating;
@@ -133,6 +134,7 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 
 		initMainList();
 		initWheels();
+		initRadiogroup();
 
 		return view;
 	}
@@ -141,6 +143,25 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		gps = new GPSTracker(getActivity());
+	}
+
+	private void initRadiogroup(){
+		RadioGroup radiogroup = (RadioGroup) view.findViewById(R.id.maleRadioGroup);
+
+		radiogroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				switch (checkedId) {
+				case R.id.radioMan:
+					male = 'M';
+					break;
+				case R.id.radioWoman:
+					male = 'W';
+					break;
+				}
+			}
+		});
 	}
 
 	private void initMainList(){
@@ -374,12 +395,13 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 			public void run() {
 				desiresContent.add(0, item);
 				desiresShowAdapter.notifyDataSetChanged();
-				if(lvDesires.getFirstVisiblePosition() == 0){
-					Animation fade_in = AnimationUtils.loadAnimation(getActivity(),
-							R.animator.fade_in);
-					fade_in.setDuration(duration);
-					lvDesires.getChildAt(0).setAnimation(fade_in);
-				}
+				if(lvDesires.getChildCount() != 0)
+					if(lvDesires.getFirstVisiblePosition() == 0){
+						Animation fade_in = AnimationUtils.loadAnimation(getActivity(),
+								R.animator.fade_in);
+						fade_in.setDuration(duration);
+						lvDesires.getChildAt(0).setAnimation(fade_in);
+					}
 			}}, postDelayTime);
 	}
 
@@ -689,20 +711,6 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 	private void sendDatingDesireInfo(){
 		EditText datingDescription = (EditText) view.findViewById(R.id.datingDescriptionEditText);
 		String datingDescriptionString = datingDescription.getText().toString();
-		RadioGroup radiogroup = (RadioGroup) view.findViewById(R.id.maleRadioGroup);
-
-		radiogroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				switch (checkedId) {
-				case R.id.radioMan:
-					male = 'M';
-				case R.id.radioWoman:
-					male = 'W';
-				}
-			}
-		});
 
 		if(!datingDescriptionString.isEmpty()){
 			int partnerAgeFrom = fromAgeWheel.getCurrentItem()+18;
