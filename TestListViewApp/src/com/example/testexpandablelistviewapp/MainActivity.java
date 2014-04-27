@@ -4,24 +4,16 @@ package com.example.testexpandablelistviewapp;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.nhaarman.listviewanimations.swinginadapters.AnimationAdapter;
-import com.nhaarman.listviewanimations.swinginadapters.prepared.ScaleInAnimationAdapter;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Interpolator;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.util.Log;
 import android.util.SparseBooleanArray;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
@@ -29,7 +21,6 @@ import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -70,7 +61,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	ArrayAdapter<String> desiresShowAdapter;
 	ArrayAdapter<String> desiresDeleteAdapter;
 
-	AnimationAdapter animDesiresAdapter;
 	OnItemClickListener desiresListener;
 
 	String[] lst= {"Сгонять на турнички","Поиграть в волейбольчик", "Сходить на самбо",
@@ -159,9 +149,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		lvDesires.setAdapter(desiresShowAdapter);
 		lvDesires.setOnItemClickListener(desiresListener);
-
-		//		lvDesires.setAdapter(desiresDeleteAdapter);
-		//		lvDesires.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
 		lvMain.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -301,6 +288,19 @@ public class MainActivity extends Activity implements OnClickListener {
 		newList.setVisibility(View.VISIBLE);
 		currentList = newList;
 	}
+	
+	private void addListItem(final String item,final long duration, final long postDelayTime){
+		handler.postDelayed(new Runnable(){
+			@Override
+			public void run() {
+				desiresContent.add(0, item);
+				desiresShowAdapter.notifyDataSetChanged();
+				Animation fade_in = AnimationUtils.loadAnimation(MainActivity.this,
+						R.animator.fade_in);
+				fade_in.setDuration(duration);
+				lvDesires.getChildAt(0).setAnimation(fade_in);	
+			}}, postDelayTime);
+	}
 
 	private void setDeletingMode(){
 		addButton.setVisibility(View.GONE);
@@ -316,7 +316,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		int itemCount = lvDesires.getCount();
 		int lastVisible = lvDesires.getLastVisiblePosition();
 		int firstVisible = lvDesires.getFirstVisiblePosition();
-		//count of checked positions;
+	
 		
 		for (int i = itemCount-1; i > lastVisible; i--) {
 			if (checked.get(i)){
@@ -325,9 +325,10 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 		}
 		
+		//count of visible checked positions;
 		int countAnimated = 0;
 		final long postDelayTime = 200;
-		final long animDuration = 400;
+		final long animDuration = 600;
 		for (int i = lastVisible; i >= firstVisible; i--) {
 			if (checked.get(i)){
 				Log.d(LOG_TAG, i+"Visible\n");
@@ -366,6 +367,7 @@ public class MainActivity extends Activity implements OnClickListener {
 					}	
 				});
 				lvDesires.getChildAt(position-firstVisible).setAnimation(fade_out);
+				lvDesires.getChildAt(position-firstVisible).setVisibility(View.GONE);
 			}
 
 		});
@@ -531,6 +533,10 @@ public class MainActivity extends Activity implements OnClickListener {
 				else Toast.makeText(this, "Опиши свой уровень в двух словах", Toast.LENGTH_SHORT).show();
 			}
 		}else{
+			hideAddingPanel();
+			long timeDelay = 800;
+			long duration = 1000;
+			addListItem(sportDescriptionString, duration, timeDelay);
 			Toast.makeText(this, "Спорт: "+sportName.getText()+
 					"\nЖелание: "+sportDescription.getText()+
 					"\nУровень: "+sportAdvantage.getText(), Toast.LENGTH_SHORT).show();
