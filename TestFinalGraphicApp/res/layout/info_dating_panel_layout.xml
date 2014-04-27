@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/infoDatingPanel"
+    android:layout_width="230dp"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="25dp"
+    android:background="@drawable/panel_bord"
+    android:orientation="vertical"
+    android:visibility="visible" >
+
+    <TextView
+        android:id="@+id/datingDescriptionInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp" >
+    </TextView>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="2.0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/info_separator" />
+
+    <TextView
+        android:id="@+id/datingMaleInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:textSize="18sp" >
+    </TextView>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="2.0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/info_separator" />
+
+    <TextView
+        android:id="@+id/datingAgeInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="18sp" >
+    </TextView>
+
+</LinearLayout>

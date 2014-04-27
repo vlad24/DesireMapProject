@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/addingSportEditPanel"
+    android:layout_width="230dp"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="25dp"
+    android:background="@drawable/panel_bord"
+    android:visibility="visible" >
+
+    <EditText
+        android:id="@+id/sportNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="25dp"
+        android:hint="Вид спорта" >
+    </EditText>
+    
+    <EditText
+        android:id="@+id/sportDescriptionEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_below="@id/sportNameEditText"
+        android:hint="Желание"
+        android:inputType="textCapSentences|textMultiLine"
+        android:maxLength="2000"
+        android:maxLines="5" >
+    </EditText>
+    
+    <EditText
+        android:id="@+id/sportAdvantageEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+         android:layout_below="@id/sportDescriptionEditText"
+        android:hint="Опиши свой уровень"
+        android:inputType="textCapSentences|textMultiLine"
+        android:maxLength="2000"
+        android:maxLines="2" >
+    </EditText>
+
+
+    <Button
+        android:id="@+id/sportAddBtn"
+        android:layout_width="110dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/sportAdvantageEditText"
+        android:layout_marginTop="25dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/blue_rectangle"
+        android:text="Добавить"
+        android:textColor="#fff"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+    
+    <FrameLayout 
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+         android:layout_below="@+id/sportAddBtn"/>
+
+</RelativeLayout>

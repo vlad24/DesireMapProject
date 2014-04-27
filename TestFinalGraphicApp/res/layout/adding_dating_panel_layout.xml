@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/addingDatingEditPanel"
+    android:layout_width="230dp"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="25dp"
+    android:background="@drawable/panel_bord"
+    android:visibility="visible" >
+
+    <EditText
+        android:id="@+id/datingDescriptionEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="25dp"
+        android:hint="Желание"
+        android:inputType="textCapSentences|textMultiLine"
+        android:maxLength="2000"
+        android:maxLines="5" >
+    </EditText>
+
+    <RelativeLayout
+        android:id="@+id/datingMalePanel"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/datingDescriptionEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="С кем:" />
+
+        <RadioGroup
+            android:id="@+id/maleRadioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/radioMan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="М" />
+
+            <RadioButton
+                android:id="@+id/radioWoman"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ж" />
+        </RadioGroup>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/datingAgePanel"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_below="@+id/datingMalePanel"
+        android:layout_marginLeft="18dp" >
+
+        <TextView
+            android:id="@+id/fromAgeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="От" />
+
+        <antistatic.spinnerwheel.WheelVerticalView
+            android:id="@+id/fromAgeWheel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/fromAgeText"
+            app:visibleItems="4" />
+
+        <TextView
+            android:id="@+id/toAgeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/fromAgeWheel"
+            android:text="До" />
+
+        <antistatic.spinnerwheel.WheelVerticalView
+            android:id="@+id/toAgeWheel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/toAgeText"
+            app:visibleItems="4" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/datingAddBtn"
+        android:layout_width="110dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/datingAgePanel"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/blue_rectangle"
+        android:text="Добавить"
+        android:textColor="#fff"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@+id/datingAddBtn" />
+
+</RelativeLayout>
