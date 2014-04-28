@@ -434,11 +434,11 @@ int id backBtn 0x7f060086
 int id beginning 0x7f060015
 int id blur_content_frame_layout 0x7f060056
 int id blur_image 0x7f060057
-int id bottom_write_bar 0x7f060052
+int id bottom_write_bar 0x7f060053
 int id btnSignin 0x7f060072
 int id btnSignup 0x7f06007b
 int id camera_text 0x7f060081
-int id chat_relative_layout 0x7f060051
+int id chatPanel 0x7f060052
 int id checkbox 0x7f060031
 int id collapseActionView 0x7f060012
 int id content_frame_layout 0x7f060058
@@ -490,7 +490,7 @@ int id lvMain 0x7f060059
 int id maleRadioGroup 0x7f060043
 int id maleRegistrationRadioGroup 0x7f060077
 int id mapview 0x7f06007f
-int id message_text 0x7f060054
+int id message_text 0x7f060051
 int id middle 0x7f060016
 int id never 0x7f06000e
 int id none 0x7f060001
@@ -514,7 +514,7 @@ int id search_mag_icon 0x7f060039
 int id search_plate 0x7f06003a
 int id search_src_text 0x7f06003b
 int id search_voice_btn 0x7f06003f
-int id sendButton 0x7f060053
+int id sendButton 0x7f060054
 int id shortcut 0x7f060032
 int id showCustom 0x7f06000c
 int id showHome 0x7f060009
@@ -577,8 +577,8 @@ int layout abc_search_dropdown_item_icons_2line 0x7f030015
 int layout abc_search_view 0x7f030016
 int layout adding_dating_panel_layout 0x7f030017
 int layout adding_sport_panel_layout 0x7f030018
-int layout chat_layout 0x7f030019
-int layout chat_list_item 0x7f03001a
+int layout chat_list_item 0x7f030019
+int layout chat_panel_layout 0x7f03001a
 int layout content_frame 0x7f03001b
 int layout explore_layout 0x7f03001c
 int layout explore_linear_layout 0x7f03001d

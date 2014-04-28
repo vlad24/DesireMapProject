@@ -79,7 +79,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 					signupMale = 'M';
 					break;
 				case R.id.signupRadioWoman:
-					signupMale = 'W';
+					signupMale = 'F';
 					break;
 				}
 			}
@@ -117,25 +117,6 @@ public class LoginActivity extends Activity implements OnClickListener {
 				R.animator.logo_up);
 
 		logoUp.setFillAfter(true);
-
-		//		logoUp.setAnimationListener(new AnimationListener(){
-		//
-		//			@Override
-		//			public void onAnimationStart(Animation animation) {
-		//			}
-		//
-		//			@Override
-		//			public void onAnimationEnd(Animation animation) {
-		//				logoImage.setScaleX(0.5f);
-		//				logoImage.setScaleY(0.5f);
-		//				logoImage.setTranslationY(-35f);
-		//			}
-		//
-		//			@Override
-		//			public void onAnimationRepeat(Animation animation) {				
-		//			}
-		//			
-		//		});
 
 		switch(v.getId()){
 		case R.id.login:
@@ -229,6 +210,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 				try {
 					return Client.sendLogin(context, login, password);
 				} catch (Exception e) {
+					Client.closeSocket();
 					e.printStackTrace();
 					return false;
 				}
@@ -254,6 +236,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 				try {
 					return Client.sendRegistration(context, login, password, name, male, birthdate);
 				} catch (Exception e) {
+					Client.closeSocket();
 					e.printStackTrace();
 					return false;
 				}

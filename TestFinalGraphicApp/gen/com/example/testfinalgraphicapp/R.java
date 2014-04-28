@@ -1403,11 +1403,11 @@ containing a value of this type.
         public static final int beginning=0x7f060015;
         public static final int blur_content_frame_layout=0x7f060056;
         public static final int blur_image=0x7f060057;
-        public static final int bottom_write_bar=0x7f060052;
+        public static final int bottom_write_bar=0x7f060053;
         public static final int btnSignin=0x7f060072;
         public static final int btnSignup=0x7f06007b;
         public static final int camera_text=0x7f060081;
-        public static final int chat_relative_layout=0x7f060051;
+        public static final int chatPanel=0x7f060052;
         public static final int checkbox=0x7f060031;
         public static final int collapseActionView=0x7f060012;
         public static final int content_frame_layout=0x7f060058;
@@ -1459,7 +1459,7 @@ containing a value of this type.
         public static final int maleRadioGroup=0x7f060043;
         public static final int maleRegistrationRadioGroup=0x7f060077;
         public static final int mapview=0x7f06007f;
-        public static final int message_text=0x7f060054;
+        public static final int message_text=0x7f060051;
         public static final int middle=0x7f060016;
         public static final int never=0x7f06000e;
         public static final int none=0x7f060001;
@@ -1483,7 +1483,7 @@ containing a value of this type.
         public static final int search_plate=0x7f06003a;
         public static final int search_src_text=0x7f06003b;
         public static final int search_voice_btn=0x7f06003f;
-        public static final int sendButton=0x7f060053;
+        public static final int sendButton=0x7f060054;
         public static final int shortcut=0x7f060032;
         public static final int showCustom=0x7f06000c;
         public static final int showHome=0x7f060009;
@@ -1572,8 +1572,8 @@ containing a value of this type.
         public static final int abc_search_view=0x7f030016;
         public static final int adding_dating_panel_layout=0x7f030017;
         public static final int adding_sport_panel_layout=0x7f030018;
-        public static final int chat_layout=0x7f030019;
-        public static final int chat_list_item=0x7f03001a;
+        public static final int chat_list_item=0x7f030019;
+        public static final int chat_panel_layout=0x7f03001a;
         public static final int content_frame=0x7f03001b;
         public static final int explore_layout=0x7f03001c;
         public static final int explore_linear_layout=0x7f03001d;

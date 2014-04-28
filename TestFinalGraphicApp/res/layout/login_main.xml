@@ -84,7 +84,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_marginTop="10dp"
-                    android:hint="Твое имя"
+                    android:hint="Ваше имя"
                     android:inputType="textPersonName" >
 
                 </EditText>
@@ -140,7 +140,7 @@
                     android:layout_height="45dp"
                     android:layout_below="@+id/maleRegistrationRadioGroup"
                     android:layout_marginTop="5dp"
-                    android:hint="Когда ты родился?"
+                    android:hint="Когда вы родились?"
                     android:inputType="date" >
 
                 </EditText>

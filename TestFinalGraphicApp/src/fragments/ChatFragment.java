@@ -51,7 +51,7 @@ public class ChatFragment extends ListFragment implements OnClickListener{
 			Bundle savedInstanceState) {
 
 		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-		View view =  inflater.inflate(R.layout.chat_layout, container, false);
+		View view =  inflater.inflate(R.layout.chat_panel_layout, container, false);
 		text = (EditText) view.findViewById(R.id.text);
 		sendButton = (Button) view.findViewById(R.id.sendButton);
 		chatList = (ListView) view.findViewById(android.R.id.list);

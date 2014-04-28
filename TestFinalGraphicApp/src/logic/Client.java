@@ -301,6 +301,7 @@ public class Client {
 			ExitPack exit = new ExitPack();
 			out.writeObject(exit);
 			out.reset();
+			
 			return isCorrectOnServer();
 		}
 

@@ -174,10 +174,6 @@ public class MainActivity extends FragmentActivity {
 
 				switch(position){
 				case 0:{
-//					gps.getLocation();
-//					Log.d(TAG, "latitude: "+gps.getLatitude()+" longitude: "+gps.getLongitude());
-//					mapFragment.refresh(gps.getLatitude(), gps.getLongitude());
-//					nextFragment = mapFragment;
 					nextFragment = myDesiresFragment;
 					break;
 				}

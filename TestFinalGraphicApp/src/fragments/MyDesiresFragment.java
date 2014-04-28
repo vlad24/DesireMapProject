@@ -98,7 +98,7 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 	private boolean fromAgeWheelChanged = false;
 	private boolean toAgeWheelChanged = false;
 	private char male = 'M';
-	private GPSTracker gps;
+	public GPSTracker gps;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -135,14 +135,10 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 		initMainList();
 		initWheels();
 		initRadiogroup();
-
-		return view;
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+		
 		gps = new GPSTracker(getActivity());
+		
+		return view;
 	}
 
 	private void initRadiogroup(){
@@ -698,14 +694,16 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 			}
 		}else{
 			gps.getLocation();
-			Coordinates coord = new Coordinates(gps.getLatitude(), gps.getLongitude());
-			DesireContentSport newContent = new DesireContentSport(Client.getName(), null, sportDescriptionString,
-					coord, null,
-					sportNameString, sportAdvantageString);
-			sendDesire(newContent);
-			Toast.makeText(getActivity(), "Спорт: "+sportName.getText()+
-					"\nЖелание: "+sportDescription.getText()+
-					"\nУровень: "+sportAdvantage.getText(), Toast.LENGTH_SHORT).show();
+			if(gps.canGetLocation()){
+				Coordinates coord = new Coordinates(gps.getLatitude(), gps.getLongitude());
+				DesireContentSport newContent = new DesireContentSport(Client.getName(), null, sportDescriptionString,
+						coord, null,
+						sportNameString, sportAdvantageString);
+				sendDesire(newContent);
+				Toast.makeText(getActivity(), "Спорт: "+sportName.getText()+
+						"\nЖелание: "+sportDescription.getText()+
+						"\nУровень: "+sportAdvantage.getText(), Toast.LENGTH_SHORT).show();
+			} else Toast.makeText(getActivity(), "Не может определить местоположение", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -716,19 +714,21 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 		if(!datingDescriptionString.isEmpty()){
 			int partnerAgeFrom = fromAgeWheel.getCurrentItem()+18;
 			int partnerAgeTo = toAgeWheel.getCurrentItem()+18;
-			
-			gps.getLocation();
-			Coordinates coord = new Coordinates(gps.getLatitude(), gps.getLongitude());
-			DesireContentDating newContent = new DesireContentDating(Client.getName(), null, datingDescriptionString,
-					coord, null,
-					male, partnerAgeFrom, partnerAgeTo);
-			sendDesire(newContent);
 
-			Toast.makeText(getActivity(), "Desire: "+ datingDescriptionString
-					+"\nMale: "+male
-					+"\nFromAge:"+(partnerAgeFrom)
-					+"\nToAge:"+(partnerAgeTo), Toast.LENGTH_SHORT).show();
-		} else Toast.makeText(getActivity(), "Введите желание", Toast.LENGTH_SHORT).show();
+			gps.getLocation();
+			if(gps.canGetLocation()){
+				Coordinates coord = new Coordinates(gps.getLatitude(), gps.getLongitude());
+				DesireContentDating newContent = new DesireContentDating(Client.getName(), null, datingDescriptionString,
+						coord, null,
+						male, partnerAgeFrom, partnerAgeTo);
+				sendDesire(newContent);
+
+				Toast.makeText(getActivity(), "Desire: "+ datingDescriptionString
+						+"\nMale: "+male
+						+"\nFromAge:"+(partnerAgeFrom)
+						+"\nToAge:"+(partnerAgeTo), Toast.LENGTH_SHORT).show();
+			} else Toast.makeText(getActivity(), "Введите желание", Toast.LENGTH_SHORT).show();
+		} else Toast.makeText(getActivity(), "Не может определить местоположение", Toast.LENGTH_SHORT).show();
 	}
 
 }
