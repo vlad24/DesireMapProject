@@ -15,22 +15,11 @@ public class CommandToGetSatisfiers extends CommandForDesireThread{
 	
 	@Override
 	public void execute() throws Exception {
-		System.out.println("***Getting satisfiers");
-		try{
-				SatisfySet satisfiers = receiver.getSatisfiers(satisfyPack);
-				if (satisfiers != null){
-					receiver.confirmSuccess();
-					receiver.socketOut.writeObject(satisfiers);
-					System.out.println("*** THREAD " + receiver.getUserName() + " SENT SATISFIERS");
-				}
-				else{
-					throw new Exception("...no satisfiers");
-				}
-		}
-		catch(Exception error){
-			receiver.confirmFail();
-			throw error;
-		}
+		System.out.println("***Getting satisfiers executed");
+		SatisfySet satisfiers = receiver.getSatisfiers(satisfyPack);
+		receiver.socketOut.writeObject(satisfiers);
+		receiver.socketOut.reset();
+		System.out.println("*** THREAD " + receiver.getUserName() + " SENT SATISFIERS");
 	}
 	
 }

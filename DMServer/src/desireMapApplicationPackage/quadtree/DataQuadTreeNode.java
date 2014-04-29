@@ -109,13 +109,14 @@ public class DataQuadTreeNode implements Serializable{
 	public void print(){
 		printHelper(this);
 	}
+	
 	private void printHelper(DataQuadTreeNode node) {
 		if (node == null){
 			return;
 		}
 		else{
 			for (DesireContent cont : this.points){
-				System.out.println(cont.desireID + " " + cont.login + " " + cont.description);
+				System.out.println(cont.desireID + " " + cont.login + " " + cont.description + " " + cont.time.toString());
 			}
 			printHelper(node.northEastNode);
 			printHelper(node.northWestNode);

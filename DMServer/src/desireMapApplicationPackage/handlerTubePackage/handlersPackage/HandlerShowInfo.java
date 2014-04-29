@@ -16,7 +16,9 @@ public class HandlerShowInfo extends Handler{
 	@Override
 	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue){
 		if (myJob(qObject.actionCode)){
+			System.out.println("Handler Log In is working");
 			accumulatorQueue.addCommand((new CommandToShowInfo(ownerThread)));
+			System.out.println("Show info command is pushed to queue");
 		}
 	}
 

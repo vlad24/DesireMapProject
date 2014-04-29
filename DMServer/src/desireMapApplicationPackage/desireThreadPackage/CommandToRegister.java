@@ -1,30 +1,28 @@
 package desireMapApplicationPackage.desireThreadPackage;
 
-import desireMapApplicationPackage.userDataPackage.RegistrationData;
+import desireMapApplicationPackage.actionQueryObjectPackage.RegistrationPack;
 
 public class CommandToRegister extends CommandForDesireThread{
 	
-	private final RegistrationData regData;
+	private final RegistrationPack regPack;
 	//--
-	public CommandToRegister(DesireThread newReceiver, RegistrationData newRegData) {
+	public CommandToRegister(DesireThread newReceiver, RegistrationPack newRegPack) {
 		receiver = newReceiver;
-		regData = newRegData;
+		regPack = newRegPack;
 	}
 
 	@Override
 	public void execute() throws Exception {
 		try{
 			System.out.println("***Registering ");
-			synchronized(this){
-				receiver.register(regData);
-			}
-			receiver.setCurrentUser(regData.login);
-			System.out.println("***" + regData.login + " online");
-			receiver.registerTalker(false);
-			receiver.confirmSuccess();
+			receiver.register(regPack);
+			receiver.setCurrentUser(regPack.registrationData.login);
+			receiver.setDeviceID(regPack.androidData.regID);
+			System.out.println("***" + regPack.registrationData.login + " online");
+			receiver.sendTrue();
 		}
 		catch(Exception error){
-			receiver.confirmFail();
+			receiver.sendFalse();
 			throw error;
 		}
 	}

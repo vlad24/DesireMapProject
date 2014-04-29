@@ -15,9 +15,7 @@ public class CommandToAddDesire extends CommandForDesireThread{
 		System.out.println("*** Adding ");
 		try{
 			String generatedID = "";
-			synchronized(receiver){
-				generatedID = receiver.addDesire(addPack);
-			}
+			generatedID = receiver.addDesire(addPack);
 			receiver.sendID(generatedID);
 		}
 		catch(Exception error){

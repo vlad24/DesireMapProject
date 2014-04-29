@@ -22,8 +22,10 @@ public class HandlerLogIn extends Handler{
 	@Override
 	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue){
 		if(myJob(qObject.actionCode)){
+			System.out.println("Handler Log In is working");
 			LoginPack loginPack = (LoginPack)qObject;
-			accumulatorQueue.addCommand(new CommandToLogIn(ownerThread, loginPack.loginData));
+			accumulatorQueue.addCommand(new CommandToLogIn(ownerThread, loginPack));
+			System.out.println("Log In command is pushed to queue");
 		}
 	}
 }

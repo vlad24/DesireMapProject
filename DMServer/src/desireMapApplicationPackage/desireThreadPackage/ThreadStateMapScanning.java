@@ -1,20 +1,21 @@
 package desireMapApplicationPackage.desireThreadPackage;
 
 import java.sql.SQLException;
-import java.util.Deque;
 import java.util.HashSet;
 
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
+import desireMapApplicationPackage.actionQueryObjectPackage.LoginPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.MessageDeliverPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.RegistrationPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.SatisfyPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.TilesPack;
-import desireMapApplicationPackage.desireInstrumentPackage.DesireInstrument;
-import desireMapApplicationPackage.messageSystemPackage.Message;
+import desireMapApplicationPackage.messageSystemPackage.ClientMessage;
 import desireMapApplicationPackage.outputSetPackage.DesireSet;
+import desireMapApplicationPackage.outputSetPackage.MessageSet;
 import desireMapApplicationPackage.outputSetPackage.SatisfySet;
-import desireMapApplicationPackage.userDataPackage.LoginData;
+import desireMapApplicationPackage.outputSetPackage.UserSet;
 import desireMapApplicationPackage.userDataPackage.MainData;
-import desireMapApplicationPackage.userDataPackage.RegistrationData;
 
 public class ThreadStateMapScanning extends ThreadState{
 
@@ -29,7 +30,7 @@ public class ThreadStateMapScanning extends ThreadState{
 		lastDepth = sPack.tileDepth; 
 		desireID = sPack.sDesireID;
 		try {
-			categoryCode = DesireInstrument.getCategoryTableByID(desireID);
+			categoryCode = owner.instrument.getCategoryTableByID(desireID);
 		} catch (SQLException error) {
 			categoryCode = null;
 			error.printStackTrace();
@@ -37,12 +38,12 @@ public class ThreadStateMapScanning extends ThreadState{
 	}
 	
 	@Override
-	public void register(RegistrationData regData) throws Exception {
+	public void register(RegistrationPack regPack) throws Exception {
 		throw new Exception("-Unable now");
 	}
 
 	@Override
-	public void logIn(LoginData logData) throws Exception {
+	public void authorize(LoginPack logPack) throws Exception {
 		throw new Exception("-Unable now");		
 	}
 
@@ -74,7 +75,7 @@ public class ThreadStateMapScanning extends ThreadState{
 				return null;
 			}
 			else{
-				SatisfySet satisfySet = DesireInstrument.getSatisfiersAtDB(desireID, categoryCode, tilesPack.tiles, null);
+				SatisfySet satisfySet = owner.instrument.getSatisfiersAtDB(desireID, categoryCode, tilesPack.tiles, null);
 				//Adding new tiles at this level at already sent tiles
 				loadedTiles.addAll(tilesPack.tiles);
 				return satisfySet;
@@ -82,15 +83,20 @@ public class ThreadStateMapScanning extends ThreadState{
 		}
 		else if(currentDepth > lastDepth){
 			System.out.println("!!! Depth has increased : " + currentDepth +  ". Refreshing");
-			SatisfySet satisfySet = DesireInstrument.getSatisfiersAtDB(desireID, categoryCode, tilesPack.tiles,  null);
+			SatisfySet satisfySet = owner.instrument.getSatisfiersAtDB(desireID, categoryCode, tilesPack.tiles,  null);
+			loadedTiles = tilesPack.tiles;
+			System.out.println("!!! Loaded tiles has been updated");
 			lastDepth = currentDepth;
-			System.out.println("!!! Current length has been updated");
+			System.out.println("!!! Last length has been updated");
 			return satisfySet;
 		}
 		else{
 			System.out.println("!!! Depth has decreased. DB will account loaded tiles");
-			SatisfySet satisfySet = DesireInstrument.getSatisfiersAtDB(desireID, categoryCode, tilesPack.tiles, loadedTiles);
+			SatisfySet satisfySet = owner.instrument.getSatisfiersAtDB(desireID, categoryCode, tilesPack.tiles, loadedTiles);
+			loadedTiles = tilesPack.tiles;
+			System.out.println("!!! Loaded tiles has been updated");
 			lastDepth = currentDepth;
+			System.out.println("!!! Last length has been updated");
 			return satisfySet;
 		}
 	}
@@ -113,28 +119,28 @@ public class ThreadStateMapScanning extends ThreadState{
 	}
 
 	@Override
-	public void postMessage(Message message) throws Exception {
+	public void postMessage(ClientMessage clientMessage) throws Exception {
 		changeState(new ThreadStateBasic(owner));
-		owner.postMessage(message);
+		owner.postMessage(clientMessage);
 		
 	}
 
 	@Override
-	public void sendDeliveredMessagesToClient() throws Exception {
+	public void loadNewMessages() throws Exception {
 		changeState(new ThreadStateBasic(owner));
-		owner.sendDeliveredMessagesToClient();
+		owner.loadNewMessages();
 	}
 
 	@Override
-	public void takeMessages(Deque<Message> deque) throws Exception {
+	public MessageSet getOldMessagesByCryteria(MessageDeliverPack pack) throws Exception {
 		changeState(new ThreadStateBasic(owner));
-		owner.takeMessages(deque);
+		return owner.getOldMessagesByCryteria(pack);
 	}
 
 	@Override
-	public void takeMessages(Message message) throws Exception {
+	public UserSet getUsersTalkedTo() throws Exception {
 		changeState(new ThreadStateBasic(owner));
-		owner.takeMessages(message);
+		return owner.getUsersTalkedTo();
 	}
 	
 }

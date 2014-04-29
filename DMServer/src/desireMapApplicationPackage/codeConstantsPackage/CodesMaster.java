@@ -11,23 +11,15 @@ public final class CodesMaster {
 		public static final char ShowInfoCode = 'I';
 		public static final char ShowPersonalDesiresCode = 'S';
 		public static final char DeleteCode = 'D';
-		public static final char AddSatisfyCode = 'G';
 		public static final char MessageDeliverCode = 'M';
 		public static final char MessageSendCode = 'C';
 		public static final char TilesCode = 'T';
+		public static final char UserHistoryCode = 'U';
 	}
+	
 	public static class Categories{
-		public static final int DatingCode = 0;
-		public static final int SportCode = 1;
+		public static final int SportCode = 0;
+		public static final int DatingCode = 1;
 	}
-	
-	public static boolean someAddCode(char codeSymbol){
-		return ((codeSymbol == ActionCodes.AddCode) || (codeSymbol == ActionCodes.AddSatisfyCode));
-	}
-	
-	public static boolean someSatisfyCode(char codeSymbol){
-		return ((codeSymbol == ActionCodes.SatisfyCode) || (codeSymbol == ActionCodes.AddSatisfyCode));
-	}
-	
 	
 }

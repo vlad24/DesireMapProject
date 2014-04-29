@@ -16,8 +16,10 @@ public class HandlerTiles extends Handler{
 	@Override
 	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue){
 		if (myJob(qObject.actionCode)){
+			System.out.println("HandlerTiles is working");
 			TilesPack tilesPack = (TilesPack) qObject;
 			accumulatorQueue.addCommand((new CommandToUpdateMap(ownerThread, tilesPack)));
+			System.out.println("Comand to update map is pushed to queue");
 		}
 	}
 

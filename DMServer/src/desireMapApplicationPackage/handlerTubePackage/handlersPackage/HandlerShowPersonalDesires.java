@@ -16,8 +16,10 @@ public class HandlerShowPersonalDesires extends Handler{
 	@Override
 	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue) {
 		if (myJob(qObject.actionCode)){
+			System.out.println("Handler Show Personal Desires is working");
 			ShowPersonalDesiresPack showPersonalDesiresPack = (ShowPersonalDesiresPack) qObject;
 			accumulatorQueue.addCommand(new CommandToShowPersonalDesires(ownerThread, showPersonalDesiresPack.category));
+			System.out.println("Command to show personal desires is working");
 		}
 	}
 

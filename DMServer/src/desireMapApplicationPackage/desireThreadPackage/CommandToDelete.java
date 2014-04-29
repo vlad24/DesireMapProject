@@ -11,13 +11,13 @@ public class CommandToDelete extends CommandForDesireThread{
 
 	public void execute() throws Exception{
 		try{
-				DeletePack delByContentPack = deletePack;
-				System.out.println("*** Deleting a desires of the user)");
-				receiver.delete(delByContentPack);
-				receiver.confirmSuccess();
+				DeletePack delPack = deletePack;
+				System.out.println("*** Deleting desires of the user");
+				receiver.delete(delPack);
+				receiver.sendTrue();
 		}
 		catch(Exception error){
-			receiver.confirmFail();
+			receiver.sendFalse();
 			throw error;
 		}
 		

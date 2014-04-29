@@ -10,14 +10,16 @@ import desireMapApplicationPackage.desireThreadPackage.DesireThread;
 public class DesireMapProgram {
 	private static final int portNumber = 9252;
 	private static ServerSocket listeningSocket;
+	private static int maxUserLoad = 4;
 	//--
 	public static void main(String[] args)
 	{
 		//TestMaster.jExec();
 		System.out.println("# Program is on.\n");	
 		try {
+			DesireInstrument.prepareInstrument();
 			listeningSocket = new ServerSocket(portNumber);
-			Executor poolExecutor = Executors.newFixedThreadPool(3);
+			Executor poolExecutor = Executors.newFixedThreadPool(maxUserLoad);
 			while(true){
 				System.out.println("# Waiting for a new client...\n");
 				Socket interactiveSocket = listeningSocket.accept();
@@ -30,7 +32,7 @@ public class DesireMapProgram {
 		}
 		finally{
 			try {
-				DesireInstrument.turnOffTheBase();
+				DesireInstrument.throwAwayAndCleanBase();
 				listeningSocket.close();
 				System.out.println("# Server socket is successfully closed\n");
 			} 

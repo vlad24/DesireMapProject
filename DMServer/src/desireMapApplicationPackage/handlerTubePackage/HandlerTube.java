@@ -9,13 +9,14 @@ import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerAdd
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerDelete;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerExit;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerLogIn;
-import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerMessageDeliver;
+import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerMessageGet;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerMessageSend;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerRegister;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerSatisfy;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerShowInfo;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerShowPersonalDesires;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerTiles;
+import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerUserChatHistory;
 
 public class HandlerTube {
 	protected DesireThread userThread;
@@ -28,8 +29,9 @@ public class HandlerTube {
 		tube.add(new HandlerExit(inThread));
 		tube.add(new HandlerDelete(inThread));
 		tube.add(new HandlerLogIn(inThread));
-		tube.add(new HandlerMessageDeliver(inThread));
+		tube.add(new HandlerMessageGet(inThread));
 		tube.add(new HandlerMessageSend(inThread));
+		tube.add(new HandlerUserChatHistory(inThread));
 		tube.add(new HandlerRegister(inThread));
 		tube.add(new HandlerAdd(inThread));
 		tube.add(new HandlerTiles(inThread));

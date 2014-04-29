@@ -16,7 +16,9 @@ public class HandlerExit extends Handler{
 	@Override
 	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue) {
 		if(myJob(qObject.actionCode)){
+			System.out.println("Handler exit is working");
 			accumulatorQueue.addCommand(new CommandToExit(ownerThread));
+			System.out.println("Exit command is pushed to queue");
 		}
 	}
 	

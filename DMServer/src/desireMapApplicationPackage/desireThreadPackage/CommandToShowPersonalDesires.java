@@ -1,6 +1,7 @@
 package desireMapApplicationPackage.desireThreadPackage;
 
 
+import desireMapApplicationPackage.desireContentPackage.DesireContent;
 import desireMapApplicationPackage.outputSetPackage.DesireSet;
 
 
@@ -17,19 +18,22 @@ public class CommandToShowPersonalDesires extends CommandForDesireThread{
 	
 	@Override
 	public void execute() throws Exception {
-		System.out.println("***Showing personal desires");
+		System.out.println("***Showing personal desires executed");
 		try{
-			synchronized(this){
 				DesireSet dSet = receiver.getPersonalDesires(category);
-				System.out.println("+dSet is formed");
-				receiver.confirmSuccess();
+				System.out.println("+dSet is formed : ");
+				for (DesireContent content : dSet.dArray){
+					System.out.println(content.desireID + " " + content.login + " " + content.description);
+				}
+				//receiver.sendTrue();
 				receiver.socketOut.writeObject(dSet);
+				receiver.socketOut.flush();
+				receiver.socketOut.reset();
 				System.out.println("*** THREAD " + receiver.getUserName() + " SENT desireSet");
-			}
 		}
 		catch(Exception error){
-			System.out.println("Exception thrown at showing");
-			receiver.confirmFail();
+			//receiver.sendFalse();
+			receiver.socketOut.writeObject(null);
 			throw error;
 		}
 	}

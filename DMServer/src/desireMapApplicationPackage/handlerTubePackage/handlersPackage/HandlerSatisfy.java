@@ -16,13 +16,15 @@ public class HandlerSatisfy extends Handler{
 	@Override
 	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue) {
 		if (myJob(qObject.actionCode)){
+			System.out.println("Handler Satisfy is working");
 			SatisfyPack satisfyPack = (SatisfyPack) qObject;
 			accumulatorQueue.addCommand(new CommandToGetSatisfiers(ownerThread, satisfyPack));
+			System.out.println("Satisfy command is pushed to queue");
 		}
 	}
 
 	@Override
 	public boolean myJob(char action) {
-		return CodesMaster.someSatisfyCode(action);
+		return action == CodesMaster.ActionCodes.SatisfyCode;
 	}
 }

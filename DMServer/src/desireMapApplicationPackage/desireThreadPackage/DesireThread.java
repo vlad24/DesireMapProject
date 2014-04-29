@@ -4,123 +4,62 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Deque;
-import java.util.LinkedList;
 
 import desireMapApplicationPackage.actionQueryObjectPackage.ActionQueryObject;
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
+import desireMapApplicationPackage.actionQueryObjectPackage.LoginPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.MessageDeliverPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.RegistrationPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.SatisfyPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.TilesPack;
+import desireMapApplicationPackage.desireInstrumentPackage.DesireInstrument;
 import desireMapApplicationPackage.handlerTubePackage.HandlerTube;
 import desireMapApplicationPackage.messageSystemPackage.ChatKing;
-import desireMapApplicationPackage.messageSystemPackage.Message;
+import desireMapApplicationPackage.messageSystemPackage.ClientMessage;
 import desireMapApplicationPackage.outputSetPackage.DesireSet;
+import desireMapApplicationPackage.outputSetPackage.MessageSet;
 import desireMapApplicationPackage.outputSetPackage.SatisfySet;
-import desireMapApplicationPackage.userDataPackage.LoginData;
+import desireMapApplicationPackage.outputSetPackage.UserSet;
 import desireMapApplicationPackage.userDataPackage.MainData;
-import desireMapApplicationPackage.userDataPackage.RegistrationData;
 
 public class DesireThread implements Runnable{
 	
 	private String currentUser;
+	private String deviceID;
+	private final HandlerTube tube;
 	private final Socket interactiveSocket;
-	protected ThreadState stateObject;
 	protected ObjectOutputStream socketOut;
 	protected ObjectInputStream socketIn;
-	private final HandlerTube tube;
-	public Deque<Message> localMessages;
+	protected ChatKing chater;
+	protected DesireInstrument instrument;
+	protected ThreadState stateObject;
+	public boolean isRunning;
 	
 	public DesireThread(Socket givenSocket) throws IOException{
 		System.out.println("*** Thread is initializing\n");
 		setCurrentUser("?");
+		setDeviceID("?");
+		isRunning = false;
 		stateObject = new ThreadStateStart(this);
 		tube = new HandlerTube(this);
-		localMessages = new LinkedList<Message>();
+		instrument = DesireInstrument.getInstance();
+		chater = ChatKing.getInstance();
 		interactiveSocket = givenSocket;
 		socketOut = new ObjectOutputStream(interactiveSocket.getOutputStream());
 		socketOut.flush();
 		socketIn = new ObjectInputStream(interactiveSocket.getInputStream());
 	}
-	////API:
-	public void register(RegistrationData regData) throws Exception{
-		stateObject.register(regData);
+	
+	/////////////////////////////////////
+	public String getDeviceID() {
+		return deviceID;
 	}
 	
-	public void logIn(LoginData logData) throws Exception{
-		stateObject.logIn(logData);
+	public void setDeviceID(String deviceID) {
+		this.deviceID = deviceID;
 	}
 	
-	public String addDesire(AddPack addPack) throws Exception{
-		return stateObject.addDesire(addPack);
-	}
-	
-	public void delete(DeletePack pack) throws Exception{
-		stateObject.delete(pack);
-	}
-		
-	public SatisfySet getSatisfiers(SatisfyPack sPack) throws Exception{
-		try {
-			SatisfySet result = stateObject.getSatisfiers(sPack);
-			return result;
-		} catch (Exception error) {
-			throw error;
-		}
-	}
-	
-	public SatisfySet updateSatisfiers(TilesPack tilesPack) throws Exception {
-		try {
-			SatisfySet result = stateObject.updateSatisfiers(tilesPack);
-			return result;
-		} catch (Exception error) {
-			throw error;
-		}
-	}
-	
-	public MainData getInfo() throws Exception{
-		return stateObject.getInfo();
-	}
-	
-	public DesireSet getPersonalDesires(int category) throws Exception{
-		return stateObject.getPersonalDesires(category);
-	}
-
-	public void registerTalker(boolean deliverNeed){
-		ChatKing.getInstance().registerThread(this, deliverNeed);
-		System.out.println("+Thread is registered");
-	}
-	
-	public void unregisterTalker(){
-		ChatKing.getInstance().unregisterThread(this);
-		System.out.println("+Thread is unregistered");
-	}
-	
-	public void postMessage(Message message) throws Exception {
-		stateObject.postMessage(message);
-	}
-	
-	public void sendDeliveredMessagesToClient() throws Exception{
-		stateObject.sendDeliveredMessagesToClient();
-	}
-	
-	public void clearLocalMessageHistory(){
-		localMessages.clear();
-		System.out.println("+  Local messages history of " + currentUser +  " has been cleared");
-}
-	
-	public void takeMessages(Deque<Message> deque) throws Exception{
-		stateObject.takeMessages(deque);
-	}
-	
-	public void takeMessages(Message message) throws Exception {
-		stateObject.takeMessages(message);
-	}
-	
-	public void exit(){
-		stateObject.changeState(new ThreadStateStart(this));
-	}
-	
-	/////////////////////////////////////////////////////////////////////////
 	public String getUserName() {
 		return currentUser;
 	}
@@ -129,7 +68,7 @@ public class DesireThread implements Runnable{
 		this.currentUser = currentUser;
 	}
 	
-	protected void confirmSuccess(){
+	protected void sendTrue(){
 		try{
 			socketOut.writeBoolean(true);
 			socketOut.flush();
@@ -140,7 +79,7 @@ public class DesireThread implements Runnable{
 		}
 	}
 
-	protected void confirmFail(){
+	protected void sendFalse(){
 		try{
 			socketOut.writeBoolean(false);
 			socketOut.flush();
@@ -171,11 +110,73 @@ public class DesireThread implements Runnable{
 			throw new IOException("****** NULL QUERY!!!");
 		}
 	}
+	/////////////////////////////////////////////////////////////
+	
+	////API:
+	public void register(RegistrationPack regPack) throws Exception{
+		stateObject.register(regPack);
+	}
+	
+	public void authorize(LoginPack logPack) throws Exception{
+		stateObject.authorize(logPack);
+	}
+	
+	public String addDesire(AddPack addPack) throws Exception{
+		return stateObject.addDesire(addPack);
+	}
+	
+	public void delete(DeletePack pack) throws Exception{
+		stateObject.delete(pack);
+	}
+		
+	public SatisfySet getSatisfiers(SatisfyPack sPack) throws Exception{
+			return stateObject.getSatisfiers(sPack);
+	}
+	
+	public SatisfySet updateSatisfiers(TilesPack tilesPack) throws Exception {
+		try {
+			SatisfySet result = stateObject.updateSatisfiers(tilesPack);
+			return result;
+		} catch (Exception error) {
+			throw error;
+		}
+	}
+	
+	public MainData getInfo() throws Exception{
+		return stateObject.getInfo();
+	}
+	
+	public DesireSet getPersonalDesires(int category) throws Exception{
+		return stateObject.getPersonalDesires(category);
+	}
+	
+	public void postMessage(ClientMessage clientMessage) throws Exception {
+		stateObject.postMessage(clientMessage);
+	}
+	
+	public void loadNewMessages() throws Exception {
+		stateObject.loadNewMessages();
+	}
+	
+	public MessageSet getOldMessagesByCryteria(MessageDeliverPack pack) throws Exception {
+		return stateObject.getOldMessagesByCryteria(pack);
+	}
 
-//////////////////////////////
-//////////////////////////////
-//////////////////////////////
+	public UserSet getUsersTalkedTo() throws Exception {
+		return stateObject.getUsersTalkedTo();
+	}
+	
+	public void exit(){
+		stateObject.exit();
+	}
+	///API_END
+	
+	//////////////////////////////
+	//////////////////////////////
+	//////////////////////////////
+	
 	public void run(){
+		isRunning = true;
 		while(!Thread.currentThread().isInterrupted()){
 			try {
 				System.out.println("*** THREAD " + getUserName() + " : Waiting for a client command...");
@@ -201,13 +202,17 @@ public class DesireThread implements Runnable{
 					System.out.println("****** Socket has not been closed. DANGER!");
 				}
 				finally{
+					isRunning = false;
 					Thread.currentThread().interrupt();
-					System.out.println("*** THREAD INTERRUPTED ");
-					System.out.println(Thread.currentThread().isInterrupted());
+					System.out.println("*** THREAD HAS BEEN INTERRUPTED ");
+					exit();
+					System.out.println("*** THREAD HAS EXITED ");
 				}
 			}
-		}//while
-	}//run
+		}
+	}
+
+
 
 	
 }

@@ -1,19 +1,19 @@
 package desireMapApplicationPackage.desireThreadPackage;
 
-import java.util.Deque;
 
-import desireMapApplicationPackage.messageSystemPackage.Message;
+import desireMapApplicationPackage.messageSystemPackage.ClientMessage;
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
+import desireMapApplicationPackage.actionQueryObjectPackage.LoginPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.MessageDeliverPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.RegistrationPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.SatisfyPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.TilesPack;
-import desireMapApplicationPackage.desireContentPackage.DesireContent;
-import desireMapApplicationPackage.desireInstrumentPackage.DesireInstrument;
 import desireMapApplicationPackage.outputSetPackage.DesireSet;
+import desireMapApplicationPackage.outputSetPackage.MessageSet;
 import desireMapApplicationPackage.outputSetPackage.SatisfySet;
-import desireMapApplicationPackage.userDataPackage.LoginData;
+import desireMapApplicationPackage.outputSetPackage.UserSet;
 import desireMapApplicationPackage.userDataPackage.MainData;
-import desireMapApplicationPackage.userDataPackage.RegistrationData;
 
 
 public class ThreadStateStart extends ThreadState{
@@ -22,28 +22,32 @@ public class ThreadStateStart extends ThreadState{
                 owner = inThread;
         }
         
-        public void logIn(LoginData logData) throws Exception {
+        public void authorize(LoginPack logPack) throws Exception {
         		//Unpacking
-        		String login = logData.login;
-        		String password = logData.password;
+        		String login = logPack.loginData.login;
+        		String password = logPack.loginData.password;
         		//
         		try{
-        			DesireInstrument.logInAtDB(login, password);
+        			owner.instrument.logInAtDB(login, password);
+        			owner.instrument.handleAndroidData(login, logPack.androidData);
         			changeState(new ThreadStateBasic(owner));
         		}
         		catch(Exception error){
-        			System.out.println("Instrument hasn't logged in");
+        			System.out.println("-Instrument hasn't logged in");
         			throw error;
         		}
         }
         
-        public void register(RegistrationData regData) throws Exception{
+        public void register(RegistrationPack regPack) throws Exception{
         	try{
-        		DesireInstrument.registerAtDB(regData);
+        		owner.instrument.registerAtDB(regPack.registrationData);
+        		System.out.println("Registered user");
+        		owner.instrument.handleAndroidData(regPack.registrationData.login, regPack.androidData);
+        		System.out.println("Registered android");
         		changeState(new ThreadStateBasic(owner));
         	}
         	catch(Exception error){
-        		System.out.println("Instrument hasn't logged in");
+        		System.out.println("-Instrument hasn't registered");
         		throw error;
         	}
         }
@@ -89,24 +93,25 @@ public class ThreadStateStart extends ThreadState{
 			throw new Exception("- Unable now\n Hint : log in or register");
 		}
 
-		@Override
-		public void sendDeliveredMessagesToClient() throws Exception {
-			throw new Exception("- Unable now\n Hint : log in or register");			
-		}
 
 		@Override
-		public void takeMessages(Deque<Message> deque) throws Exception {
-			throw new Exception("- Unable now\n Hint : log in or register");			
-		}
-
-		@Override
-		public void takeMessages(Message message) throws Exception {
+		public void postMessage(ClientMessage clientMessage) throws Exception {
 			throw new Exception("- Unable now\n Hint : log in or register");
 		}
 
 		@Override
-		public void postMessage(Message message) throws Exception {
+		public void loadNewMessages() throws Exception {
 			throw new Exception("- Unable now\n Hint : log in or register");
+		}
+
+		@Override
+		public MessageSet getOldMessagesByCryteria(MessageDeliverPack pack) throws Exception {
+			throw new Exception("- Unable now\n Hint : log in or register");			
+		}
+
+		@Override
+		public UserSet getUsersTalkedTo() throws Exception {
+			throw new Exception("- Unable now\n Hint : log in or register");	
 		}
 
 }

@@ -1,17 +1,22 @@
 package desireMapApplicationPackage.desireContentPackage;
 
+
+import java.util.Date;
+
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 
 
 public final class DesireContentDating extends DesireContent{
 	public final char partnerSex;
-	public final int partnerAge;	
+	public final int partnerAgeFrom;
+	public final int partnerAgeTo;
 	////
-	public DesireContentDating(String nLogin,int nDesireID, String nDesireDescription, Coordinates nCoordinates,
-			char newPartnerSex, int newPartnerAge){
-		super(nLogin , nDesireID, nDesireDescription, nCoordinates, CodesMaster.Categories.DatingCode);
+	public DesireContentDating(String nLogin,String nDesireID, String nDesireDescription, Coordinates nCoordinates, Date nTime,
+			char newPartnerSex, int newPartnerAgeFrom, int newPartnerAgeTo){
+		super(nLogin , nDesireID, nDesireDescription, nCoordinates, CodesMaster.Categories.DatingCode, nTime);
 		partnerSex = newPartnerSex;
-		partnerAge = newPartnerAge; 		
+		partnerAgeFrom = newPartnerAgeFrom;
+		partnerAgeTo = newPartnerAgeTo;
 	}
 
 }

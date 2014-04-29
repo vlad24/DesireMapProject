@@ -16,13 +16,14 @@ public class HandlerAdd extends Handler{
 
 	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue){
 		if (myJob(qObject.actionCode)){
-			System.out.println("&& Casting to AddPack");
-				AddPack addPack  = (AddPack) qObject;
-				accumulatorQueue.addCommand(new CommandToAddDesire(ownerThread, addPack));
-			}
+			System.out.println("Handler adding is working");
+			AddPack addPack  = (AddPack) qObject;
+			accumulatorQueue.addCommand(new CommandToAddDesire(ownerThread, addPack));
+			System.out.println("Add command is pushed to queue");
 		}
+	}
 
 	public boolean myJob(char action){
-		return CodesMaster.someAddCode(action);
+		return (action == CodesMaster.ActionCodes.AddCode);
 	}
 }

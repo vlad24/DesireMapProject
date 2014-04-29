@@ -21,8 +21,10 @@ public class HandlerRegister extends Handler{
 	@Override
 	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue) {
 		if(myJob(qObject.actionCode)){
+			System.out.println("Handler Register is pushed to queue");
 			RegistrationPack registrationPack = (RegistrationPack) qObject;
-			accumulatorQueue.addCommand((new CommandToRegister(ownerThread, registrationPack.registrationData)));
+			accumulatorQueue.addCommand((new CommandToRegister(ownerThread, registrationPack)));
+			System.out.println("Registration command is pushed to queue");
 		}
 		
 	}

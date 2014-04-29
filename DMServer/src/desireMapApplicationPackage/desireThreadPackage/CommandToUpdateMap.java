@@ -1,6 +1,7 @@
 package desireMapApplicationPackage.desireThreadPackage;
 
 import desireMapApplicationPackage.actionQueryObjectPackage.TilesPack;
+import desireMapApplicationPackage.outputSetPackage.SatisfySet;
 
 public class CommandToUpdateMap extends CommandForDesireThread {
 
@@ -13,7 +14,16 @@ public class CommandToUpdateMap extends CommandForDesireThread {
 
 	@Override
 	public void execute() throws Exception {
-		receiver.updateSatisfiers(tilesPack);
+		try{
+			SatisfySet newSatisfiers = receiver.updateSatisfiers(tilesPack);
+			System.out.println("...Sending updated satisfiers");
+			receiver.socketOut.writeObject(newSatisfiers);
+			receiver.socketOut.reset();
+		}
+		catch(Exception error){
+			receiver.socketOut.writeObject(null);
+			throw error;
+		}
 	}
 
 }

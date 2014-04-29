@@ -8,13 +8,14 @@ import desireMapApplicationPackage.desireContentPackage.DesireContent;
 
 
 public class CategoryTube {
+
 		private ArrayList<CategoryManager> tube;
 		////
-		public CategoryTube(){
+		public CategoryTube(DesireInstrument owner){
 			tube = new ArrayList<CategoryManager>();
-			tube.add(new CategoryManagerMain());
-			tube.add(new CategoryManagerSport());
-			tube.add(new CategoryManagerDating());
+			tube.add(new CategoryManagerMain(owner));
+			tube.add(new CategoryManagerSport(owner));
+			tube.add(new CategoryManagerDating(owner));
 		}
 		
 		public void tryToAdd(String thisDesireID, AddPack pack) throws SQLException{

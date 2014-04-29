@@ -1,13 +1,13 @@
 package desireMapApplicationPackage.outputSetPackage;
 
 import java.io.Serializable;
-import java.util.Queue;
+import java.util.ArrayList;
 
-import desireMapApplicationPackage.messageSystemPackage.Message;
+import desireMapApplicationPackage.messageSystemPackage.ClientMessage;
 
 public class MessageSet implements Serializable{
-	public MessageSet(Queue<Message> newMessages){
-		messages = newMessages;
+	public ArrayList<ClientMessage> mSet;
+	public MessageSet(ArrayList<ClientMessage> newMessageSet){
+		mSet = newMessageSet;
 	}
-	public Queue<Message> messages;
 }

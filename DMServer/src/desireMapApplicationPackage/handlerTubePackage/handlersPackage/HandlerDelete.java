@@ -21,8 +21,10 @@ public class HandlerDelete extends Handler{
 	@Override
 	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue) {
 		if (myJob(qObject.actionCode)){
+			System.out.println("Handler delete is working");
 			DeletePack deletePack = (DeletePack) qObject;
 			accumulatorQueue.addCommand(new CommandToDelete(ownerThread, deletePack));
+			System.out.println("Delete command is pushed to queue");
 		}
 	}
 

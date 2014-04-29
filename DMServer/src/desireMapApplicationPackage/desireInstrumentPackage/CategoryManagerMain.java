@@ -8,10 +8,13 @@ import desireMapApplicationPackage.desireContentPackage.DesireContent;
 
 public class CategoryManagerMain extends CategoryManager{
 
+	public CategoryManagerMain(DesireInstrument newOwner){
+		owner = newOwner;
+	}
 	@Override
 	protected void tryToAddDesire(String desId, AddPack pack) throws SQLException {
 		System.out.println("_ADDING INTO DESIRES_MAIN");
-		Statement adder =  DesireInstrument.getAccessToDesireBase().createStatement();
+		Statement adder =  owner.getAccessToDesireBase().createStatement();
 		String query = "INSERT INTO DESIRES_MAIN VALUES('" 
 				+ desId + "', '" 
 				+ pack.desireContent.login + "', '"

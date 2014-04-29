@@ -1,29 +1,27 @@
 package desireMapApplicationPackage.desireThreadPackage;
 
-import desireMapApplicationPackage.userDataPackage.LoginData;
+import desireMapApplicationPackage.actionQueryObjectPackage.LoginPack;
 
 public class CommandToLogIn extends CommandForDesireThread{
 	
-	private final LoginData logData;
+	private final LoginPack logPack;
 	//--
-	public CommandToLogIn(DesireThread newReceiver, LoginData newLoginData) {
+	public CommandToLogIn(DesireThread newReceiver, LoginPack newLoginPack) {
 		receiver = newReceiver;
-		logData = newLoginData;
+		logPack = newLoginPack;
 	}
 	@Override
 	public void execute() throws Exception {
 		try{
-			System.out.println("*** Logging IN");
-			synchronized(receiver){
-				receiver.logIn(logData);
-			}
-			receiver.confirmSuccess();
-			receiver.setCurrentUser(logData.login);
-			receiver.registerTalker(true);
-			System.out.println("*** " + logData.login + " ONLINE");
+			System.out.println("*** Logging In executed");
+			receiver.authorize(logPack);
+			receiver.setCurrentUser(logPack.loginData.login);
+			receiver.setDeviceID(logPack.androidData.regID);
+			receiver.sendTrue();
+			System.out.println("*** " + logPack.loginData.login + " ONLINE");
 		}
 		catch(Exception error){
-			receiver.confirmFail();
+			receiver.sendFalse();
 			throw error;
 		}
 	}

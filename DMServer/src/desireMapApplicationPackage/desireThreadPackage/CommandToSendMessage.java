@@ -3,16 +3,16 @@ package desireMapApplicationPackage.desireThreadPackage;
 import desireMapApplicationPackage.messageSystemPackage.*;
 
 public class CommandToSendMessage extends CommandForDesireThread{
-	private Message message;
+	private ClientMessage clientMessage;
 	////
-	public CommandToSendMessage(DesireThread newReceiver, Message newMessage){
+	public CommandToSendMessage(DesireThread newReceiver, ClientMessage newMessage){
 		receiver = newReceiver;
-		message = newMessage;
+		clientMessage = newMessage;
 	}
 	
 	@Override
 	public void execute() throws Exception {
-		receiver.postMessage(message);
+		receiver.postMessage(clientMessage);
 	}
 
 }

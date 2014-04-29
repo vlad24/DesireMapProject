@@ -14,17 +14,16 @@ public class CommandToShowInfo extends CommandForDesireThread{
 	}
 	@Override
 	public void execute() throws Exception{
-		System.out.println("***Showing info");
+		System.out.println("***Showing info executed");
 		try{
-			synchronized(receiver){
 				MainData infoData = receiver.getInfo();
-				receiver.confirmSuccess();
+				//receiver.sendTrue();
 				receiver.socketOut.writeObject(infoData);
+				receiver.socketOut.flush();
 				System.out.println("*** THREAD " + receiver.getUserName() + " Info HAS BEEN SENT");
-			}
 		}
 		catch(Exception error){
-			receiver.confirmFail();
+			receiver.socketOut.writeObject(null);
 			throw error;
 		}
 	}

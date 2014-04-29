@@ -18,7 +18,8 @@ public class HandlerMessageSend extends Handler{
 		if (myJob(qObject.actionCode)){
 			System.out.println("HandlerMessageSend is working");
 			MessageSendPack mesPack = (MessageSendPack) qObject;
-			accumulatorQueue.addCommand(new CommandToSendMessage(ownerThread, mesPack.message));
+			accumulatorQueue.addCommand(new CommandToSendMessage(ownerThread, mesPack.clientMessage));
+			System.out.println("Message send command is pushed to queue");
 		}
 	}
 

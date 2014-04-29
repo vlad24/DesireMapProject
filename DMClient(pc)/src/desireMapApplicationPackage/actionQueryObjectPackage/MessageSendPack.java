@@ -1,14 +1,14 @@
 package desireMapApplicationPackage.actionQueryObjectPackage;
 
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
-import desireMapApplicationPackage.messageSystemPackage.Message;
+import desireMapApplicationPackage.messageSystemPackage.ClientMessage;
 
 public class MessageSendPack extends ActionQueryObject{
 	
-	public final Message message;
+	public final ClientMessage clientMessage;
 	
-	public MessageSendPack(Message newMessage) {
+	public MessageSendPack(ClientMessage newMessage) {
 		super(CodesMaster.ActionCodes.MessageSendCode);
-		message = newMessage;
+		clientMessage = newMessage;
 	}
 }
