@@ -5,7 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,10 +23,13 @@ import desireMapApplicationPackage.actionQueryObjectPackage.RegistrationPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.SatisfyPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.ShowInfoPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.ShowPersonalDesiresPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.UserChatHistoryPack;
 import desireMapApplicationPackage.desireContentPackage.DesireContent;
 import desireMapApplicationPackage.messageSystemPackage.ClientMessage;
 import desireMapApplicationPackage.outputSetPackage.DesireSet;
+import desireMapApplicationPackage.outputSetPackage.MessageSet;
 import desireMapApplicationPackage.outputSetPackage.SatisfySet;
+import desireMapApplicationPackage.outputSetPackage.UserSet;
 import desireMapApplicationPackage.quadtree.QuadTreeNode;
 import desireMapApplicationPackage.quadtree.QuadTreeNodeBox;
 import desireMapApplicationPackage.userDataPackage.AndroidData;
@@ -115,8 +117,12 @@ public class Client {
 	}
 
 
-	public static Deque<ClientMessage> getMessages() throws Exception{
-		return clientRunnable.getMessages();
+	public static MessageSet getMessages(String partnerName, int hoursRadius) throws Exception{
+		return clientRunnable.getMessages(partnerName, hoursRadius);
+	}
+	
+	public static UserSet getChatUsers() throws Exception{
+		return clientRunnable.getChatUsers();
 	}
 
 	public static SatisfySet getSatisfyDesires(String desireID, HashSet<String> tiles, int tileDepth) throws Exception{
@@ -241,14 +247,24 @@ public class Client {
 		}
 
 
-		@SuppressWarnings("unchecked")
-		public Deque<ClientMessage> getMessages() throws Exception{
-			MessageDeliverPack deliverPack = new MessageDeliverPack();
-			Deque<ClientMessage> messageSet;
+		public MessageSet getMessages(String partnerName, int hoursRadius) throws Exception{
+			MessageDeliverPack deliverPack = new MessageDeliverPack(partnerName, clientName, hoursRadius);
+		    MessageSet messageSet;
 			out.writeObject(deliverPack);
 			out.reset();
-			messageSet = (Deque<ClientMessage>) in.readObject();
+			Log.d(TAG, "Try to receive MessageSet");
+			messageSet = (MessageSet) in.readObject();
 			return messageSet;
+		}
+		
+		public UserSet getChatUsers() throws Exception{
+			UserChatHistoryPack userChatPack = new UserChatHistoryPack();
+			UserSet userSet;
+			out.writeObject(userChatPack);
+			out.reset();
+			Log.d(TAG, "Try to receive UserSet");
+			userSet = (UserSet) in.readObject();
+			return userSet;
 		}
 
 		public SatisfySet getSatisfyDesires(String desireID, HashSet<String> tiles, int tileDepth) throws Exception{
@@ -256,7 +272,7 @@ public class Client {
 			SatisfySet set;
 			out.writeObject(satisfyPack);
 			out.reset();
-			Log.d(TAG, "Try to receive DesireSet");
+			Log.d(TAG, "Try to receive SatisfySet");
 			set = (SatisfySet) in.readObject();
 			return set;		
 		}

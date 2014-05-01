@@ -3,15 +3,15 @@ package com.example.testfinalgraphicapp;
 
 import java.util.ArrayList;
 
-import com.google.android.gms.maps.MapView;
-
 import logic.Client;
 import logic.GPSTracker;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -38,17 +38,19 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 import fragments.ChatFragment;
+import fragments.ChatFragment2;
 import fragments.ExploreFragment;
 import fragments.MapFragment;
 import fragments.MyDesiresFragment;
 import graphics.blur.FastBlur;
+import graphics.chat.ChatMessage;
 import graphics.slidingmenu.MenuCustomDrawerListAdapter;
 import graphics.slidingmenu.MenuDrawerItem;
 
 public class MainActivity extends FragmentActivity {
 
 	private MyDesiresFragment myDesiresFragment;
-	private ChatFragment chatFragment;
+	private ChatFragment2 chatFragment;
 	private ExploreFragment exploreFragment;
 	private MapFragment mapFragment;
 	private Fragment currentFragment;
@@ -79,6 +81,23 @@ public class MainActivity extends FragmentActivity {
 	private GPSTracker gps;
 	private String TAG = "DrawerAppMainActivity";
 
+	// This intent filter will be set to filter on the string "GCM_RECEIVED_ACTION"
+	private IntentFilter gcmFilter;
+
+	private BroadcastReceiver gcmReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			String broadcastSender = intent.getExtras().getString("sender");
+			String broadcastMessage = intent.getExtras().getString("message");
+
+			if (broadcastSender != null) {
+		//		chatFragment.addNewChatMessage(broadcastSender, new ChatMessage(broadcastMessage, false));
+			}
+		}
+	};
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -89,10 +108,10 @@ public class MainActivity extends FragmentActivity {
 		handler = new Handler();
 		gps = new GPSTracker(this);
 		myDesiresFragment = new MyDesiresFragment();
-		chatFragment = new ChatFragment();
+		chatFragment = new ChatFragment2();
 		exploreFragment = new ExploreFragment();
 		mapFragment = new MapFragment();
-
+		
 		screenView = getWindow().getDecorView().findViewById(android.R.id.content);
 		blurImageView = (ImageView) findViewById(R.id.blur_image);
 
@@ -145,6 +164,27 @@ public class MainActivity extends FragmentActivity {
 			// on first time display view for first nav item
 			switchFragment(1);
 		}
+
+		// Create our IntentFilter, which will be used in conjunction with a
+		// broadcast receiver.
+		gcmFilter = new IntentFilter();
+		gcmFilter.addAction("GCM_RECEIVED_ACTION");
+	}
+
+	// If our activity is paused, it is important to UN-register any
+	// broadcast receivers.
+	@Override
+	protected void onPause() {    
+		unregisterReceiver(gcmReceiver);
+		super.onPause();
+	}
+
+	// When an activity is resumed, be sure to register any
+	// broadcast receivers with the appropriate intent
+	@Override
+	protected void onResume() {
+		super.onResume();
+		registerReceiver(gcmReceiver, gcmFilter);
 	}
 
 	private void initializeMenuList(){
@@ -182,6 +222,7 @@ public class MainActivity extends FragmentActivity {
 					break;
 				case 2:
 					nextFragment = chatFragment;
+				//	chatFragment.sendMessage("1", "Hello");
 					break;
 				}
 
@@ -205,7 +246,7 @@ public class MainActivity extends FragmentActivity {
 
 		});
 	}
-	
+
 	private void exit(){
 		new AsyncTask<Void, Void, Boolean>() {
 			@Override
@@ -228,8 +269,8 @@ public class MainActivity extends FragmentActivity {
 			}
 		}.execute();
 	}
-	
-	
+
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -338,7 +379,7 @@ public class MainActivity extends FragmentActivity {
 			blurImage.setVisibility(View.VISIBLE);
 			blurImage.bringToFront();
 
-			
+
 			if(currentFragmentPosition != 0){
 				//get screenshot of screenView
 				Bitmap bmp = Bitmap.createBitmap(screenView.getWidth(), screenView.getHeight(), Bitmap.Config.ARGB_8888);
@@ -346,7 +387,7 @@ public class MainActivity extends FragmentActivity {
 				screenView.draw(c);
 				blurImage.setImageBitmap(blur(bmp));
 			}
-			
+
 
 		}
 

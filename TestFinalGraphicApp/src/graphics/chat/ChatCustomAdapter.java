@@ -23,7 +23,7 @@ import android.widget.TextView;
 @SuppressLint("ResourceAsColor")
 public class ChatCustomAdapter extends BaseAdapter{
 	private Context mContext;
-	private ArrayList<ChatMessage> mMessages;
+	public ArrayList<ChatMessage> mMessages;
 
 
 
@@ -32,6 +32,7 @@ public class ChatCustomAdapter extends BaseAdapter{
 		this.mContext = context;
 		this.mMessages = messages;
 	}
+	
 	@Override
 	public int getCount() {
 		return mMessages.size();

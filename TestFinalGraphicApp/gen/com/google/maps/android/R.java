@@ -16,10 +16,10 @@ public final class R {
 		public static final int bubble_white = 0x7f020080;
 	}
 	public static final class id {
-		public static final int text = 0x7f060000;
+		public static final int text = 0x7f060006;
 	}
 	public static final class layout {
-		public static final int text_bubble = 0x7f030025;
+		public static final int text_bubble = 0x7f030029;
 	}
 	public static final class style {
 		public static final int Bubble_TextAppearance_Dark = 0x7f070000;

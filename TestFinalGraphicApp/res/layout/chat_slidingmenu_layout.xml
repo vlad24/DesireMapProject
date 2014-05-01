@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.jeremyfeinstein.slidingmenu.lib.SlidingMenu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sliding="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/chat_slidingmenu"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    sliding:viewAbove="@layout/chat_panel_layout"
+    sliding:viewBehind="@layout/chat_menu_layout" >
+
+</com.jeremyfeinstein.slidingmenu.lib.SlidingMenu>

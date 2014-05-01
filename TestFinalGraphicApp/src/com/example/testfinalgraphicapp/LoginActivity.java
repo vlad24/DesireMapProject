@@ -142,7 +142,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 			try {
 				EditText signinLogin = (EditText) findViewById(R.id.signinLoginEditText);
 				EditText signinPassword = (EditText) findViewById(R.id.signinPasswordEditText);
-				sendLogin(this, signinLogin.getText().toString(), signinPassword.getText().toString());
+				sendLogin(this, signinLogin.getText().toString().trim(), signinPassword.getText().toString().trim());
 			} catch (Exception e) {
 				Toast.makeText(this, "Connection Error", Toast.LENGTH_SHORT).show();
 				e.printStackTrace();
@@ -157,8 +157,10 @@ public class LoginActivity extends Activity implements OnClickListener {
 				EditText signupPassword = (EditText) findViewById(R.id.signupPasswordEditText);	
 				EditText signupBirthdate = (EditText) findViewById(R.id.signupAgeEditText);
 				
-				sendRegistration(this, signupLogin.getText().toString(), signupPassword.getText().toString(),
-	                      signupName.getText().toString(), signupMale, signupBirthdate.getText().toString());
+				sendRegistration(this, signupLogin.getText().toString().trim(), 
+						               signupPassword.getText().toString().trim(),
+	                                   signupName.getText().toString().trim(), signupMale,
+	                                   signupBirthdate.getText().toString().trim());
 			} catch (Exception e) {
 				Toast.makeText(this, "Connection Error", Toast.LENGTH_SHORT).show();
 				e.printStackTrace();
