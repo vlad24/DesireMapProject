@@ -38,7 +38,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 import fragments.ChatFragment;
-import fragments.ChatFragment2;
 import fragments.ExploreFragment;
 import fragments.MapFragment;
 import fragments.MyDesiresFragment;
@@ -50,7 +49,7 @@ import graphics.slidingmenu.MenuDrawerItem;
 public class MainActivity extends FragmentActivity {
 
 	private MyDesiresFragment myDesiresFragment;
-	private ChatFragment2 chatFragment;
+	private ChatFragment chatFragment;
 	private ExploreFragment exploreFragment;
 	private MapFragment mapFragment;
 	private Fragment currentFragment;
@@ -108,7 +107,7 @@ public class MainActivity extends FragmentActivity {
 		handler = new Handler();
 		gps = new GPSTracker(this);
 		myDesiresFragment = new MyDesiresFragment();
-		chatFragment = new ChatFragment2();
+		chatFragment = new ChatFragment();
 		exploreFragment = new ExploreFragment();
 		mapFragment = new MapFragment();
 		

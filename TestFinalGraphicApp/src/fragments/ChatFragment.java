@@ -7,7 +7,6 @@ import graphics.chat.ChatMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 import logic.Client;
 
@@ -19,25 +18,19 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
 import desireMapApplicationPackage.outputSetPackage.UserSet;
 
 
-import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
-import android.view.animation.LayoutAnimationController;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -51,11 +44,10 @@ public class ChatFragment extends Fragment implements OnClickListener {
 
 	Handler progressHandler;
 	String LOG_TAG = "ChatFragment";
-	View contentView;
-	View emptyMenuView;
 	View menuView;
 
 	ListView lvFellows;
+
 	ListView lvChat;
 	TextView fellowLogin;
 	ProgressBar chatProgressBar;
@@ -69,9 +61,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 	ArrayAdapter<String> chatFellowAdapter;
 	String currentFellowName;
 
-	ArrayList<ChatMessage> messages;
-	ChatCustomAdapter adapter;
-
+	
 	EditText chatEditText;
 	Button sendButton;
 	Button backButton;
@@ -86,21 +76,20 @@ public class ChatFragment extends Fragment implements OnClickListener {
 
 		progressHandler = new Handler();
 		usersHashMap = new HashMap<String, ChatCustomAdapter>();
-		contentView =  inflater.inflate(R.layout.chat_panel_layout, container, false);
-		emptyMenuView =  inflater.inflate(R.layout.chat_empty_menu_layout, null, false);
-		menuView = inflater.inflate(R.layout.chat_menu_layout, container, false);
+		
+		menuView = inflater.inflate(R.layout.chat_slidingmenu_layout, null, false);
 		Log.d(LOG_TAG, "all inflated");
 
 		lvFellows = (ListView) menuView.findViewById(R.id.lvChatFellows);
-		lvChat = (ListView) contentView.findViewById(R.id.lvChat);
-		fellowLogin = (TextView) contentView.findViewById(R.id.chatFellowLoginText);
-		chatProgressBar = (ProgressBar) contentView.findViewById(R.id.chatProgressBar);
+		lvChat = (ListView) menuView.findViewById(R.id.lvChat);
+		fellowLogin = (TextView) menuView.findViewById(R.id.chatFellowLoginText);
+		chatProgressBar = (ProgressBar) menuView.findViewById(R.id.chatProgressBar);
 		chatProgressBar.setMax(progressMax);
 
 
-		chatEditText = (EditText) contentView.findViewById(R.id.chatEditText);
-		backButton = (Button) contentView.findViewById(R.id.chatBackBtn);
-		sendButton = (Button) contentView.findViewById(R.id.sendButton);
+		chatEditText = (EditText) menuView.findViewById(R.id.chatEditText);
+		backButton = (Button) menuView.findViewById(R.id.chatBackBtn);
+		sendButton = (Button) menuView.findViewById(R.id.sendButton);
 		backButton.setOnClickListener(this);
 		sendButton.setOnClickListener(this);
 		sender = "Romchic";
@@ -109,28 +98,17 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		initSlidingMenu();
 
 		Log.d(LOG_TAG, "all initialized");
-		return contentView;
+		return menuView;
 	}
 
 	private void initSlidingMenu(){
-		menu = new SlidingMenu(getActivity());
-		menu.attachToActivity(getActivity(), SlidingMenu.SLIDING_CONTENT);
-	//	menu.setMenu(emptyMenuView);
-		menu.setMenu(menuView);
+		menu = (SlidingMenu) menuView.findViewById(R.id.chat_slidingmenu);
 		menu.setMode(SlidingMenu.LEFT);
 		menu.setTouchModeBehind(SlidingMenu.TOUCHMODE_NONE);
 		menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
 		menu.setShadowWidth(0);
 		menu.setFadeDegree(0.0f);
 		menu.setBehindScrollScale(0.0f);
-
-		WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-		Display display = wm.getDefaultDisplay();
-		Point size = new Point();
-		display.getSize(size);
-		int width = size.x;
-		menu.setBehindWidth(width);
-
 
 		menu.setBehindCanvasTransformer(new CanvasTransformer() {
 			@Override
@@ -143,12 +121,13 @@ public class ChatFragment extends Fragment implements OnClickListener {
 	}
 
 	private void initFellowList(){
+
 		chatFellowContent = new ArrayList<String>();
 
 		chatFellowAdapter = new ArrayAdapter<String>(
 				getActivity(), 
 				android.R.layout.simple_list_item_1, chatFellowContent);
-		
+
 		OnItemClickListener fellowListener = new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
@@ -159,17 +138,14 @@ public class ChatFragment extends Fragment implements OnClickListener {
 
 		lvFellows.setAdapter(chatFellowAdapter);
 		lvFellows.setOnItemClickListener(fellowListener);
-		
-//		//set animation creating list elements
-//		LayoutAnimationController fellowsController = AnimationUtils
-//				.loadLayoutAnimation(getActivity(), R.animator.list_animator);
-//		lvFellows.setLayoutAnimation(fellowsController);
+
 	}
 
 	private void showChatPanel(int position){
 		//set header to chat
 		currentFellowName = chatFellowContent.get(position);
 		fellowLogin.setText(currentFellowName);
+		//change content of chat
 		lvChat.setAdapter(usersHashMap.get(currentFellowName));
 	}
 
@@ -178,20 +154,9 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		super.onActivityCreated(savedInstanceState);
 
 		menu.toggle();
+		getChatUsers();
+		
 		getActivity().setTitle(sender);
-//		sendMessage("q", "Hi");
-//		messages = new ArrayList<ChatMessage>();
-//		messages.add(new ChatMessage("Hello", false));
-//		messages.add(new ChatMessage("Hi!", true));
-//		messages.add(new ChatMessage("Wassup??", false));
-//		messages.add(new ChatMessage("nothing much, working on speech bubbles.", true));
-//		messages.add(new ChatMessage("you say!", true));
-//		messages.add(new ChatMessage("oh thats great. how are you showing them", false));
-
-
-//		adapter = new ChatCustomAdapter(getActivity(), messages);
-//		lvChat.setAdapter(adapter);
-	//	addNewChatMessage(new ChatMessage("mmm, well, using 9 patches png to show them.", true));
 	}
 
 	private void startAnimateProgressBar(){
@@ -241,12 +206,15 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		});
 	}
 
+
 	public void getChatUsers(){
 		new AsyncTask<Void, Void, UserSet>(){
 			@Override
 			protected UserSet doInBackground(Void... params) {
 				try {
-					return Client.getChatUsers();
+					chatFellowContent.addAll(Arrays.asList(lst));
+					return new UserSet(chatFellowContent);
+				//	return Client.getChatUsers();
 				} catch (Exception e) {
 					e.printStackTrace();
 					return null;
@@ -262,11 +230,11 @@ public class ChatFragment extends Fragment implements OnClickListener {
 								new ArrayList<ChatMessage>()));
 					}
 					chatFellowAdapter.notifyDataSetChanged();
-					menu.setMenu(menuView);
 				}
 			}
 		}.execute();
 	}
+
 
 	public void sendMessage(final String receiver, final String newMessageText){
 		new AsyncTask<Void, Integer, Void>() {
@@ -280,6 +248,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 			@Override
 			protected Void doInBackground(Void... params) {
 				try {
+					//TimeUnit.MILLISECONDS.sleep(500);
 					Client.sendMessage(newMessageText, receiver);
 					return null;
 				} catch (Exception e) {
@@ -292,7 +261,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 			protected void onPostExecute(Void result) {
 				isFinishedSending = true;
 				stopAnimateProgressBar();
-
+				
 				chatEditText.setText("");
 				addNewChatMessage(receiver, new ChatMessage(newMessageText, true));
 			}
@@ -301,21 +270,19 @@ public class ChatFragment extends Fragment implements OnClickListener {
 	}
 
 	public void addNewChatMessage(String receiver, ChatMessage message){
-        
+
 		//эта проверка в картах будет
 		if(usersHashMap.get(receiver) == null){
 			usersHashMap.put(receiver, new ChatCustomAdapter(getActivity(), 
 					new ArrayList<ChatMessage>()));
-			
+
 			chatFellowContent.add(0, receiver);
 			chatFellowAdapter.notifyDataSetChanged();
 		}
-		
+
 		usersHashMap.get(receiver).mMessages.add(message);
 		usersHashMap.get(receiver).notifyDataSetChanged();
 		
-	//	messages.add(m);
-	//	adapter.notifyDataSetChanged();
 		lvChat.setSelection(usersHashMap.get(receiver).mMessages.size()-1);
 	}
 
