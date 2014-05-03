@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/info_pane_header_bg" >
+
+        <LinearLayout
+            android:id="@+id/PanelHeaderView"
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:layout_marginLeft="70dp"
+            android:clickable="false"
+            android:orientation="horizontal" >
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="4dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="4dp"
+                android:background="#eeeeee" />
+
+            <LinearLayout
+                android:id="@+id/PanelInfoView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/nameInfoView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:text="Union Square"
+                    android:textColor="#333333"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/desireInfoView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="Желание"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/PanelDragableView"
+                android:layout_width="22dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1.5"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/arrow_up" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="#eeeeee" />
+
+            <LinearLayout
+                android:id="@+id/statsLayout"
+                android:layout_width="52dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:id="@+id/likeLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/likeInfoView"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textColor="#666666"
+                        android:textSize="27sp" />
+
+                    <ImageView
+                        android:id="@+id/likeImageView"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginTop="1dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/gray_heart" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <com.capricorn.RayMenu
+            android:id="@+id/ray_menu"
+            android:layout_width="210dp"
+            android:layout_height="68dp"
+            android:clickable="false"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp" />
+    </RelativeLayout>

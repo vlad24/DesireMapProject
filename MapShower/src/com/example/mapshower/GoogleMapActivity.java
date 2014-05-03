@@ -15,13 +15,18 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -30,9 +35,12 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.capricorn.RayMenu;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -54,7 +62,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.maps.android.SphericalUtil;
 import com.google.maps.android.ui.IconGenerator;
+import com.nineoldandroids.view.animation.AnimatorProxy;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
 
 
 public class GoogleMapActivity extends FragmentActivity implements OnMapClickListener, OnCameraChangeListener, OnMarkerClickListener {
@@ -81,9 +91,19 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 	private Thread clusteringThread;
 	private Thread fadingThread;
 	private IconGenerator iconGenerator;
+
+
 	SlidingUpPanelLayout slidingLayout;
 	private LinearLayout panelLayout;
-	private int panelHeightPx;
+	private LinearLayout panelInfoLayout;
+	private RelativeLayout panelDragableLayout;
+	private LinearLayout likeLayout;
+	private int numberOfLikes = 100;
+	
+	private ListView lvMapDesires;
+
+
+	private static final int[] ITEM_DRAWABLES = {R.drawable.info, R.drawable.mail};
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -92,15 +112,54 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 		latitude = intent.getDoubleExtra("latitude", 0);
 		longitude = intent.getDoubleExtra("longitude",0);
 
-//		Resources r = getResources();
-//		panelHeightPx = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 68, r.getDisplayMetrics());
+		//		Resources r = getResources();
+		//		panelHeightPx = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 68, r.getDisplayMetrics());
+
+
+		panelInfoLayout = (LinearLayout) findViewById(R.id.PanelInfoView);
+		panelInfoLayout.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(GoogleMapActivity.this, "Here info appears", Toast.LENGTH_SHORT).show();
+			}
+		});
+		panelDragableLayout = (RelativeLayout) findViewById(R.id.PanelDragableView);
+
+		likeLayout = (LinearLayout) findViewById(R.id.likeLayout);
+		likeLayout.setOnClickListener(new OnClickListener(){
+			boolean liked = false;
+			@Override
+			public void onClick(View v) {
+				ImageView likeImage = (ImageView) panelLayout.findViewById(R.id.likeImageView);
+				TextView likeInfo = (TextView) panelLayout.findViewById(R.id.likeInfoView);
+				if(!liked){
+					liked = true;
+					numberOfLikes++;
+					likeImage.setImageResource(R.drawable.red_heart);
+				} else{
+					liked = false;
+					numberOfLikes--;
+					likeImage.setImageResource(R.drawable.gray_heart);
+				}
+				likeInfo.setText(Integer.toString(numberOfLikes));
+			}});
 
 		slidingLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
 		slidingLayout.setCoveredFadeColor(Color.argb(0, 0, 0, 0));
-	//	slidingLayout.setPanelHeight(panelHeightPx);
 		slidingLayout.setOverlayed(true);
+		slidingLayout.setDragView(panelDragableLayout);
+
 		panelLayout = (LinearLayout) findViewById(R.id.PanelView);
 		panelLayout.setVisibility(View.GONE);
+
+		RayMenu rayMenu = (RayMenu) findViewById(R.id.ray_menu);
+		rayMenu.setInfoView(panelInfoLayout);
+		initRayMenu(rayMenu, ITEM_DRAWABLES);
+		
+		//init desires list
+		lvMapDesires = (ListView) findViewById(R.id.lvMapDesires);
+		MapCustomAdapter mapAdapter = new MapCustomAdapter(this);
+		lvMapDesires.setAdapter(mapAdapter);
 
 		tapTextView = (TextView) findViewById(R.id.tap_text);
 		try {
@@ -182,6 +241,23 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 
 		});
 
+	}
+
+	private void initRayMenu(RayMenu menu, int[] itemDrawables) {
+		final int itemCount = itemDrawables.length;
+		for (int i = 0; i < itemCount; i++) {
+			ImageView item = new ImageView(this);
+			item.setImageResource(itemDrawables[i]);
+
+			final int position = i;
+			menu.addItem(item, new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					Toast.makeText(GoogleMapActivity.this, "position:" + position, Toast.LENGTH_SHORT).show();
+				}
+			});
+		}
 	}
 
 	private void animateCreatingMarker(final Marker marker){
@@ -288,11 +364,14 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 
 	@Override
 	public void onMapClick(LatLng coord) {
-				Animation bottomDown = AnimationUtils.loadAnimation(this,
-			            R.animator.bottom_down);
-				panelLayout.startAnimation(bottomDown);
-				panelLayout.setVisibility(View.GONE);
-
+		Animation bottomDown = AnimationUtils.loadAnimation(this,
+				R.animator.bottom_down);
+		if(slidingLayout.isExpanded()){
+			slidingLayout.smoothSlideTo(1, 0);
+		}else{
+			panelLayout.startAnimation(bottomDown);
+			panelLayout.setVisibility(View.GONE);
+		}
 		tapTextView.setText("coordinates:"+coord.latitude+" "+coord.longitude+"\nquad: "+worldRoot.geoPointToQuad(coord, quadDepth)+"\nnewRadius: "+newRadius);
 	}
 
@@ -326,7 +405,7 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 				R.animator.bottom_up);
 		panelLayout.startAnimation(bottomUp);
 		panelLayout.setVisibility(View.VISIBLE);
-	
+
 
 		//		final long startTime = SystemClock.uptimeMillis();
 		//		final long duration = 2000;

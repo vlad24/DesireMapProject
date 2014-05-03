@@ -8,20 +8,20 @@ package com.sothree.slidinguppanel.library;
 
 public final class R {
 	public static final class attr {
-		public static final int dragView = 0x7f010005;
-		public static final int fadeColor = 0x7f010003;
-		public static final int flingVelocity = 0x7f010004;
-		public static final int overlay = 0x7f010006;
-		public static final int panelHeight = 0x7f010000;
-		public static final int paralaxOffset = 0x7f010002;
-		public static final int shadowHeight = 0x7f010001;
+		public static final int dragView = 0x7f010083;
+		public static final int fadeColor = 0x7f010081;
+		public static final int flingVelocity = 0x7f010082;
+		public static final int overlay = 0x7f010084;
+		public static final int panelHeight = 0x7f01007e;
+		public static final int paralaxOffset = 0x7f010080;
+		public static final int shadowHeight = 0x7f01007f;
 	}
 	public static final class drawable {
-		public static final int above_shadow = 0x7f020000;
-		public static final int below_shadow = 0x7f020002;
+		public static final int above_shadow = 0x7f020057;
+		public static final int below_shadow = 0x7f02005a;
 	}
 	public static final class styleable {
-		public static final int[] SlidingUpPanelLayout = { 0x7f010000, 0x7f010001, 0x7f010002, 0x7f010003, 0x7f010004, 0x7f010005, 0x7f010006 };
+		public static final int[] SlidingUpPanelLayout = { 0x7f01007e, 0x7f01007f, 0x7f010080, 0x7f010081, 0x7f010082, 0x7f010083, 0x7f010084 };
 		public static final int SlidingUpPanelLayout_dragView = 5;
 		public static final int SlidingUpPanelLayout_fadeColor = 3;
 		public static final int SlidingUpPanelLayout_flingVelocity = 4;
