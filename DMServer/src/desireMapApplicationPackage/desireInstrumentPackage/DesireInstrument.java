@@ -122,12 +122,12 @@ public class DesireInstrument {
 		implementationObject.insertMessageIntoDB(messageID, message, status);
 	}
 
-	public ResultSet getAndMarkUndeliveredMessagesForUserAtDB(String login) throws SQLException{
+	public MessageSet getAndMarkUndeliveredMessagesForUserAtDB(String login) throws SQLException{
 		return implementationObject.getUndeliveredMessageForUserAtDB(login);
 	}
 
-	public void unmarkCurrentUndeliveredMessage(ResultSet set) {
-		implementationObject.makeCurrentMessageFresh(set);
+	public void unmarkCurrentUndeliveredMessage(MessageSet set, int index) {
+		implementationObject.makeCurrentMessageFresh(set, index);
 	}
 
 	public String getOnlineReceiverIDAtDB(String receiver) {
@@ -144,6 +144,10 @@ public class DesireInstrument {
 
 	public UserSet getUsersTalkedToAtDB(String userName) throws Exception {
 		return implementationObject.getUsersTalkedToAtDB(userName);
+	}
+
+	public void likeDesireAtDB(String desireID, boolean isLiked){
+		implementationObject.likeDesireAtDB(desireID, isLiked);
 	}
 
 

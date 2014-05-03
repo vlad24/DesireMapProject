@@ -204,11 +204,11 @@ public class ResultSetMaster {
 				return null;
 			}
 			else{
-				ClientMessage message = new ClientMessage(set.getString("sender"), set.getString("receiver"), set.getString("messageText"));
+				ClientMessage message = new ClientMessage(set.getString("messageID"), set.getString("sender"), set.getString("receiver"), set.getString("messageText"));
 				ArrayList<ClientMessage> list = new ArrayList<ClientMessage>();
 				list.add(message);
 				while (set.next()){
-					message = new ClientMessage(set.getString("sender"), set.getString("receiver"), set.getString("messageText"));
+					message = new ClientMessage(set.getString("messageID"), set.getString("sender"), set.getString("receiver"), set.getString("messageText"));
 					list.add(message);
 				}
 				set.close();

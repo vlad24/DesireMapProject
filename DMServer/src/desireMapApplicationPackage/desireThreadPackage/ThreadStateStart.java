@@ -4,6 +4,7 @@ package desireMapApplicationPackage.desireThreadPackage;
 import desireMapApplicationPackage.messageSystemPackage.ClientMessage;
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
+import desireMapApplicationPackage.actionQueryObjectPackage.LikePack;
 import desireMapApplicationPackage.actionQueryObjectPackage.LoginPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.MessageDeliverPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.RegistrationPack;
@@ -112,6 +113,11 @@ public class ThreadStateStart extends ThreadState{
 		@Override
 		public UserSet getUsersTalkedTo() throws Exception {
 			throw new Exception("- Unable now\n Hint : log in or register");	
+		}
+
+		@Override
+		public void likeDesire(LikePack pack) throws Exception {
+			throw new Exception("- Unable now\n Hint : log in or register");			
 		}
 
 }

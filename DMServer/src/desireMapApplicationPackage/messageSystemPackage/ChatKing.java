@@ -91,36 +91,42 @@ public class ChatKing {
 
 	public void getUndeliveredMessagesForThread(DesireThread thread) throws SQLException {
 		System.out.println("...Trying to deliver unread messages");
-		ResultSet set = instrument.getAndMarkUndeliveredMessagesForUserAtDB(thread.getUserName());
-		int undeliveredMessagesAmount = 0;
-		int messagesAmount = 0;
-		while(set.next()){
-			ServerMessage sMessage = new ServerMessage();
-			sMessage.addReceiver(thread.getDeviceID());
-			sMessage.fillServerMessage(set.getString("messageID"), set.getString("sender"), set.getString("messageText"));
-			if (thread.isRunning){
-				Poster.post(sMessage);
-				messagesAmount++;
-				System.out.println("+ Posted. Message ¹ " + messagesAmount + " has been delivered");
-			}
-			else{
-				System.out.println("+ Not Posted. Message ¹ " + messagesAmount + ". User exited.");
-				System.out.println("...some of messages haven't been posted");
-				break;
-			}
-			instrument.unmarkAllDeliveredMessages(thread.getUserName());
+		MessageSet messageSet = instrument.getAndMarkUndeliveredMessagesForUserAtDB(thread.getUserName());
+		System.out.println("...Undelivered messages fetched");
+		int deliveredMessagesAmount = 0;
+		int index = 0;
+		System.out.println("...If set is not empty, go!");
+		if (messageSet == null){
+			System.out.println("...Empty set");
 		}
-		while(set.next()){
-			//Here if some of messages haven't been posted
-			instrument.unmarkCurrentUndeliveredMessage(set);
-			undeliveredMessagesAmount++;
+		else{
+			for (index = 0; index < messageSet.mSet.size(); index++){
+				ServerMessage sMessage = new ServerMessage();
+				sMessage.addReceiver(thread.getDeviceID());
+				sMessage.fillServerMessage(messageSet.mSet.get(index).messageID, messageSet.mSet.get(index).receiver,  messageSet.mSet.get(index).text);
+				if (thread.isRunning){
+					Poster.post(sMessage);
+					System.out.println("+ Posted. Message ¹ " + index + " has been delivered");
+				}
+				else{
+					System.out.println("+ Not Posted. Message ¹ " + index + ". User exited.");
+					System.out.println("...some of messages haven't been posted");
+					deliveredMessagesAmount = index - 1;
+					break;
+				}
+				instrument.unmarkAllDeliveredMessages(thread.getUserName());
+			}
+			while (index < messageSet.mSet.size()){
+				instrument.unmarkCurrentUndeliveredMessage(messageSet, index);
+				System.out.println("+Message ¹ " + index + " rolled back into sending");
+				index++;
+			}
+			
 		}
-		System.out.println("...Closing set");
-		set.close();
 		System.out.println("Report ::");
-		System.out.println("...Messagses : " + messagesAmount);
-		System.out.println("...Posted messagses : " + (messagesAmount - undeliveredMessagesAmount));
-		System.out.println("...Unposted messagses : " + undeliveredMessagesAmount);
+		System.out.println("...Messagses : " + messageSet.mSet.size());
+		System.out.println("...Posted messagses : " + deliveredMessagesAmount);
+		System.out.println("...Unposted messagses : " + (messageSet.mSet.size() - deliveredMessagesAmount));
 	}
 
 	public MessageSet getMessagesByCryteria(MessageDeliverPack pack) throws Exception {

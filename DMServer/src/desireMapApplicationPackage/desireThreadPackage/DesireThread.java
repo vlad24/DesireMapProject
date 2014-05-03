@@ -8,6 +8,7 @@ import java.net.Socket;
 import desireMapApplicationPackage.actionQueryObjectPackage.ActionQueryObject;
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
+import desireMapApplicationPackage.actionQueryObjectPackage.LikePack;
 import desireMapApplicationPackage.actionQueryObjectPackage.LoginPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.MessageDeliverPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.RegistrationPack;
@@ -164,6 +165,10 @@ public class DesireThread implements Runnable{
 
 	public UserSet getUsersTalkedTo() throws Exception {
 		return stateObject.getUsersTalkedTo();
+	}
+	
+	public void likeDesire(LikePack pack) throws Exception{
+		stateObject.likeDesire(pack);
 	}
 	
 	public void exit(){

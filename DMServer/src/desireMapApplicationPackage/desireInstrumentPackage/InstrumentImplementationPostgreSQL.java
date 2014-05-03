@@ -15,6 +15,7 @@ import desireMapApplicationPackage.dataBasePackage.DataBaseSQLite;
 import desireMapApplicationPackage.dataBasePackage.GeneralDBConstantsMaster;
 import desireMapApplicationPackage.messageSystemPackage.ClientMessage;
 import desireMapApplicationPackage.outputSetPackage.DesireSet;
+import desireMapApplicationPackage.outputSetPackage.MessageSet;
 import desireMapApplicationPackage.outputSetPackage.SatisfySet;
 import desireMapApplicationPackage.userDataPackage.AndroidData;
 import desireMapApplicationPackage.userDataPackage.MainData;
@@ -50,9 +51,9 @@ public class InstrumentImplementationPostgreSQL extends	InstrumentImplementation
 		}
 	}
 
-	public void makeCurrentMessageFresh(ResultSet set){
+	public void makeCurrentMessageFresh(MessageSet set, int index){
 		try (Statement fresher = getAccessToDesireBase().createStatement()){
-			String currentMessageID = set.getString("messageID");
+			String currentMessageID = set.mSet.get(index).messageID;
 			String markNotSentQuery = "update MESSAGES set STATUS = -1 where (messageID ='" + currentMessageID + "') AND (STATUS = 0);";
 			System.out.println(markNotSentQuery);
 			fresher.executeUpdate(markNotSentQuery);

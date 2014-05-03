@@ -3,6 +3,7 @@ package desireMapApplicationPackage.desireThreadPackage;
 import java.io.IOException;
 
 import desireMapApplicationPackage.actionQueryObjectPackage.MessageDeliverPack;
+import desireMapApplicationPackage.outputSetPackage.MessageSet;
 
 
 public class CommandToGetMessages extends CommandForDesireThread{
@@ -14,23 +15,20 @@ public class CommandToGetMessages extends CommandForDesireThread{
 	}
 	@Override
 	public void execute() throws Exception{
-		if (deliverPack.hoursRadius == 0){
-			try{
+		try{
+			if (deliverPack.hoursRadius == 0){
 				receiver.loadNewMessages();
 			}
-			catch(Exception error){
-				error.printStackTrace();
-				throw error;
+			else{
+				MessageSet mSet = receiver.getOldMessagesByCryteria(deliverPack);
+				receiver.socketOut.writeObject(mSet);
+				receiver.socketOut.reset();
 			}
 		}
-		else{
-			try {
-				receiver.getOldMessagesByCryteria(deliverPack);
-				receiver.socketOut.reset();
-			} catch (Exception error) {
-				error.printStackTrace();
-				throw error;
-			}
+		catch(Exception error){
+			receiver.socketOut.writeObject(null);
+			receiver.socketOut.reset();
+			throw error;
 		}
 	}
 

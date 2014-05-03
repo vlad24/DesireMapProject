@@ -23,7 +23,8 @@ public class DBSQLiteConstantsMaster extends GeneralDBConstantsMaster{
 			"latitude Real NOT NULL, " +
 			"longitude Real NOT NULL, " +
 			"tile String NOT NULL, " +
-			"time String NOT NULL" +
+			"time String NOT NULL, " +
+			"likesAmount INT NOT NULL" +
 			");";
 
 	public String createTableDESIRES_SPORT = "CREATE TABLE IF NOT EXISTS DESIRES_SPORT(" +

@@ -32,7 +32,7 @@ public abstract class InstrumentImplementation{
 
 	//These methods are implemented in different ways in different drivers
 	public abstract void initInstrument();
-	public abstract void makeCurrentMessageFresh(ResultSet set);
+	public abstract void makeCurrentMessageFresh(MessageSet set, int index);
 
 	public Connection getAccessToDesireBase(){
 		return owner.desireDataBase.getConnection();
@@ -278,7 +278,7 @@ public abstract class InstrumentImplementation{
 		}
 	}
 
-	public ResultSet getUndeliveredMessageForUserAtDB(String login) throws SQLException{
+	public MessageSet getUndeliveredMessageForUserAtDB(String login) throws SQLException{
 		try(Statement selector = owner.getAccessToDesireBase().createStatement()){
 			String markQuery = "update MESSAGES set STATUS = 0 where (RECEIVER ='" + login + "') AND (STATUS = -1);";
 			String selectQuery = "select * from MESSAGES where RECEIVER ='" + login + "' AND (STATUS = 0);";
@@ -286,7 +286,8 @@ public abstract class InstrumentImplementation{
 			selector.executeUpdate(markQuery);
 			System.out.println(selectQuery);
 			ResultSet set = selector.executeQuery(selectQuery);
-			return set;
+			return owner.rsMaster.convertToMessageSetAndClose(set);
+		
 		}
 		catch(Exception error){
 			System.out.println("-Can't get undelivered message _ at instrImpl");
@@ -310,9 +311,15 @@ public abstract class InstrumentImplementation{
 			String query = "select ID from ONLINE_DEVICES where OWNER ='" +  messageReceiver + "';";
 			System.out.println(query);
 			ResultSet set = selector.executeQuery(query);
-			String receiverID = set.getString("ID");
-			set.close();
-			return receiverID;
+			if (set.next()){
+				String receiverID = set.getString("ID");
+				set.close();
+				return receiverID;
+			}
+			else{
+				return null;
+			}
+			
 		} catch (SQLException error) {
 			error.printStackTrace();
 			return null;
@@ -323,7 +330,7 @@ public abstract class InstrumentImplementation{
 
 	public MessageSet getOldMessagesForUserAtDB(String from, String to, int hoursRadius) throws Exception {
 		try(Statement selector = owner.getAccessToDesireBase().createStatement()){
-			String selectQuery = "select * from MESSAGES where (RECEIVER ='" + to + "') AND (SENDER = '" + from + "') AND time < datetime('now', '-" +hoursRadius + "hours' );";
+			String selectQuery = "select * from MESSAGES where (RECEIVER ='" + to + "') AND (SENDER = '" + from + "') AND time < datetime('now', '-" +hoursRadius + " hours' );";
 			System.out.println(selectQuery);
 			ResultSet set = selector.executeQuery(selectQuery);
 			MessageSet messageSet = owner.rsMaster.convertToMessageSetAndClose(set);
@@ -348,6 +355,23 @@ public abstract class InstrumentImplementation{
 			throw error;
 		}
 	}
+
+	public void likeDesireAtDB(String desireID, boolean isLiked) {
+		char sign = '+';
+		if (!isLiked){
+			sign = '-';
+		}
+			try(Statement selector = owner.getAccessToDesireBase().createStatement()){
+				String updateQuery = "update DESIRES_MAIN SET likesAmount = (likesAmount " + sign +  " 1) where desireID = " + desireID + ");";
+				System.out.println(updateQuery);
+				System.out.println("...executing");
+				int amount = selector.executeUpdate(updateQuery);
+				System.out.println("...Rows affected : " + amount);
+			}
+			catch(Exception error){
+				System.out.println("-Can't like, nobody cares _ at instrImpl");
+			}
+		}
 
 
 }

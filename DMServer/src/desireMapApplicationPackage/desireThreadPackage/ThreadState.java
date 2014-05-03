@@ -2,6 +2,7 @@ package desireMapApplicationPackage.desireThreadPackage;
 
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
+import desireMapApplicationPackage.actionQueryObjectPackage.LikePack;
 import desireMapApplicationPackage.actionQueryObjectPackage.LoginPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.MessageDeliverPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.RegistrationPack;
@@ -35,5 +36,6 @@ public abstract class ThreadState{
 	public abstract void loadNewMessages() throws Exception;
 	public abstract MessageSet getOldMessagesByCryteria(MessageDeliverPack deliverPack) throws Exception;
 	public abstract UserSet getUsersTalkedTo() throws Exception;
+	public abstract void likeDesire(LikePack pack) throws Exception;
 		
-}
+	}

@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
+import desireMapApplicationPackage.actionQueryObjectPackage.LikePack;
 import desireMapApplicationPackage.actionQueryObjectPackage.LoginPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.MessageDeliverPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.RegistrationPack;
@@ -88,6 +89,11 @@ public class ThreadStateBasic extends ThreadState{
 		@Override
 		public UserSet getUsersTalkedTo() throws Exception {
 			return owner.chater.getUsersTalkedToAtChat(this.owner);
+		}
+
+		@Override
+		public void likeDesire(LikePack pack) throws Exception {
+			throw new Exception("!!! Unable now\n Scan the map!");
 		}
 
 

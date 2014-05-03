@@ -7,6 +7,7 @@ import java.util.HashMap;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.dataBasePackage.DataBaseSQLite;
 import desireMapApplicationPackage.dataBasePackage.GeneralDBConstantsMaster;
+import desireMapApplicationPackage.outputSetPackage.MessageSet;
 
 public class InstrumentImplementationSQLite extends InstrumentImplementation{
 
@@ -38,9 +39,9 @@ public class InstrumentImplementationSQLite extends InstrumentImplementation{
 		}
 	}
 
-	public void makeCurrentMessageFresh(ResultSet set){
+	public void makeCurrentMessageFresh(MessageSet set, int index){
 		try (Statement fresher = getAccessToDesireBase().createStatement()){
-			String currentMessageID = set.getString("messageID");
+			String currentMessageID = set.mSet.get(index).messageID;
 			String markNotSentQuery = "update MESSAGES set STATUS = -1 where (messageID ='" + currentMessageID + "') AND (STATUS = 0);";
 			System.out.println(markNotSentQuery);
 			fresher.executeUpdate(markNotSentQuery);

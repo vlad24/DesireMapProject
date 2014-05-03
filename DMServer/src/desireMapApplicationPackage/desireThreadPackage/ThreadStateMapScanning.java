@@ -5,6 +5,7 @@ import java.util.HashSet;
 
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
+import desireMapApplicationPackage.actionQueryObjectPackage.LikePack;
 import desireMapApplicationPackage.actionQueryObjectPackage.LoginPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.MessageDeliverPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.RegistrationPack;
@@ -141,6 +142,11 @@ public class ThreadStateMapScanning extends ThreadState{
 	public UserSet getUsersTalkedTo() throws Exception {
 		changeState(new ThreadStateBasic(owner));
 		return owner.getUsersTalkedTo();
+	}
+
+	@Override
+	public void likeDesire(LikePack pack){
+		owner.instrument.likeDesireAtDB(pack.desireID, pack.isLiked);
 	}
 	
 }
