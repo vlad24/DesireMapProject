@@ -3,11 +3,12 @@ import java.util.ArrayList;
 
 import desireMapApplicationPackage.actionQueryObjectPackage.ActionQueryObject;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
-import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
+import desireMapApplicationPackage.desireThreadPackage.CommandsList;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.Handler;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerAdd;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerDelete;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerExit;
+import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerLike;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerLogIn;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerMessageGet;
 import desireMapApplicationPackage.handlerTubePackage.handlersPackage.HandlerMessageSend;
@@ -27,6 +28,7 @@ public class HandlerTube {
 		userThread = inThread;
 		tube = new ArrayList<Handler>();
 		tube.add(new HandlerExit(inThread));
+		tube.add(new HandlerLike(inThread));
 		tube.add(new HandlerDelete(inThread));
 		tube.add(new HandlerLogIn(inThread));
 		tube.add(new HandlerMessageGet(inThread));
@@ -42,9 +44,9 @@ public class HandlerTube {
 	}
 	
 
-	public QueueOfCommands processClientQuery(ActionQueryObject query){
+	public CommandsList processClientQuery(ActionQueryObject query){
 		System.out.println("*** Processing the client query");
-		QueueOfCommands accumulatedCommandQueue =  new QueueOfCommands();
+		CommandsList accumulatedCommandQueue =  new CommandsList();
 		for(Handler handler : tube ){
 			handler.tryToHandleClientQuery(query, accumulatedCommandQueue);
 		}

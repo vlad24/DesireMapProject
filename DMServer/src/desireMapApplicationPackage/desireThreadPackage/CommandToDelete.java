@@ -23,4 +23,9 @@ public class CommandToDelete extends CommandForDesireThread{
 		
 	}
 
+	@Override
+	public void unexecute() {
+		System.out.println("Unexecuting deleting. No unexecution available.");
+	}
+
 }

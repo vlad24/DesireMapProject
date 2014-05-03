@@ -5,7 +5,7 @@ import desireMapApplicationPackage.actionQueryObjectPackage.UserChatHistoryPack;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireThreadPackage.CommandToGetChatUsers;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
-import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
+import desireMapApplicationPackage.desireThreadPackage.CommandsList;
 
 public class HandlerUserChatHistory extends Handler{
 
@@ -14,7 +14,7 @@ public class HandlerUserChatHistory extends Handler{
 	}
 
 	@Override
-	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue) {
+	public void tryToHandleClientQuery(ActionQueryObject qObject, CommandsList accumulatorQueue) {
 		if (myJob(qObject.actionCode)){
 			System.out.println("Handler UserChatHistory is working");
 			UserChatHistoryPack chatHistoryPack = (UserChatHistoryPack) qObject;

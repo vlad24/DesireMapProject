@@ -25,5 +25,9 @@ public class CommandToLogIn extends CommandForDesireThread{
 			throw error;
 		}
 	}
+	@Override
+	public void unexecute() {
+		System.out.println("Unexecuting logIn. No unexecution available.");
+	}
 	
 }

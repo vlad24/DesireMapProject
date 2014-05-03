@@ -6,7 +6,7 @@ import desireMapApplicationPackage.actionQueryObjectPackage.LoginPack;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireThreadPackage.CommandToLogIn;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
-import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
+import desireMapApplicationPackage.desireThreadPackage.CommandsList;
 
 public class HandlerLogIn extends Handler{
 
@@ -20,7 +20,7 @@ public class HandlerLogIn extends Handler{
 	}
 
 	@Override
-	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue){
+	public void tryToHandleClientQuery(ActionQueryObject qObject, CommandsList accumulatorQueue){
 		if(myJob(qObject.actionCode)){
 			System.out.println("Handler Log In is working");
 			LoginPack loginPack = (LoginPack)qObject;

@@ -23,4 +23,8 @@ public final class CodesMaster {
 		public static final int DatingCode = 1;
 	}
 	
+	public static class SpecialValues{
+		public static final int radiusForAllNew = 0;
+	}
+	
 }

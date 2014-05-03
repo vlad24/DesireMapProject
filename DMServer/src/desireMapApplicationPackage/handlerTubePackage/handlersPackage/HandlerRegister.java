@@ -5,7 +5,7 @@ import desireMapApplicationPackage.actionQueryObjectPackage.RegistrationPack;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireThreadPackage.CommandToRegister;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
-import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
+import desireMapApplicationPackage.desireThreadPackage.CommandsList;
 
 public class HandlerRegister extends Handler{
 
@@ -19,7 +19,7 @@ public class HandlerRegister extends Handler{
 	}
 
 	@Override
-	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue) {
+	public void tryToHandleClientQuery(ActionQueryObject qObject, CommandsList accumulatorQueue) {
 		if(myJob(qObject.actionCode)){
 			System.out.println("Handler Register is pushed to queue");
 			RegistrationPack registrationPack = (RegistrationPack) qObject;

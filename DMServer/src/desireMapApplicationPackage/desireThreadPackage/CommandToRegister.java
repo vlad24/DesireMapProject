@@ -26,6 +26,11 @@ public class CommandToRegister extends CommandForDesireThread{
 			throw error;
 		}
 	}
+
+	@Override
+	public void unexecute() {
+		System.out.println("Unexecuting registering. No unexecution available.");
+	}
 	
 }
 

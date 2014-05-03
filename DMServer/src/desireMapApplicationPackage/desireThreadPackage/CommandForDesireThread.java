@@ -1,13 +1,11 @@
 package desireMapApplicationPackage.desireThreadPackage;
 
-import desireMapApplicationPackage.actionQueryObjectPackage.TilesPack;
-
-
 
 public abstract class CommandForDesireThread {
-	DesireThread receiver;
+	protected DesireThread receiver;
 	//--
 	public abstract void execute() throws Exception;
+	public abstract void unexecute();
 }
 
 

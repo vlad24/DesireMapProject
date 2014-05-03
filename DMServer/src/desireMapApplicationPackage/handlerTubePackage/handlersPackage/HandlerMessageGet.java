@@ -5,7 +5,7 @@ import desireMapApplicationPackage.actionQueryObjectPackage.MessageDeliverPack;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireThreadPackage.CommandToGetMessages;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
-import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
+import desireMapApplicationPackage.desireThreadPackage.CommandsList;
 
 public class HandlerMessageGet extends Handler{
 	public HandlerMessageGet(DesireThread surroundingThread) {
@@ -13,7 +13,7 @@ public class HandlerMessageGet extends Handler{
 	}
 
 	@Override
-	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue) {
+	public void tryToHandleClientQuery(ActionQueryObject qObject, CommandsList accumulatorQueue) {
 		if (myJob(qObject.actionCode)){
 			System.out.println("HandlerMessageGet is working");
 			if (qObject.actionCode == CodesMaster.ActionCodes.MessageDeliverCode){
@@ -24,7 +24,7 @@ public class HandlerMessageGet extends Handler{
 			}
 			else{
 				System.out.println("New messages will be delivered");
-				accumulatorQueue.addCommand(new CommandToGetMessages(ownerThread, new MessageDeliverPack(null, null, 0)));
+				accumulatorQueue.addCommand(new CommandToGetMessages(ownerThread, new MessageDeliverPack(null, null, CodesMaster.SpecialValues.radiusForAllNew)));
 				System.out.println("'New message deliver' command is pushed to queue");
 			}
 		}

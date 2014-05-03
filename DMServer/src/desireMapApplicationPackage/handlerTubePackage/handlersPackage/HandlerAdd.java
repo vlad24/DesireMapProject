@@ -5,7 +5,7 @@ import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireThreadPackage.CommandToAddDesire;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
-import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
+import desireMapApplicationPackage.desireThreadPackage.CommandsList;
 
 
 public class HandlerAdd extends Handler{
@@ -14,7 +14,7 @@ public class HandlerAdd extends Handler{
 		super(inThread);
 	}
 
-	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue){
+	public void tryToHandleClientQuery(ActionQueryObject qObject, CommandsList accumulatorQueue){
 		if (myJob(qObject.actionCode)){
 			System.out.println("Handler adding is working");
 			AddPack addPack  = (AddPack) qObject;

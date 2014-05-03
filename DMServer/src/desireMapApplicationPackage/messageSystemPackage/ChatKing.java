@@ -98,6 +98,7 @@ public class ChatKing {
 		System.out.println("...If set is not empty, go!");
 		if (messageSet == null){
 			System.out.println("...Empty set");
+			System.out.println("...Messagses : " + 0);
 		}
 		else{
 			for (index = 0; index < messageSet.mSet.size(); index++){
@@ -121,12 +122,12 @@ public class ChatKing {
 				System.out.println("+Message ¹ " + index + " rolled back into sending");
 				index++;
 			}
-			
+			System.out.println("Report ::");
+			System.out.println("...Messagses : " + messageSet.mSet.size());
+			System.out.println("...Posted messagses : " + deliveredMessagesAmount);
+			System.out.println("...Unposted messagses : " + (messageSet.mSet.size() - deliveredMessagesAmount));
 		}
-		System.out.println("Report ::");
-		System.out.println("...Messagses : " + messageSet.mSet.size());
-		System.out.println("...Posted messagses : " + deliveredMessagesAmount);
-		System.out.println("...Unposted messagses : " + (messageSet.mSet.size() - deliveredMessagesAmount));
+		
 	}
 
 	public MessageSet getMessagesByCryteria(MessageDeliverPack pack) throws Exception {

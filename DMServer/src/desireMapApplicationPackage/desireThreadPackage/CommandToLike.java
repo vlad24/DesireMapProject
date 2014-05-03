@@ -19,4 +19,16 @@ public class CommandToLike extends CommandForDesireThread {
 			System.out.println("***CommandToLike is successfully finished");
 	}
 
+	@Override
+	public void unexecute() {
+		System.out.println("Unexecuting liking...");
+		try {
+			receiver.likeDesire(new LikePack(likePack.desireID, !likePack.isLiked));
+			System.out.println("Unexecuted.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Unexecuting failed.");
+		}
+	}
+
 }

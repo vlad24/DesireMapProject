@@ -5,7 +5,7 @@ import desireMapApplicationPackage.actionQueryObjectPackage.LikePack;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireThreadPackage.CommandToLike;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
-import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
+import desireMapApplicationPackage.desireThreadPackage.CommandsList;
 
 public class HandlerLike extends Handler {
 
@@ -14,7 +14,7 @@ public class HandlerLike extends Handler {
 	}
 
 	@Override
-	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue) {
+	public void tryToHandleClientQuery(ActionQueryObject qObject, CommandsList accumulatorQueue) {
 		if (myJob(qObject.actionCode)){
 			LikePack likePack = (LikePack) qObject;
 			accumulatorQueue.addCommand(new CommandToLike(this.ownerThread, likePack));

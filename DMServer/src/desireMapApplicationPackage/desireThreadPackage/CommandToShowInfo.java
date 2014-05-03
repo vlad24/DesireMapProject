@@ -4,9 +4,6 @@ package desireMapApplicationPackage.desireThreadPackage;
 import desireMapApplicationPackage.userDataPackage.MainData;
 
 
-
-
-
 public class CommandToShowInfo extends CommandForDesireThread{
 			
 	public  CommandToShowInfo(DesireThread newReceiver){
@@ -26,6 +23,10 @@ public class CommandToShowInfo extends CommandForDesireThread{
 			receiver.socketOut.writeObject(null);
 			throw error;
 		}
+	}
+	@Override
+	public void unexecute() {
+		System.out.println("Unexecuting showInfo. No unexecution available.");
 	}
 
 }

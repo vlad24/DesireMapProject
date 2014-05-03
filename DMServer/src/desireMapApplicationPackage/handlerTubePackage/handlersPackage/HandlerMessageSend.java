@@ -5,7 +5,7 @@ import desireMapApplicationPackage.actionQueryObjectPackage.MessageSendPack;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireThreadPackage.CommandToSendMessage;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
-import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
+import desireMapApplicationPackage.desireThreadPackage.CommandsList;
 
 public class HandlerMessageSend extends Handler{
 
@@ -14,7 +14,7 @@ public class HandlerMessageSend extends Handler{
 	}
 
 	@Override
-	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue) {
+	public void tryToHandleClientQuery(ActionQueryObject qObject, CommandsList accumulatorQueue) {
 		if (myJob(qObject.actionCode)){
 			System.out.println("HandlerMessageSend is working");
 			MessageSendPack mesPack = (MessageSendPack) qObject;

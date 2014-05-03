@@ -4,8 +4,6 @@ package desireMapApplicationPackage.desireThreadPackage;
 import desireMapApplicationPackage.desireContentPackage.DesireContent;
 import desireMapApplicationPackage.outputSetPackage.DesireSet;
 
-
-
 public class CommandToShowPersonalDesires extends CommandForDesireThread{
 	
 	private DesireThread receiver;
@@ -36,6 +34,11 @@ public class CommandToShowPersonalDesires extends CommandForDesireThread{
 			receiver.socketOut.writeObject(null);
 			throw error;
 		}
+	}
+
+	@Override
+	public void unexecute() {
+		System.out.println("Unexecuting ShowingPersonalDesires. No unexecution available.");		
 	}
 	
 }

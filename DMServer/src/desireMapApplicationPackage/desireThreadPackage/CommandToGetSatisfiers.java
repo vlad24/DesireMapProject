@@ -21,5 +21,10 @@ public class CommandToGetSatisfiers extends CommandForDesireThread{
 		receiver.socketOut.reset();
 		System.out.println("*** THREAD " + receiver.getUserName() + " SENT SATISFIERS");
 	}
+
+	@Override
+	public void unexecute() {
+		System.out.println("Unexecuting getting satisfiers. No unexecution available.");
+	}
 	
 }

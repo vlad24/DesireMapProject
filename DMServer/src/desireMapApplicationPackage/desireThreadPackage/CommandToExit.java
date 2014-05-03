@@ -25,5 +25,9 @@ public class CommandToExit extends CommandForDesireThread{
 		}
 
 	}
+	@Override
+	public void unexecute() {
+		System.out.println("Unexecuting exiting. No unexecution available.");
+	}
 
 }

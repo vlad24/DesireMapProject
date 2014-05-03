@@ -24,4 +24,9 @@ public class CommandToGetChatUsers extends CommandForDesireThread {
 		}
 	}
 
+	@Override
+	public void unexecute() {
+		System.out.println("Unexecuting getting chat partners. No unexecution available.");
+	}
+
 }

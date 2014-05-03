@@ -2,7 +2,7 @@ package desireMapApplicationPackage.handlerTubePackage.handlersPackage;
 
 import desireMapApplicationPackage.actionQueryObjectPackage.ActionQueryObject;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
-import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
+import desireMapApplicationPackage.desireThreadPackage.CommandsList;
 
 
 public abstract class Handler {
@@ -13,6 +13,6 @@ public abstract class Handler {
 		ownerThread = surroundingThread;
 	}
 	
-	public abstract void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue);
+	public abstract void tryToHandleClientQuery(ActionQueryObject qObject, CommandsList accumulatorQueue);
 	public abstract boolean myJob(char action);
 }

@@ -15,4 +15,10 @@ public class CommandToSendMessage extends CommandForDesireThread{
 		receiver.postMessage(clientMessage);
 	}
 
+	@Override
+	public void unexecute() {
+		System.out.println("Unexecuting sendingMessage. No unexecution available.");
+		//deleteMessage
+	}
+
 }

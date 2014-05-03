@@ -26,4 +26,9 @@ public class CommandToUpdateMap extends CommandForDesireThread {
 		}
 	}
 
+	@Override
+	public void unexecute() {
+		System.out.println("Unexecuting updatingSatisfiers. No unexecution available.");		
+	}
+
 }

@@ -186,10 +186,10 @@ public class DesireThread implements Runnable{
 			try {
 				System.out.println("*** THREAD " + getUserName() + " : Waiting for a client command...");
 				ActionQueryObject query = scanQuery();
-				QueueOfCommands threadCommands = tube.processClientQuery(query);
+				CommandsList threadCommands = tube.processClientQuery(query);
 				//Here we can store our commands somewhere and if needed undo them 
 				try{
-					threadCommands.executeAllPolling();
+					threadCommands.executeAllSafely();
 				}
 				catch(Exception error){
 					System.out.println("****** THREAD Commands failed during execution");
@@ -198,10 +198,10 @@ public class DesireThread implements Runnable{
 			}
 			catch(IOException | ClassNotFoundException ioError){
 				System.out.println("****** (Socket || Proceeding input) error");
-				System.out.println(ioError.getMessage());
 				ioError.printStackTrace();
 				try {
 					interactiveSocket.close();
+					System.out.println("****** Socket has been closed");
 				} 
 				catch(IOException error){
 					System.out.println("****** Socket has not been closed. DANGER!");
@@ -216,8 +216,6 @@ public class DesireThread implements Runnable{
 			}
 		}
 	}
-
-
 
 	
 }

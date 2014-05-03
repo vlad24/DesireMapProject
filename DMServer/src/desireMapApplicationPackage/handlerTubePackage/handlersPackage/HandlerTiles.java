@@ -5,7 +5,7 @@ import desireMapApplicationPackage.actionQueryObjectPackage.TilesPack;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireThreadPackage.CommandToUpdateMap;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
-import desireMapApplicationPackage.desireThreadPackage.QueueOfCommands;
+import desireMapApplicationPackage.desireThreadPackage.CommandsList;
 
 public class HandlerTiles extends Handler{
 
@@ -14,7 +14,7 @@ public class HandlerTiles extends Handler{
 	}
 
 	@Override
-	public void tryToHandleClientQuery(ActionQueryObject qObject, QueueOfCommands accumulatorQueue){
+	public void tryToHandleClientQuery(ActionQueryObject qObject, CommandsList accumulatorQueue){
 		if (myJob(qObject.actionCode)){
 			System.out.println("HandlerTiles is working");
 			TilesPack tilesPack = (TilesPack) qObject;

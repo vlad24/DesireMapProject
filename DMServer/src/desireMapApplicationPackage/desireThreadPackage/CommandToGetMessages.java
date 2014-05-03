@@ -31,5 +31,9 @@ public class CommandToGetMessages extends CommandForDesireThread{
 			throw error;
 		}
 	}
+	@Override
+	public void unexecute() {
+		System.out.println("Unexecuting getting messages. No unexecution available.");
+	}
 
 }
