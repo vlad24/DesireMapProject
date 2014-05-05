@@ -10,6 +10,7 @@ import java.util.Scanner;
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
 import desireMapApplicationPackage.actionQueryObjectPackage.ExitPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.LikePack;
 import desireMapApplicationPackage.actionQueryObjectPackage.LoginPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.MessageSendPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.RegistrationPack;
@@ -243,7 +244,7 @@ public class UserProgram{
 				if (loggedIn){
 					String mess = askString("message");
 					String whoTo = askString("receiver");
-					ClientMessage message = new ClientMessage(currentUser, whoTo, mess);
+					ClientMessage message = new ClientMessage(null, currentUser, whoTo, mess);
 					MessageSendPack pack = new MessageSendPack(message);
 					outs.writeObject(pack);
 					outs.flush();
@@ -288,6 +289,22 @@ public class UserProgram{
 				}
 				else{
 					System.out.println("...No info from server");
+				}
+				break;
+			}
+			case(11):{
+				if (onMap){
+					String desireID = askString("desire id to like");
+					int liked = askInt("liking? 0,1");
+					if (liked == 1){
+					outs.writeObject(new LikePack(desireID, true));
+					outs.flush();
+					}
+					else{
+						outs.writeObject(new LikePack(desireID, false));
+						outs.flush();
+					}
+					System.out.println("...LikePack sent");
 				}
 				break;
 			}

@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
-import desireMapApplicationPackage.desireContentPackage.DesireContent;
 
 
 public class CategoryTube {

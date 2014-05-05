@@ -15,11 +15,16 @@ public final class CodesMaster {
 		public static final char MessageSendCode = 'C';
 		public static final char TilesCode = 'T';
 		public static final char UserHistoryCode = 'U';
+		public static final char LikeCode = 'G';
 	}
 	
 	public static class Categories{
 		public static final int SportCode = 0;
 		public static final int DatingCode = 1;
+	}
+	
+	public static class SpecialValues{
+		public static final int radiusForAllNew = 0;
 	}
 	
 }

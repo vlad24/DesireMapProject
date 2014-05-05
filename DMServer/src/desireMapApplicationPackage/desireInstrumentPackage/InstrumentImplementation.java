@@ -6,13 +6,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
-import desireMapApplicationPackage.dataBasePackage.DataBaseSQLite;
 import desireMapApplicationPackage.messageSystemPackage.ClientMessage;
 import desireMapApplicationPackage.outputSetPackage.DesireSet;
 import desireMapApplicationPackage.outputSetPackage.MessageSet;
@@ -88,8 +86,9 @@ public abstract class InstrumentImplementation{
 
 	public Integer getCategoryTableByID(String desireID) throws SQLException {
 		try(Statement selector = getAccessToDesireBase().createStatement()){
-			String catQuery = "SELECT category FROM DESIRES_MAIN WHERE desireID = '" + desireID + "';";
-			ResultSet catSet = selector.executeQuery(catQuery);
+			String categoryQuery = "SELECT category FROM DESIRES_MAIN WHERE desireID = '" + desireID + "';";
+			System.out.println(categoryQuery);
+			ResultSet catSet = selector.executeQuery(categoryQuery);
 			if (catSet.next()){
 				Integer categoryCode = catSet.getInt("category");
 				catSet.close();
@@ -114,7 +113,7 @@ public abstract class InstrumentImplementation{
 		catch (Exception error){
 			System.out.println("-SQL error at register");
 			throw error;
-		}  
+		}
 	}
 
 
@@ -163,16 +162,17 @@ public abstract class InstrumentImplementation{
 				case(CodesMaster.Categories.SportCode):{
 					System.out.println("Sport query is gonna be launched");
 					String login = centerSet.getString("login");
-					String sport = centerSet.getString("sport");
+					String sport = centerSet.getString("sportName");
 					String adv = centerSet.getString("advantages");
 					centerSet.close();
 					String sportQuery = "SELECT * FROM ((DESIRES_SPORT inner join DESIRES_MAIN using (desireID)) inner join INFO using (login)) WHERE " + 
 							tileNotLikeCondition + tileLikeCondition +
 							" AND (" + timeCondition + ") " + 
-							" AND (advantages LIKE %" + adv + "%) " + 
-							" AND (sport LIKE '%" + sport + "%') " + 
-							" AND (login != '" + login + 
-							"');";
+							" AND (advantages LIKE '%" + adv + "%') " + 
+							" AND (sportName LIKE '%" + sport + "%') " + 
+							" AND (login != '" + login + "')" +
+							" ORDER BY rating" + 
+							";";
 					System.out.println(sportQuery);
 					ResultSet satSet =  selector.executeQuery(sportQuery);
 					SatisfySet result = owner.rsMaster.convertToSatisfySetAndClose(satSet, categoryCode);
@@ -255,6 +255,7 @@ public abstract class InstrumentImplementation{
 
 
 	public void cleanBaseOnExit(String userName, String deviceID) {
+		System.out.println("Cleaning the base");
 		try (Statement deleter = getAccessToDesireBase().createStatement()){
 			String delString = "delete from ONLINE_DEVICES WHERE ID = '" + deviceID + "';";
 			deleter.executeUpdate(delString);
@@ -356,20 +357,22 @@ public abstract class InstrumentImplementation{
 		}
 	}
 
-	public void likeDesireAtDB(String desireID, boolean isLiked) {
-		char sign = '+';
-		if (!isLiked){
-			sign = '-';
-		}
+	public void likeDesireAtDB(String login, String desireID, boolean isLiked) {
 			try(Statement selector = owner.getAccessToDesireBase().createStatement()){
-				String updateQuery = "update DESIRES_MAIN SET likesAmount = (likesAmount " + sign +  " 1) where desireID = " + desireID + ");";
-				System.out.println(updateQuery);
-				System.out.println("...executing");
-				int amount = selector.executeUpdate(updateQuery);
-				System.out.println("...Rows affected : " + amount);
+				if (isLiked){
+					String insertQuery = "insert into LIKES_CONTROL values('"+ desireID + "','" + login +  "', datetime('now'))";
+					System.out.println(insertQuery);
+					System.out.println("...executing");
+					selector.executeUpdate(insertQuery);
+				}
+				else{
+					String deleteQuery = "DELETE FROM LIKES_CONTROL WHERE (desireID = '" + desireID + "') AND (login = '" + login + "')"; 
+					System.out.println(deleteQuery);
+					selector.executeUpdate(deleteQuery);
+				}
 			}
 			catch(Exception error){
-				System.out.println("-Can't like, nobody cares _ at instrImpl");
+				System.out.println("-Can't like now, nobody cares _ at instrImpl");
 			}
 		}
 

@@ -23,7 +23,8 @@ public class CategoryManagerMain extends CategoryManager{
 				+ pack.desireContent.coordinates.latitude + "', '"
 				+ pack.desireContent.coordinates.longitude + "', '"
 				+ pack.tile + "', "
-				+ "datetime('now') );";
+				+ "datetime('now') , "
+				+ "0);";
 		System.out.println(query);
 		adder.execute(query);
 		adder.close();

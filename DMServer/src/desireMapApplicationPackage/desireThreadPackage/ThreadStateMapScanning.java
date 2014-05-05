@@ -25,17 +25,12 @@ public class ThreadStateMapScanning extends ThreadState{
 	private String desireID;
 	private Integer categoryCode;
 	
-	public ThreadStateMapScanning(DesireThread newOwner, SatisfyPack sPack){
+	public ThreadStateMapScanning(DesireThread newOwner, SatisfyPack sPack, Integer newCategoryCode){
 		owner = newOwner;
 		loadedTiles = sPack.tiles;
 		lastDepth = sPack.tileDepth; 
 		desireID = sPack.sDesireID;
-		try {
-			categoryCode = owner.instrument.getCategoryTableByID(desireID);
-		} catch (SQLException error) {
-			categoryCode = null;
-			error.printStackTrace();
-		}
+		categoryCode = newCategoryCode;
 	}
 	
 	@Override
@@ -116,7 +111,8 @@ public class ThreadStateMapScanning extends ThreadState{
 
 	@Override
 	public void exit() {
-		changeState(new ThreadStateStart(owner));
+		changeState(new ThreadStateBasic(owner));
+		owner.exit();
 	}
 
 	@Override
@@ -146,7 +142,7 @@ public class ThreadStateMapScanning extends ThreadState{
 
 	@Override
 	public void likeDesire(LikePack pack){
-		owner.instrument.likeDesireAtDB(pack.desireID, pack.isLiked);
+		owner.instrument.likeDesireAtDB(owner.getUserName(), pack.desireID, pack.isLiked);
 	}
 	
 }

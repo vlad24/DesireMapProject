@@ -39,11 +39,11 @@ public class DataBaseSQLite extends DataBase{
 		System.out.println("+MESSAGES - DONE");
 		creator.execute(constantsMaster.createTableONLINE_DEVICES);
 		System.out.println("+IDs - DONE");
-		creator.execute(constantsMaster.createTableDESIRE_HISTORY);
-		System.out.println("+DESIRE_HISTORY - DONE");
+		creator.execute(constantsMaster.createTableDESIRES_CONTROL);
+		System.out.println("+DESIRES_CONTROL - DONE");
 		creator.execute(constantsMaster.createTriggerOnDeletingDesire);
 		System.out.println("+DELETEING TRIGGER - DONE");
-		creator.execute(constantsMaster.createTableUSERS_COMING_HISTORY);
+		creator.execute(constantsMaster.createTableUSERS_COMING_CONTROL);
 		System.out.println("+USERS_COMING_HISTORY - DONE");
 		creator.execute(constantsMaster.createTriggerOnLoggingIn);
 		System.out.println("+LOGGING TRIGGER - DONE");
@@ -53,6 +53,12 @@ public class DataBaseSQLite extends DataBase{
 		System.out.println("+VIEW AGE - DONE");
 		creator.execute(constantsMaster.cleanOnline);
 		System.out.println("+ONLINE CLEANING - DONE");
+		creator.execute(constantsMaster.createTableLIKES_CONTROL);
+		System.out.println("+LIKES_CONTROL - DONE");
+		creator.execute(constantsMaster.createTriggerOnLike);
+		System.out.println("+LIKES TRIGGER - DONE");
+		creator.execute(constantsMaster.createTriggerOnDislike);
+		System.out.println("+DISLIKES TRIGGER - DONE");
 		creator.close();
 	}
 

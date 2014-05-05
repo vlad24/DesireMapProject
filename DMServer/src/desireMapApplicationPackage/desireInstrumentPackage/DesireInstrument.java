@@ -1,7 +1,6 @@
 package desireMapApplicationPackage.desireInstrumentPackage;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
@@ -146,8 +145,8 @@ public class DesireInstrument {
 		return implementationObject.getUsersTalkedToAtDB(userName);
 	}
 
-	public void likeDesireAtDB(String desireID, boolean isLiked){
-		implementationObject.likeDesireAtDB(desireID, isLiked);
+	public void likeDesireAtDB(String login, String desireID, boolean isLiked){
+		implementationObject.likeDesireAtDB(login, desireID, isLiked);
 	}
 
 

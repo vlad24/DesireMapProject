@@ -1,6 +1,5 @@
 package desireMapApplicationPackage.desireThreadPackage;
 
-import java.io.IOException;
 
 import desireMapApplicationPackage.actionQueryObjectPackage.MessageDeliverPack;
 import desireMapApplicationPackage.outputSetPackage.MessageSet;

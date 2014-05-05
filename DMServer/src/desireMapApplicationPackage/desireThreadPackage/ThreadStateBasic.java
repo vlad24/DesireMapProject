@@ -46,10 +46,16 @@ public class ThreadStateBasic extends ThreadState{
 		
 		@Override
 		public SatisfySet getSatisfiers(SatisfyPack sPack) throws Exception {
-			int categoryCode = owner.instrument.getCategoryTableByID(sPack.sDesireID);
-			SatisfySet set = owner.instrument.getSatisfiersAtDB(sPack.sDesireID, categoryCode, sPack.tiles, null); 
-			changeState(new ThreadStateMapScanning(owner, sPack));
-			return set;
+			Integer categoryCode = owner.instrument.getCategoryTableByID(sPack.sDesireID);
+			if (categoryCode != null){
+				SatisfySet set = owner.instrument.getSatisfiersAtDB(sPack.sDesireID, categoryCode, sPack.tiles, null);
+				changeState(new ThreadStateMapScanning(owner, sPack, categoryCode));
+				return set;
+			}
+			else{
+				changeState(new ThreadStateMapScanning(owner, sPack, categoryCode));
+				throw new Exception("Category is wrong");
+			}
 		}
 
 		@Override

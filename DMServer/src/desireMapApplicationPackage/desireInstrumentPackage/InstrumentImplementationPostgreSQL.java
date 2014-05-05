@@ -1,25 +1,13 @@
 package desireMapApplicationPackage.desireInstrumentPackage;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.HashSet;
 
-import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
-import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.dataBasePackage.DataBaseSQLite;
 import desireMapApplicationPackage.dataBasePackage.GeneralDBConstantsMaster;
-import desireMapApplicationPackage.messageSystemPackage.ClientMessage;
-import desireMapApplicationPackage.outputSetPackage.DesireSet;
 import desireMapApplicationPackage.outputSetPackage.MessageSet;
-import desireMapApplicationPackage.outputSetPackage.SatisfySet;
-import desireMapApplicationPackage.userDataPackage.AndroidData;
-import desireMapApplicationPackage.userDataPackage.MainData;
-import desireMapApplicationPackage.userDataPackage.RegistrationData;
 
 public class InstrumentImplementationPostgreSQL extends	InstrumentImplementation {
 
