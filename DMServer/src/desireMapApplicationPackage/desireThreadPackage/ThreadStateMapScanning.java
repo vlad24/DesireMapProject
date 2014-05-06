@@ -1,6 +1,5 @@
 package desireMapApplicationPackage.desireThreadPackage;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
@@ -144,5 +143,5 @@ public class ThreadStateMapScanning extends ThreadState{
 	public void likeDesire(LikePack pack){
 		owner.instrument.likeDesireAtDB(owner.getUserName(), pack.desireID, pack.isLiked);
 	}
-	
+
 }

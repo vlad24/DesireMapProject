@@ -149,6 +149,54 @@ public abstract class InstrumentImplementation{
 		return thisDesireID;
 	}
 
+	public SatisfySet getSatisfiersAtDBBasic(String login, Integer categoryCode, HashSet<String> tilesToScan, HashSet<String> tilesToIgnore){
+		if (categoryCode != null){
+			String tileLikeCondition = getLikeString(tilesToScan);
+			String tileNotLikeCondition = getNotLikeString(tilesToIgnore);
+			String timeCondition = "(time > datetime('now', '-120 hours')) ";
+			try(Statement selector = getAccessToDesireBase().createStatement()){
+				switch(categoryCode){
+				case(CodesMaster.Categories.SportCode):{
+					System.out.println("Sport query is gonna be launched");
+					String sportQuery = "SELECT * FROM ((DESIRES_SPORT inner join DESIRES_MAIN using (desireID)) inner join INFO using (login)) WHERE " + 
+							tileNotLikeCondition + tileLikeCondition +
+							" AND (" + timeCondition + ") " + 
+							" AND (login != '" + login + "')" +
+							" ORDER BY rating" + 
+							";";
+					System.out.println(sportQuery);
+					ResultSet satSet =  selector.executeQuery(sportQuery);
+					SatisfySet result = owner.rsMaster.convertToSatisfySetAndClose(satSet, categoryCode);
+					return result;
+				}
+				case(CodesMaster.Categories.DatingCode):{
+					System.out.println("Dating query is gonna be launched");
+					String datingQuery = "SELECT * FROM (((DESIRES_DATING inner join DESIRES_MAIN using (desireID)) inner join INFO using (login)) inner join AGES using(login)) WHERE" +
+							tileNotLikeCondition + tileLikeCondition +
+							" AND (" + timeCondition + ") " + 
+							" AND (login != '" + login + "');";
+					System.out.println(datingQuery);
+					ResultSet satSet =  selector.executeQuery(datingQuery);
+					SatisfySet result = owner.rsMaster.convertToSatisfySetAndClose(satSet, categoryCode);
+					return result;
+				}
+				default:{
+					return null;
+				}
+				}
+
+			}
+			catch(Exception error){
+				System.out.println("-Error at get satisfiers : " + error.getMessage());
+				return null;
+			}
+		}
+		else{
+			System.out.println("-Category is wrong");
+			return null;
+		}
+	}
+	
 	public SatisfySet getSatisfiersAtDB(String desireID, Integer categoryCode, HashSet<String> tilesToScan, HashSet<String> tilesToIgnore){
 		if (categoryCode != null){
 			String suffix = owner.dataBaseSuffixes.get(categoryCode);

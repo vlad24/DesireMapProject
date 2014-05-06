@@ -19,33 +19,44 @@ import desireMapApplicationPackage.outputSetPackage.UserSet;
 import desireMapApplicationPackage.userDataPackage.MainData;
 
 public class ThreadStateBasic extends ThreadState{
-	
-        public ThreadStateBasic(DesireThread inThread) {
-                owner = inThread;
-        }
 
-		@Override
-		public void register(RegistrationPack regPack) throws Exception {
-			 throw new Exception("!!! Unable now\n Hint : exit first, please");
-		}
+	private boolean isBasicSatisfyPack(SatisfyPack sPack) {
+		return (sPack.sDesireID == null);
+	}
 
-		@Override
-		public void authorize(LoginPack logPack) throws Exception {
-			 throw new Exception("!!! Unable now\n Hint : exit first, please");
-		}
-		
-		@Override
-		public String addDesire(AddPack pack) throws Exception {
-			return owner.instrument.addDesireAtDB(pack);
-		}
+	public ThreadStateBasic(DesireThread inThread) {
+		owner = inThread;
+	}
 
-		@Override
-		public void delete(DeletePack delPack) throws Exception {
-				owner.instrument.deleteAtDB(delPack);
+	@Override
+	public void register(RegistrationPack regPack) throws Exception {
+		throw new Exception("!!! Unable now\n Hint : exit first, please");
+	}
+
+	@Override
+	public void authorize(LoginPack logPack) throws Exception {
+		throw new Exception("!!! Unable now\n Hint : exit first, please");
+	}
+
+	@Override
+	public String addDesire(AddPack pack) throws Exception {
+		return owner.instrument.addDesireAtDB(pack);
+	}
+
+	@Override
+	public void delete(DeletePack delPack) throws Exception {
+		owner.instrument.deleteAtDB(delPack);
+	}
+
+	@Override
+	public SatisfySet getSatisfiers(SatisfyPack sPack) throws Exception {
+		if (isBasicSatisfyPack(sPack)){
+			Integer categoryCode = sPack.sCategoryCode;
+			SatisfySet set = owner.instrument.getSatisfiersAtDBBasic(owner.getUserName() , categoryCode, sPack.tiles, null);
+			changeState(new ThreadStateMapScanning(owner, sPack, categoryCode));
+			return set;
 		}
-		
-		@Override
-		public SatisfySet getSatisfiers(SatisfyPack sPack) throws Exception {
+		else{
 			Integer categoryCode = owner.instrument.getCategoryTableByID(sPack.sDesireID);
 			if (categoryCode != null){
 				SatisfySet set = owner.instrument.getSatisfiersAtDB(sPack.sDesireID, categoryCode, sPack.tiles, null);
@@ -57,50 +68,52 @@ public class ThreadStateBasic extends ThreadState{
 				throw new Exception("Category is wrong");
 			}
 		}
+	}
 
-		@Override
-		public DesireSet getPersonalDesires(int category) throws Exception {
-			return owner.instrument.getPersonalDesiresAtDB(owner.getUserName(), category);
-		}
-		
-        public MainData getInfo() throws Exception{
-        	return owner.instrument.getInfoAtDB(owner.getUserName());                
-        }
-  
-        public void exit(){
-        	owner.instrument.cleanBaseOnExit(owner.getUserName(), owner.getDeviceID());
-            changeState(new ThreadStateStart(this.owner));
-        }
 
-		
-		public void postMessage(ClientMessage clientMessage) throws Exception {
-			ChatKing.getInstance().postMessage(clientMessage);
-		}
+	@Override
+	public DesireSet getPersonalDesires(int category) throws Exception {
+		return owner.instrument.getPersonalDesiresAtDB(owner.getUserName(), category);
+	}
 
-		@Override
-		public SatisfySet updateSatisfiers(TilesPack tilesPack)	throws Exception {
-			throw new Exception("!!! Unable now\n Hint : exit first, please");
-		}
+	public MainData getInfo() throws Exception{
+		return owner.instrument.getInfoAtDB(owner.getUserName());                
+	}
 
-		@Override
-		public void loadNewMessages() throws SQLException {
-			owner.chater.getUndeliveredMessagesForThread(this.owner);
-		}
+	public void exit(){
+		owner.instrument.cleanBaseOnExit(owner.getUserName(), owner.getDeviceID());
+		changeState(new ThreadStateStart(this.owner));
+	}
 
-		@Override
-		public MessageSet getOldMessagesByCryteria(MessageDeliverPack pack) throws Exception {
-			return owner.chater.getMessagesByCryteria(pack);
-		}
 
-		@Override
-		public UserSet getUsersTalkedTo() throws Exception {
-			return owner.chater.getUsersTalkedToAtChat(this.owner);
-		}
+	public void postMessage(ClientMessage clientMessage) throws Exception {
+		ChatKing.getInstance().postMessage(clientMessage);
+	}
 
-		@Override
-		public void likeDesire(LikePack pack) throws Exception {
-			throw new Exception("!!! Unable now\n Scan the map!");
-		}
+	@Override
+	public SatisfySet updateSatisfiers(TilesPack tilesPack)	throws Exception {
+		throw new Exception("!!! Unable now\n Hint : exit first, please");
+	}
+
+	@Override
+	public void loadNewMessages() throws SQLException {
+		owner.chater.getUndeliveredMessagesForThread(this.owner);
+	}
+
+	@Override
+	public MessageSet getOldMessagesByCryteria(MessageDeliverPack pack) throws Exception {
+		return owner.chater.getMessagesByCryteria(pack);
+	}
+
+	@Override
+	public UserSet getUsersTalkedTo() throws Exception {
+		return owner.chater.getUsersTalkedToAtChat(this.owner);
+	}
+
+	@Override
+	public void likeDesire(LikePack pack) throws Exception {
+		throw new Exception("!!! Unable now\n Scan the map!");
+	}
 
 
 }
