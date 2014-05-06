@@ -31,7 +31,7 @@
         <include
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            layout="@layout/map_panel_list"
+            layout="@layout/map_panel_slidingmenu"
             android:minHeight="75dp" />
     </LinearLayout>
 

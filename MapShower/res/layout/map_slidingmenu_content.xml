@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/map_login"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp" >
+
+        <TextView
+            android:id="@+id/map_loginText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Логин:"
+            android:textColor="#012060"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/map_loginInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/map_loginText"
+            android:text="Vasya"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/map_name"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@+id/map_login"
+        android:layout_marginLeft="10dp" >
+
+        <TextView
+            android:id="@+id/map_nameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="7dp"
+            android:text="Имя:"
+            android:textColor="#012060"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/map_nameInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/map_nameText"
+            android:textSize="20sp"
+            android:text="Вася" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/map_age"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@+id/map_name"
+        android:layout_marginLeft="10dp" >
+
+        <TextView
+            android:id="@+id/map_ageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="7dp"
+            android:text="Возраст:"
+            android:textColor="#012060"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/map_ageInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/map_ageText"
+            android:text="18"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/map_male"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@+id/map_age"
+        android:layout_marginLeft="10dp" >
+
+        <TextView
+            android:id="@+id/map_maleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="10dp"
+            android:text="Пол:"
+            android:textColor="#012060"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/map_maleInfo"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/map_maleText"
+            android:src="@drawable/user_male32" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/map_allDesires"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@+id/map_male"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp" >
+
+        <TextView
+            android:id="@+id/map_allDesiresText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="7dp"
+            android:text="Все желания:"
+            android:textColor="#012060"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/map_allDesiresInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/map_allDesiresText"
+            android:text="20"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/map_nextBtn"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/map_allDesiresInfo"
+            android:background="@drawable/arrow_right" />
+    </RelativeLayout>
+
+</RelativeLayout>

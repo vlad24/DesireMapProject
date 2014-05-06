@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/maplist_ElementView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/info_pane_header_bg" >
 
         <LinearLayout
-            android:id="@+id/maplist_ElementView"
             android:layout_width="match_parent"
             android:layout_height="68dp"
             android:layout_marginLeft="70dp"
@@ -26,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:clickable="true"
+                android:clickable="false"
                 android:orientation="vertical" >
 
                 <TextView
@@ -51,7 +56,6 @@
                     android:textSize="15sp" />
             </LinearLayout>
 
-
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
@@ -60,44 +64,36 @@
                 android:background="#eeeeee" />
 
             <LinearLayout
-                android:id="@+id/maplist_statsLayout"
+                android:id="@+id/maplist_likeLayout"
                 android:layout_width="52dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:orientation="vertical" >
+                android:clickable="true"
+                android:orientation="horizontal" >
 
-                <LinearLayout
-                    android:id="@+id/maplist_likeLayout"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/maplist_likeInfoView"
+                    android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:clickable="true"
-                    android:orientation="horizontal" >
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="#666666"
+                    android:textSize="27sp" />
 
-                    <TextView
-                        android:id="@+id/maplist_likeInfoView"
-                        android:layout_width="0dip"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginRight="2dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textColor="#666666"
-                        android:textSize="27sp" />
-
-                    <ImageView
-                        android:id="@+id/maplist_likeImageView"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginTop="1dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/gray_heart" />
-                </LinearLayout>
+                <ImageView
+                    android:id="@+id/maplist_likeImageView"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="1dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/gray_heart" />
             </LinearLayout>
         </LinearLayout>
 
@@ -109,3 +105,18 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp" />
     </RelativeLayout>
+
+    <expand_graphic.ExpandingLayout
+        android:id="@+id/expanding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/maplist_fullDesireInfoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="18sp" />
+    </expand_graphic.ExpandingLayout>
+
+</LinearLayout>

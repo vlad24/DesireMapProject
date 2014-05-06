@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.jeremyfeinstein.slidingmenu.lib.SlidingMenu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sliding="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/map_sub_slidingmenu"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    sliding:touchModeAbove="fullscreen"
+    sliding:touchModeBehind="none"
+    sliding:viewAbove="@layout/map_panel_sub_list"
+    sliding:viewBehind="@layout/map_slidingmenu_content" >
+
+</com.jeremyfeinstein.slidingmenu.lib.SlidingMenu>

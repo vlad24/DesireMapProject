@@ -9,30 +9,21 @@ import pack.clusterization.ClusterizationAlgorithm;
 import pack.quadtree.QuadTreeNode;
 import pack.quadtree.QuadTreeNodeBox;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Point;
-import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
-import android.widget.FrameLayout;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -49,9 +40,6 @@ import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.Projection;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
@@ -62,9 +50,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.maps.android.SphericalUtil;
 import com.google.maps.android.ui.IconGenerator;
-import com.nineoldandroids.view.animation.AnimatorProxy;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
+
+import expand_graphic.ExpandingListView;
 
 
 public class GoogleMapActivity extends FragmentActivity implements OnMapClickListener, OnCameraChangeListener, OnMarkerClickListener {
@@ -100,7 +90,10 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 	private LinearLayout likeLayout;
 	private int numberOfLikes = 100;
 	
-	private ListView lvMapDesires;
+	private SlidingMenu menu;
+	private SlidingMenu subMenu;
+	private ExpandingListView lvMapDesires;
+	private ExpandingListView lvMapSubDesires;
 
 
 	private static final int[] ITEM_DRAWABLES = {R.drawable.info, R.drawable.mail};
@@ -115,23 +108,32 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 		//		Resources r = getResources();
 		//		panelHeightPx = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 68, r.getDisplayMetrics());
 
-
-		panelInfoLayout = (LinearLayout) findViewById(R.id.PanelInfoView);
+		
+		slidingLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+		panelLayout = (LinearLayout) slidingLayout.findViewById(R.id.PanelView);
+		panelLayout.setDrawingCacheEnabled(true);
+		
+		
+        menu = (SlidingMenu) panelLayout.findViewById(R.id.map_slidingmenu);
+        subMenu = (SlidingMenu) menu.findViewById(R.id.map_sub_slidingmenu);
+        initSlidingMenus();
+        
+		panelInfoLayout = (LinearLayout) panelLayout.findViewById(R.id.PanelInfoView);
 		panelInfoLayout.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(GoogleMapActivity.this, "Here info appears", Toast.LENGTH_SHORT).show();
 			}
 		});
-		panelDragableLayout = (RelativeLayout) findViewById(R.id.PanelDragableView);
+		panelDragableLayout = (RelativeLayout) panelLayout.findViewById(R.id.PanelDragableView);
 
-		likeLayout = (LinearLayout) findViewById(R.id.likeLayout);
+		likeLayout = (LinearLayout) panelLayout.findViewById(R.id.likeLayout);
 		likeLayout.setOnClickListener(new OnClickListener(){
 			boolean liked = false;
 			@Override
 			public void onClick(View v) {
-				ImageView likeImage = (ImageView) panelLayout.findViewById(R.id.likeImageView);
-				TextView likeInfo = (TextView) panelLayout.findViewById(R.id.likeInfoView);
+				ImageView likeImage = (ImageView) likeLayout.findViewById(R.id.likeImageView);
+				TextView likeInfo = (TextView) likeLayout.findViewById(R.id.likeInfoView);
 				if(!liked){
 					liked = true;
 					numberOfLikes++;
@@ -144,23 +146,27 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 				likeInfo.setText(Integer.toString(numberOfLikes));
 			}});
 
-		slidingLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+		
 		slidingLayout.setCoveredFadeColor(Color.argb(0, 0, 0, 0));
 		slidingLayout.setOverlayed(true);
 		slidingLayout.setDragView(panelDragableLayout);
 
-		panelLayout = (LinearLayout) findViewById(R.id.PanelView);
-		panelLayout.setVisibility(View.GONE);
 
-		RayMenu rayMenu = (RayMenu) findViewById(R.id.ray_menu);
+		RayMenu rayMenu = (RayMenu) panelLayout.findViewById(R.id.ray_menu);
 		rayMenu.setInfoView(panelInfoLayout);
 		initRayMenu(rayMenu, ITEM_DRAWABLES);
 		
 		//init desires list
-		lvMapDesires = (ListView) findViewById(R.id.lvMapDesires);
-		MapCustomAdapter mapAdapter = new MapCustomAdapter(this);
+		lvMapDesires = (ExpandingListView) menu.findViewById(R.id.lvMapDesires);
+		MapCustomAdapter mapAdapter = new MapCustomAdapter(this, menu);
 		lvMapDesires.setAdapter(mapAdapter);
-
+		lvMapDesires.setDivider(null);
+		
+		lvMapSubDesires = (ExpandingListView) subMenu.findViewById(R.id.lvMapSubDesires);
+		MapCustomAdapter subMapAdapter = new MapCustomAdapter(this, subMenu, false);
+		lvMapSubDesires.setAdapter(subMapAdapter);
+		lvMapSubDesires.setDivider(null);
+		
 		tapTextView = (TextView) findViewById(R.id.tap_text);
 		try {
 			MapsInitializer.initialize(this);
@@ -241,6 +247,35 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 
 		});
 
+	}
+	
+	private void initSlidingMenus(){
+		menu.setMode(SlidingMenu.LEFT);
+		menu.setShadowWidth(0);
+		menu.setFadeDegree(0.0f);
+		menu.toggle();
+		
+		subMenu.setMode(SlidingMenu.LEFT);
+		subMenu.setShadowWidth(0);
+		subMenu.setFadeDegree(0.0f);
+		subMenu.toggle();
+		
+		subMenu.setBehindCanvasTransformer(new CanvasTransformer() {
+			@Override
+			public void transformCanvas(Canvas canvas, float percentOpen) {
+				if(percentOpen == 1.0){
+					menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+				}
+			}
+		});
+		
+		Button nextBtn = (Button) subMenu.findViewById(R.id.map_nextBtn);
+		nextBtn.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+				subMenu.toggle(true);
+			}});
 	}
 
 	private void initRayMenu(RayMenu menu, int[] itemDrawables) {
@@ -350,8 +385,6 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 		myCircle = map.addCircle(circleOptions);
 
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(myPosition, (map.getMaxZoomLevel()+map.getMinZoomLevel())/2));
-		Toast.makeText(this, String.format("MaxZoomLevel: %f\nMinZoomLevel: %f\nCurrentZoomLevel: %f",map.getMaxZoomLevel(),map.getMinZoomLevel(),map.getCameraPosition().zoom), Toast.LENGTH_LONG).show();
-
 
 	}
 
@@ -360,6 +393,7 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 		initializeMap();
 		super.onStart();
 	}
+	
 
 
 	@Override
@@ -439,6 +473,7 @@ public class GoogleMapActivity extends FragmentActivity implements OnMapClickLis
 	@Override
 	protected void onResume() {
 		mapView.onResume();
+		panelLayout.setVisibility(View.GONE);
 		super.onResume();
 
 	}

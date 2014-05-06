@@ -8,42 +8,42 @@ package com.capricorn;
 
 public final class R {
 	public static final class animator {
-		public static final int text_fade_in = 0x7f050002;
-		public static final int text_fade_out = 0x7f050003;
+		public static final int text_fade_in = 0x7f040004;
+		public static final int text_fade_out = 0x7f040005;
 	}
 	public static final class attr {
-		public static final int childSize = 0x7f01006c;
-		public static final int fromDegrees = 0x7f01006a;
-		public static final int leftHolderWidth = 0x7f01006d;
-		public static final int toDegrees = 0x7f01006b;
+		public static final int childSize = 0x7f010010;
+		public static final int fromDegrees = 0x7f01000e;
+		public static final int leftHolderWidth = 0x7f010011;
+		public static final int toDegrees = 0x7f01000f;
 	}
 	public static final class drawable {
-		public static final int composer_button = 0x7f02007a;
-		public static final int composer_button_normal = 0x7f02007b;
-		public static final int composer_button_pressed = 0x7f02007c;
-		public static final int composer_icn_plus = 0x7f02007d;
-		public static final int composer_icn_plus_normal = 0x7f02007e;
-		public static final int composer_icn_plus_pressed = 0x7f02007f;
+		public static final int composer_button = 0x7f020024;
+		public static final int composer_button_normal = 0x7f020025;
+		public static final int composer_button_pressed = 0x7f020026;
+		public static final int composer_icn_plus = 0x7f020027;
+		public static final int composer_icn_plus_normal = 0x7f020028;
+		public static final int composer_icn_plus_pressed = 0x7f020029;
 	}
 	public static final class id {
-		public static final int control_hint = 0x7f060042;
-		public static final int control_layout = 0x7f060041;
-		public static final int item_layout = 0x7f060040;
+		public static final int control_hint = 0x7f05000d;
+		public static final int control_layout = 0x7f05000c;
+		public static final int item_layout = 0x7f05000b;
 	}
 	public static final class layout {
-		public static final int arc_menu = 0x7f030017;
-		public static final int ray_menu = 0x7f03001e;
+		public static final int arc_menu = 0x7f030000;
+		public static final int ray_menu = 0x7f03000b;
 	}
 	public static final class styleable {
-		public static final int[] ArcLayout = { 0x7f01006a, 0x7f01006b, 0x7f01006c };
+		public static final int[] ArcLayout = { 0x7f01000e, 0x7f01000f, 0x7f010010 };
 		public static final int ArcLayout_childSize = 2;
 		public static final int ArcLayout_fromDegrees = 0;
 		public static final int ArcLayout_toDegrees = 1;
-		public static final int[] ArcMenu = { 0x7f01006a, 0x7f01006b, 0x7f01006c };
+		public static final int[] ArcMenu = { 0x7f01000e, 0x7f01000f, 0x7f010010 };
 		public static final int ArcMenu_childSize = 2;
 		public static final int ArcMenu_fromDegrees = 0;
 		public static final int ArcMenu_toDegrees = 1;
-		public static final int[] RayLayout = { 0x7f01006d };
+		public static final int[] RayLayout = { 0x7f010011 };
 		public static final int RayLayout_leftHolderWidth = 0;
 	}
 }
