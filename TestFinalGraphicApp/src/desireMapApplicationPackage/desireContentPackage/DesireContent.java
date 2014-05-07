@@ -11,6 +11,7 @@ public class DesireContent implements Serializable{
 	public final Coordinates coordinates;
 	public final int category;
 	public final Date time;
+	public int likes = 0;
 	////
 	public DesireContent(String newLogin, String newID, String newDescription, Coordinates newCoordinates, int newCategory, Date newTime){
 		login = newLogin;

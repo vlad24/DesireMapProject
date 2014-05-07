@@ -8,26 +8,26 @@ package antistatic.spinnerwheel;
 
 public final class R {
 	public static final class attr {
-		public static final int abstractWheelViewStyle = 0x7f010019;
-		public static final int isAllVisible = 0x7f01000f;
-		public static final int isCyclic = 0x7f010016;
-		public static final int itemOffsetPercent = 0x7f010010;
-		public static final int itemsDimmedAlpha = 0x7f010015;
-		public static final int itemsPadding = 0x7f010011;
-		public static final int selectionDivider = 0x7f010014;
-		public static final int selectionDividerActiveAlpha = 0x7f010013;
-		public static final int selectionDividerDimmedAlpha = 0x7f010012;
-		public static final int selectionDividerHeight = 0x7f010017;
-		public static final int selectionDividerWidth = 0x7f010018;
-		public static final int visibleItems = 0x7f01000e;
+		public static final int abstractWheelViewStyle = 0x7f010092;
+		public static final int isAllVisible = 0x7f010088;
+		public static final int isCyclic = 0x7f01008f;
+		public static final int itemOffsetPercent = 0x7f010089;
+		public static final int itemsDimmedAlpha = 0x7f01008e;
+		public static final int itemsPadding = 0x7f01008a;
+		public static final int selectionDivider = 0x7f01008d;
+		public static final int selectionDividerActiveAlpha = 0x7f01008c;
+		public static final int selectionDividerDimmedAlpha = 0x7f01008b;
+		public static final int selectionDividerHeight = 0x7f010090;
+		public static final int selectionDividerWidth = 0x7f010091;
+		public static final int visibleItems = 0x7f010087;
 	}
 	public static final class drawable {
-		public static final int wheel_bg_hor = 0x7f0200ba;
-		public static final int wheel_bg_ver = 0x7f0200bb;
-		public static final int wheel_val = 0x7f0200bc;
+		public static final int wheel_bg_hor = 0x7f0200cb;
+		public static final int wheel_bg_ver = 0x7f0200cc;
+		public static final int wheel_val = 0x7f0200cd;
 	}
 	public static final class styleable {
-		public static final int[] AbstractWheelView = { 0x7f01000e, 0x7f01000f, 0x7f010010, 0x7f010011, 0x7f010012, 0x7f010013, 0x7f010014, 0x7f010015, 0x7f010016 };
+		public static final int[] AbstractWheelView = { 0x7f010087, 0x7f010088, 0x7f010089, 0x7f01008a, 0x7f01008b, 0x7f01008c, 0x7f01008d, 0x7f01008e, 0x7f01008f };
 		public static final int AbstractWheelView_isAllVisible = 1;
 		public static final int AbstractWheelView_isCyclic = 8;
 		public static final int AbstractWheelView_itemOffsetPercent = 2;
@@ -37,9 +37,9 @@ public final class R {
 		public static final int AbstractWheelView_selectionDividerActiveAlpha = 5;
 		public static final int AbstractWheelView_selectionDividerDimmedAlpha = 4;
 		public static final int AbstractWheelView_visibleItems = 0;
-		public static final int[] WheelHorizontalView = { 0x7f010018 };
+		public static final int[] WheelHorizontalView = { 0x7f010091 };
 		public static final int WheelHorizontalView_selectionDividerWidth = 0;
-		public static final int[] WheelVerticalView = { 0x7f010017 };
+		public static final int[] WheelVerticalView = { 0x7f010090 };
 		public static final int WheelVerticalView_selectionDividerHeight = 0;
 	}
 }

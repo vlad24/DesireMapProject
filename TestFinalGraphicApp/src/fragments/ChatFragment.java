@@ -6,6 +6,7 @@ import graphics.chat.ChatMessage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 import logic.Client;
@@ -15,6 +16,8 @@ import com.example.testfinalgraphicapp.R;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
 
+import desireMapApplicationPackage.messageSystemPackage.ClientMessage;
+import desireMapApplicationPackage.outputSetPackage.MessageSet;
 import desireMapApplicationPackage.outputSetPackage.UserSet;
 
 
@@ -61,14 +64,16 @@ public class ChatFragment extends Fragment implements OnClickListener {
 	ArrayAdapter<String> chatFellowAdapter;
 	String currentFellowName;
 
-	
+
 	EditText chatEditText;
 	Button sendButton;
 	Button backButton;
 
 	static String sender;
-	String[] lst= {"Романыч","Владуха","Жен","Рус"};
+	String[] lst= {"1","q","vlad","her"};
 	ArrayList<String> chatFellowContent;
+	ArrayList<Boolean> loadedChat;
+	final int historyHoursRadius = 10;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,7 +81,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 
 		progressHandler = new Handler();
 		usersHashMap = new HashMap<String, ChatCustomAdapter>();
-		
+
 		menuView = inflater.inflate(R.layout.chat_slidingmenu_layout, null, false);
 		Log.d(LOG_TAG, "all inflated");
 
@@ -131,6 +136,11 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		OnItemClickListener fellowListener = new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				if(!loadedChat.get(position)){
+					Log.d("GCM", "try to load from server for" + chatFellowContent.get(position));
+					loadHistory(position, chatFellowContent.get(position), historyHoursRadius);
+				}
+					
 				showChatPanel(position);
 				menu.showContent();
 			}
@@ -155,7 +165,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 
 		menu.toggle();
 		getChatUsers();
-		
+
 		getActivity().setTitle(sender);
 	}
 
@@ -214,7 +224,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 				try {
 					chatFellowContent.addAll(Arrays.asList(lst));
 					return new UserSet(chatFellowContent);
-				//	return Client.getChatUsers();
+					//	return Client.getChatUsers();
 				} catch (Exception e) {
 					e.printStackTrace();
 					return null;
@@ -225,12 +235,46 @@ public class ChatFragment extends Fragment implements OnClickListener {
 			protected void onPostExecute(UserSet resultSet) {
 				if(resultSet != null){
 					chatFellowContent = resultSet.uSet;
+					loadedChat = new ArrayList<Boolean>(Collections.nCopies(4, false));  //chatFellowContent.size());
+                    Log.d("GCM", "size of loadedChat = "+loadedChat.size());
+					
 					for(String user : chatFellowContent){
 						usersHashMap.put(user, new ChatCustomAdapter(getActivity(), 
 								new ArrayList<ChatMessage>()));
 					}
 					chatFellowAdapter.notifyDataSetChanged();
 				}
+			}
+		}.execute();
+	}
+
+	public void loadHistory(final int position, final String partnerName, final int hoursRadius){
+		new AsyncTask<Void, Void, MessageSet>(){
+			@Override
+			protected MessageSet doInBackground(Void... params) {
+				try {
+					return Client.getMessages(partnerName, hoursRadius);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return null;
+				}
+			}
+
+			@Override
+			protected void onPostExecute(MessageSet resultSet) {
+				loadedChat.set(position, true);
+				if(resultSet != null){
+					Log.d("GCM", "messageSet not null");
+					ArrayList<ChatMessage> chatHistoryMessages = new ArrayList<ChatMessage>();
+					for(ClientMessage message : resultSet.mSet){
+						if(message.sender == Client.getName()){
+							chatHistoryMessages.add(new ChatMessage(message.text, true));
+						}else
+							chatHistoryMessages.add(new ChatMessage(message.text, false));
+					}
+					usersHashMap.get(partnerName).mMessages.addAll(chatHistoryMessages);
+					usersHashMap.get(partnerName).notifyDataSetChanged();
+				}else Log.d("GCM", "messageSet null");
 			}
 		}.execute();
 	}
@@ -248,7 +292,6 @@ public class ChatFragment extends Fragment implements OnClickListener {
 			@Override
 			protected Void doInBackground(Void... params) {
 				try {
-					//TimeUnit.MILLISECONDS.sleep(500);
 					Client.sendMessage(newMessageText, receiver);
 					return null;
 				} catch (Exception e) {
@@ -261,7 +304,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 			protected void onPostExecute(Void result) {
 				isFinishedSending = true;
 				stopAnimateProgressBar();
-				
+
 				chatEditText.setText("");
 				addNewChatMessage(receiver, new ChatMessage(newMessageText, true));
 			}
@@ -276,13 +319,14 @@ public class ChatFragment extends Fragment implements OnClickListener {
 			usersHashMap.put(receiver, new ChatCustomAdapter(getActivity(), 
 					new ArrayList<ChatMessage>()));
 
+			loadedChat.add(0, true);
 			chatFellowContent.add(0, receiver);
 			chatFellowAdapter.notifyDataSetChanged();
 		}
 
 		usersHashMap.get(receiver).mMessages.add(message);
 		usersHashMap.get(receiver).notifyDataSetChanged();
-		
+
 		lvChat.setSelection(usersHashMap.get(receiver).mMessages.size()-1);
 	}
 

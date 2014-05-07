@@ -14,6 +14,7 @@ public class DataQuadTreeNode implements Serializable{
 	private DataQuadTreeNode southEastNode;
 	private QuadTreeNodeBox nodeBox;
 
+	public int count = 0;
 	public static final int boxCapacity = 25;
 	private ArrayList<DesireContent> points;
 
@@ -67,6 +68,8 @@ public class DataQuadTreeNode implements Serializable{
 		if(!node.nodeBox.contains(desire.coordinates.latitude, desire.coordinates.longitude))
 			return false;
 
+		//we can suppose that data will be inserted
+		count++;
 		if(node.points.size() < boxCapacity){
 			node.points.add(desire);
 			return true;
@@ -104,6 +107,48 @@ public class DataQuadTreeNode implements Serializable{
 			getData(node.southWestNode, screenBox, resultSet);
 		if(node.southEastNode != null)
 			getData(node.southEastNode, screenBox, resultSet);
+	}
+	
+	//works just for one root level DataQuadTrees
+	public void merge(DataQuadTreeNode node){
+		//try to add childs
+		if(node.northWestNode != null){
+			if(northWestNode == null){
+				northWestNode = node.northWestNode;
+			} else
+				northWestNode.merge(node.northWestNode);
+		}
+		
+		if(node.northEastNode != null){
+			if(northEastNode == null){
+				northEastNode = node.northEastNode;
+			} else
+				northEastNode.merge(node.northEastNode);
+		}
+		
+		if(node.southEastNode != null){
+			if(southEastNode == null){
+				southEastNode = node.southEastNode;
+			} else
+				southEastNode.merge(node.southEastNode);
+		}
+		
+		if(node.southWestNode != null){
+			if(southWestNode == null){
+				southWestNode = node.southWestNode;
+			} else
+				southWestNode.merge(node.southWestNode);
+		}
+		
+		//now we have already added all childs and want to add node points
+		if(node.points.size() + points.size() <= boxCapacity){
+			points.addAll(node.points);
+		} else{
+			//iterate and add to current node
+			for(DesireContent desire : node.points){
+				insertData(this, desire);
+			}
+		}
 	}
 
 	public void print(){

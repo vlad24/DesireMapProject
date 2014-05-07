@@ -8,18 +8,18 @@ package com.google.maps.android;
 
 public final class R {
 	public static final class drawable {
-		public static final int bubble_blue = 0x7f02007b;
-		public static final int bubble_green = 0x7f02007c;
-		public static final int bubble_orange = 0x7f02007d;
-		public static final int bubble_purple = 0x7f02007e;
-		public static final int bubble_red = 0x7f02007f;
-		public static final int bubble_white = 0x7f020080;
+		public static final int bubble_blue = 0x7f02007f;
+		public static final int bubble_green = 0x7f020080;
+		public static final int bubble_orange = 0x7f020081;
+		public static final int bubble_purple = 0x7f020082;
+		public static final int bubble_red = 0x7f020083;
+		public static final int bubble_white = 0x7f020084;
 	}
 	public static final class id {
-		public static final int text = 0x7f060006;
+		public static final int text = 0x7f060000;
 	}
 	public static final class layout {
-		public static final int text_bubble = 0x7f030029;
+		public static final int text_bubble = 0x7f030034;
 	}
 	public static final class style {
 		public static final int Bubble_TextAppearance_Dark = 0x7f070000;

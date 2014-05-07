@@ -14,11 +14,13 @@ public class QuadTreeNode {
 	public final String nodeID;
 	public final int depth;
 	public final static int maxDepth = 30;
+	private HashSet<String> mapTiles;
 
 	public QuadTreeNode(QuadTreeNodeBox nodeBox, String nodeID, int depth){
 		this.nodeBox = nodeBox;
 		this.depth = depth;
 		this.nodeID = nodeID;
+		mapTiles = new HashSet<String>();
 	}
 
 	private QuadTreeNode subdivide(double x, double y){
@@ -70,8 +72,8 @@ public class QuadTreeNode {
 	
 	
 	public HashSet<String> getMapTiles(LatLng leftBottom, LatLng rightTop, int depth){
-		HashSet<String> mapTiles = new HashSet<String>();
 		
+		mapTiles.clear();
 		mapTiles.add(geoPointToQuad(leftBottom.latitude, leftBottom.longitude, depth));
 		mapTiles.add(geoPointToQuad(leftBottom.latitude, rightTop.longitude, depth));
 		mapTiles.add(geoPointToQuad(rightTop.latitude, rightTop.longitude, depth));

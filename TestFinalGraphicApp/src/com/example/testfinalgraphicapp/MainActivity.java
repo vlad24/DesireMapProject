@@ -92,7 +92,7 @@ public class MainActivity extends FragmentActivity {
 			String broadcastMessage = intent.getExtras().getString("message");
 
 			if (broadcastSender != null) {
-		//		chatFragment.addNewChatMessage(broadcastSender, new ChatMessage(broadcastMessage, false));
+				chatFragment.addNewChatMessage(broadcastSender, new ChatMessage(broadcastMessage, false));
 			}
 		}
 	};

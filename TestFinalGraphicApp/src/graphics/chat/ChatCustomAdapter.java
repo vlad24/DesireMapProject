@@ -11,6 +11,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
@@ -83,6 +85,10 @@ public class ChatCustomAdapter extends BaseAdapter{
 			holder.message.setLayoutParams(lp);
 			holder.message.setTextColor(R.color.textColor);	
 		}
+		
+		Animation animation = AnimationUtils.loadAnimation(mContext, R.animator.chat_bottom_up);
+	    convertView.startAnimation(animation);
+		
 		return convertView;
 	}
 	private static class ViewHolder

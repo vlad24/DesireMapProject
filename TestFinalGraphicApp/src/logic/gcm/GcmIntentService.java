@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 public class GcmIntentService extends IntentService {
 
+	String TAG = "GCM";
 	String message;
 	String sender;
 	private Handler handler;
@@ -33,15 +34,14 @@ public class GcmIntentService extends IntentService {
 
 		if(gcm == null)
 			gcm = GoogleCloudMessaging.getInstance(this);
-
-		String messageType = gcm.getMessageType(intent);
 		
+		String messageType = gcm.getMessageType(intent);
+		Log.d(TAG, "received somewhat message");
 		if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)){
 			sender = extras.getString("sender");
 			message = extras.getString("message");
-			showToast();
 			sendNotification();
-			Log.i("GCM", "Received : (" +messageType+")  "+extras.getString("message"));
+			Log.i(TAG, "Received : "+extras.getString("message"));
 		}
 		
 		GcmBroadcastReceiver.completeWakefulIntent(intent);
@@ -51,7 +51,7 @@ public class GcmIntentService extends IntentService {
 	public void showToast(){
 		handler.post(new Runnable() {
 			public void run() {
-				Toast.makeText(getApplicationContext(),message , Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
 			}
 		});
 
