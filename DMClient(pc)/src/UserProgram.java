@@ -135,7 +135,7 @@ public class UserProgram{
 					{
 						String sport = askString("sport");
 						String advantages = askString("advantages");
-						outs.writeObject(new AddPack(new DesireContentSport(currentUser, null, desDes, coord, null, sport, advantages), "10"));
+						outs.writeObject(new AddPack(new DesireContentSport(currentUser, null, desDes, coord, null, 0, sport, advantages), "10"));
 						outs.flush();
 						System.out.println("Success : id = " + ins.readUTF());
 						break;
@@ -145,7 +145,7 @@ public class UserProgram{
 						char pSex = askString("partnerSex").charAt(0);
 						int ageFrom = askInt("age");
 						int ageTo = askInt("age");
-						outs.writeObject(new AddPack(new DesireContentDating(currentUser, null, desDes, coord, null, pSex, ageFrom, ageTo), "11"));
+						outs.writeObject(new AddPack(new DesireContentDating(currentUser, null, desDes, coord, null,0, pSex, ageFrom, ageTo), "11"));
 						outs.flush();
 						System.out.println("Success : " + ins.readUTF());
 						break;
@@ -313,6 +313,41 @@ public class UserProgram{
 					System.out.println("...LikePack sent");
 				}
 				break;
+			}
+			case(12):{
+				System.out.println("# Finding satisfiers without cryteria");
+				int categoryCode  = askInt("Category code : ");
+				HashSet<String> tiles = new HashSet<String>();
+				String tile1 = askString("tile1");
+				String tile2 = askString("tile2");
+				String tile3 = askString("tile3");
+				String tile4 = askString("tile4");
+				tiles.add(tile1);
+				tiles.add(tile2);
+				tiles.add(tile3);
+				tiles.add(tile4);
+				outs.writeObject(new SatisfyPack(categoryCode, tiles, tile1.length()));
+				onMap = true;
+				System.out.println("! Sent\n");
+				try{
+					System.out.println(" | Success");
+					SatisfySet set = (SatisfySet)ins.readObject();
+					if (set != null){
+						set.dTree.print();
+						System.out.println("___________ You liked : ");
+						Iterator<String> iterator = set.likedByUser.iterator();
+						while(iterator.hasNext()){
+							System.out.println(iterator.next());
+						}
+						System.out.println(" | That's all");
+					}
+					else{
+						System.out.println("Empty set");
+					}
+				}
+				catch(IOException error){
+					error.getMessage();
+				}
 			}
 
 			}

@@ -1,6 +1,6 @@
 package desireMapApplicationPackage.dataBasePackage;
 
-public class DBPostgresConstantsMaster extends GeneralDBConstantsMaster {
+public class DBPostgresConstantsMaster{
 	public  String createTableUSERS = "CREATE TABLE IF NOT EXISTS USERS(login text UNIQUE NOT NULL, password text NOT NULL)";
 	public  String createTableINFO = "CREATE TABLE IF NOT EXISTS INFO(" +
 			"login text UNIQUE NOT NULL REFERENCES users(login) ON DELETE CASCADE ON UPDATE CASCADE, " +

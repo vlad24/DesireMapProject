@@ -1,6 +1,6 @@
 package desireMapApplicationPackage.dataBasePackage;
 
-public class DBSQLiteConstantsMaster extends GeneralDBConstantsMaster{
+public class DBSQLiteConstantsMaster{
 	public final String createViewAges = "create view if not exists AGES AS" +
 			" SELECT login, (strftime('%Y', 'now') - strftime('%Y', birth))" +
 			" - (strftime('%m-%d', 'now') < strftime('%m-%d', birth)) AS age" +
@@ -106,6 +106,13 @@ public class DBSQLiteConstantsMaster extends GeneralDBConstantsMaster{
 			"	     UPDATE DESIRES_MAIN SET likesAmount = (likesAmount - 1) WHERE desireID = OLD.likedDesireID;" +
 			"        UPDATE INFO SET rating = (rating + 1) WHERE (login = (select login from DESIRES_MAIN where (desireID = OLD.likedDesireID)));" + 
 			"	  END;";
+	
+	public final String createViewDesiresSportExact = "create view IF NOT EXISTS DESIRES_SPORT_EXACT as  SELECT * FROM (DESIRES_SPORT inner join DESIRES_MAIN using (desireID))";
+	public final String createViewDesiresDatingExact = "create view IF NOT EXISTS DESIRES_DATING_EXACT as  SELECT * FROM (DESIRES_DATING inner join DESIRES_MAIN using (desireID))";
+	public final String createViewDesiresDatingExactInfo = "create view IF NOT EXISTS DESIRES_DATING_EXACT_INFO AS SELECT * FROM (DESIRES_DATING_EXACT inner join SPEC_INFO using (login))";
+	public final String createViewDesiresSportExactInfo	= "create view IF NOT EXISTS DESIRES_SPORT_EXACT_INFO AS SELECT * FROM (DESIRES_SPORT_EXACT inner join SPEC_INFO using (login))";
+	public final String createSpecInfo = "create view IF NOT EXISTS SPEC_INFO AS SELECT * FROM INFO join AGES using (login)";
+	public final String createDesiresMainTileIndex = "create INDEX IF NOT EXISTS desiresMainTileIndex ON DESIRES_MAIN (tile);";
 	
 
 }

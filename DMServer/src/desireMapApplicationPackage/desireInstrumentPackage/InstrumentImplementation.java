@@ -149,7 +149,7 @@ public abstract class InstrumentImplementation{
 		return thisDesireID;
 	}
 
-	public SatisfySet getSatisfiersAtDBBasic(String login, Integer categoryCode, HashSet<String> tilesToScan, HashSet<String> tilesToIgnore){
+	public SatisfySet getSatisfiersAtDBWithoutCryteria(String login, Integer categoryCode, HashSet<String> tilesToScan, HashSet<String> tilesToIgnore){
 		if (categoryCode != null){
 			String tileLikeCondition = getLikeString(tilesToScan);
 			String tileNotLikeCondition = getNotLikeString(tilesToIgnore);
@@ -158,11 +158,16 @@ public abstract class InstrumentImplementation{
 				switch(categoryCode){
 				case(CodesMaster.Categories.SportCode):{
 					System.out.println("Sport query is gonna be launched");
-					String sportQuery = "SELECT * FROM ((DESIRES_SPORT inner join DESIRES_MAIN using (desireID)) inner join INFO using (login)) WHERE " + 
+					String sportQuery = "SELECT * FROM " +
+							"(" +
+							"DESIRES_SPORT_EXACT_INFO left outer join LIKES_CONTROL ON " +
+							"((desireID = likedDesireID) AND (liker = '" + login + "'))" +
+							")" +
+							" WHERE " + 
 							tileNotLikeCondition + tileLikeCondition +
 							" AND (" + timeCondition + ") " + 
 							" AND (login != '" + login + "')" +
-							" ORDER BY rating" + 
+							" ORDER BY rating LIMIT 100" + 
 							";";
 					System.out.println(sportQuery);
 					ResultSet satSet =  selector.executeQuery(sportQuery);
@@ -171,10 +176,16 @@ public abstract class InstrumentImplementation{
 				}
 				case(CodesMaster.Categories.DatingCode):{
 					System.out.println("Dating query is gonna be launched");
-					String datingQuery = "SELECT * FROM (((DESIRES_DATING inner join DESIRES_MAIN using (desireID)) inner join INFO using (login)) inner join AGES using(login)) WHERE" +
+					String datingQuery = "SELECT * FROM " +
+							"(" +
+							"DESIRES_DATING_EXACT_INFO left outer join LIKES_CONTROL ON " +
+							"((desireID = likedDesireID) AND (liker = '" + login + "'))" +
+							")" +
+							" WHERE " + 
 							tileNotLikeCondition + tileLikeCondition +
 							" AND (" + timeCondition + ") " + 
-							" AND (login != '" + login + "');";
+							" AND (login != '" + login + "')" +
+							"ORDER BY rating LIMIT 100;";
 					System.out.println(datingQuery);
 					ResultSet satSet =  selector.executeQuery(datingQuery);
 					SatisfySet result = owner.rsMaster.convertToSatisfySetAndClose(satSet, categoryCode);
@@ -241,7 +252,7 @@ public abstract class InstrumentImplementation{
 					String datingQuery = "SELECT * FROM " +
 							"(" +
 							"DESIRES_DATING_EXACT_INFO left outer join LIKES_CONTROL ON " +
-							"(desireID = likedDesireID) AND (liker = '" + login + "'))" +
+							"((desireID = likedDesireID) AND (liker = '" + login + "'))" +
 							")" +
 							" WHERE " + 
 							tileNotLikeCondition + tileLikeCondition +
@@ -420,11 +431,10 @@ public abstract class InstrumentImplementation{
 				if (isLiked){
 					String insertQuery = "insert into LIKES_CONTROL values('"+ desireID + "','" + login +  "', datetime('now'))";
 					System.out.println(insertQuery);
-					System.out.println("...executing");
 					selector.executeUpdate(insertQuery);
 				}
 				else{
-					String deleteQuery = "DELETE FROM LIKES_CONTROL WHERE (desireID = '" + desireID + "') AND (login = '" + login + "')"; 
+					String deleteQuery = "DELETE FROM LIKES_CONTROL WHERE (likedDesireID = '" + desireID + "') AND (liker = '" + login + "')"; 
 					System.out.println(deleteQuery);
 					selector.executeUpdate(deleteQuery);
 				}

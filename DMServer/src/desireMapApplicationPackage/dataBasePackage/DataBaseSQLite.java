@@ -49,8 +49,6 @@ public class DataBaseSQLite extends DataBase{
 		System.out.println("+LOGGING TRIGGER - DONE");
 		creator.execute(constantsMaster.createTriggerOnExiting);
 		System.out.println("+EXITING TRIGGER - DONE");
-		creator.execute(constantsMaster.createViewAges);
-		System.out.println("+VIEW AGE - DONE");
 		creator.execute(constantsMaster.cleanOnline);
 		System.out.println("+ONLINE CLEANING - DONE");
 		creator.execute(constantsMaster.createTableLIKES_CONTROL);
@@ -59,6 +57,16 @@ public class DataBaseSQLite extends DataBase{
 		System.out.println("+LIKES TRIGGER - DONE");
 		creator.execute(constantsMaster.createTriggerOnDislike);
 		System.out.println("+DISLIKES TRIGGER - DONE");
+		creator.execute(constantsMaster.createViewAges);
+		System.out.println("+VIEW AGES - DONE");
+		creator.execute(constantsMaster.createViewDesiresDatingExact);
+		System.out.println("+VIEW DesiresDatingExact - DONE");
+		creator.execute(constantsMaster.createViewDesiresSportExact);
+		System.out.println("+VIEW DesiresSportExact - DONE");
+		creator.execute(constantsMaster.createViewDesiresDatingExactInfo);
+		System.out.println("+VIEW DesiresDatingExactInfo - DONE");
+		creator.execute(constantsMaster.createViewDesiresSportExactInfo);
+		System.out.println("+VIEW DesiresSportExactInfo - DONE");
 		creator.close();
 	}
 

@@ -52,7 +52,7 @@ public class ThreadStateBasic extends ThreadState{
 	public SatisfySet getSatisfiers(SatisfyPack sPack) throws Exception {
 		if (isBasicSatisfyPack(sPack)){
 			Integer categoryCode = sPack.sCategoryCode;
-			SatisfySet set = owner.instrument.getSatisfiersAtDBBasic(owner.getUserName() , categoryCode, sPack.tiles, null);
+			SatisfySet set = owner.instrument.getSatisfiersAtDBWithoutCryteria(owner.getUserName() , categoryCode, sPack.tiles, null);
 			changeState(new ThreadStateMapScanning(owner, sPack, categoryCode));
 			return set;
 		}

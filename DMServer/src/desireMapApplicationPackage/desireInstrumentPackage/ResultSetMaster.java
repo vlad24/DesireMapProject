@@ -25,6 +25,7 @@ public class ResultSetMaster {
 		String desireID = resultRows.getString("desireID");
 		String desDes = resultRows.getString("desireDescription");
 		Coordinates coordinates = new Coordinates(resultRows.getDouble("latitude"), resultRows.getDouble("longitude"));
+		int likes = resultRows.getInt("likesAmount");
 		char partnerSex = resultRows.getString("partnerSex").charAt(0);
 		int partnerAgeFrom = resultRows.getInt("partnerAgeFrom");
 		int partnerAgeTo = resultRows.getInt("partnerAgeTo");
@@ -32,7 +33,7 @@ public class ResultSetMaster {
 		SimpleDateFormat formater = new SimpleDateFormat("HHHH-MM-DD hh:mm:ss");
 		try {
 			Date date = formater.parse(dbTime);
-			DesireContentDating content = new DesireContentDating(login, desireID, desDes, coordinates, date ,partnerSex, partnerAgeFrom, partnerAgeTo);
+			DesireContentDating content = new DesireContentDating(login, desireID, desDes, coordinates, date, likes, partnerSex, partnerAgeFrom, partnerAgeTo);
 			return content;
 		} catch (ParseException parseError) {
 			System.out.println(parseError.getMessage());
@@ -49,10 +50,11 @@ public class ResultSetMaster {
 		String sport = resultRows.getString("sportName");
 		String advantages = resultRows.getString("advantages");
 		String dbTime = resultRows.getString("time");
+		int likes = resultRows.getInt("likesAmount");
 		SimpleDateFormat formater = new SimpleDateFormat("HHHH-MM-DD hh:mm:ss");
 		try {
 			Date date = formater.parse(dbTime);
-			DesireContentSport content = new DesireContentSport(login, desireID, desDes, coordinates, date, sport, advantages);
+			DesireContentSport content = new DesireContentSport(login, desireID, desDes, coordinates, date, likes, sport, advantages);
 			return content;
 		} catch (ParseException parseError) {
 			System.out.println(parseError.getMessage());
@@ -135,6 +137,7 @@ public class ResultSetMaster {
 		boolean empty = true;
 		System.out.println("$ Convertion from DBResultSet to SatisfySet");
 		SatisfySet toSend = new SatisfySet();
+		int counter = 0;
 		switch(categoryCode){
 		case (CodesMaster.Categories.DatingCode):{
 			while(resultRows.next())
@@ -148,8 +151,10 @@ public class ResultSetMaster {
 					if (liked != null){
 						toSend.likedByUser.add(resultRows.getString("desireID"));
 					}
+					System.out.println(counter + " desire is inserted into quadTree");
 					toSend.dTree.insertData(content);
 					toSend.desireAuthors.put(author, authorInfo);
+					counter++;
 					}
 				catch(SQLException outOfBound){
 					System.out.println("-Problems in DesireSetConverter");

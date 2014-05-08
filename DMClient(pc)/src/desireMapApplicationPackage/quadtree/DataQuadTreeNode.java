@@ -14,6 +14,7 @@ public class DataQuadTreeNode implements Serializable{
 	private DataQuadTreeNode southEastNode;
 	private QuadTreeNodeBox nodeBox;
 
+	public int count = 0;
 	public static final int boxCapacity = 25;
 	private ArrayList<DesireContent> points;
 
@@ -23,7 +24,7 @@ public class DataQuadTreeNode implements Serializable{
 		points = new ArrayList<DesireContent>();
 	}
 	public DataQuadTreeNode(){
-		this.nodeBox = new QuadTreeNodeBox(-180,-90,180,90);
+		this.nodeBox = new QuadTreeNodeBox(-90,-180,90,180);
 		points = new ArrayList<DesireContent>();
 	}
 	
@@ -64,21 +65,26 @@ public class DataQuadTreeNode implements Serializable{
 
 
 	public boolean insertData(DataQuadTreeNode node, DesireContent desire){
+		if(node == null){
+			return false;
+		}
 		if(!node.nodeBox.contains(desire.coordinates.latitude, desire.coordinates.longitude))
 			return false;
 
+		//we can suppose that data will be inserted
+		count++;
 		if(node.points.size() < boxCapacity){
 			node.points.add(desire);
 			return true;
 		}
 
-		if(northWestNode == null)
+		if(node.northWestNode == null)
 			subdivide(desire.coordinates.latitude, desire.coordinates.longitude);
 
-		if(insertData(northEastNode, desire)) return true;
-		if(insertData(northWestNode, desire)) return true;
-		if(insertData(southWestNode, desire)) return true;
-		if(insertData(southEastNode, desire)) return true;
+		if(insertData(node.northEastNode, desire)) return true;
+		if(insertData(node.northWestNode, desire)) return true;
+		if(insertData(node.southWestNode, desire)) return true;
+		if(insertData(node.southEastNode, desire)) return true;
 
 		return false;			
 
@@ -105,18 +111,59 @@ public class DataQuadTreeNode implements Serializable{
 		if(node.southEastNode != null)
 			getData(node.southEastNode, screenBox, resultSet);
 	}
+	
+	//works just for one root level DataQuadTrees
+	public void merge(DataQuadTreeNode node){
+		//try to add childs
+		if(node.northWestNode != null){
+			if(northWestNode == null){
+				northWestNode = node.northWestNode;
+			} else
+				northWestNode.merge(node.northWestNode);
+		}
+		
+		if(node.northEastNode != null){
+			if(northEastNode == null){
+				northEastNode = node.northEastNode;
+			} else
+				northEastNode.merge(node.northEastNode);
+		}
+		
+		if(node.southEastNode != null){
+			if(southEastNode == null){
+				southEastNode = node.southEastNode;
+			} else
+				southEastNode.merge(node.southEastNode);
+		}
+		
+		if(node.southWestNode != null){
+			if(southWestNode == null){
+				southWestNode = node.southWestNode;
+			} else
+				southWestNode.merge(node.southWestNode);
+		}
+		
+		//now we have already added all childs and want to add node points
+		if(node.points.size() + points.size() <= boxCapacity){
+			points.addAll(node.points);
+		} else{
+			//iterate and add to current node
+			for(DesireContent desire : node.points){
+				insertData(this, desire);
+			}
+		}
+	}
 
 	public void print(){
 		printHelper(this);
 	}
-	
 	private void printHelper(DataQuadTreeNode node) {
 		if (node == null){
 			return;
 		}
 		else{
 			for (DesireContent cont : this.points){
-				System.out.println(cont.desireID + " " + cont.login + " " + cont.description + " " + cont.time.toString());
+				System.out.println(cont.desireID + " " + cont.login + " " + cont.description);
 			}
 			printHelper(node.northEastNode);
 			printHelper(node.northWestNode);

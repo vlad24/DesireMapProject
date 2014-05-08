@@ -93,8 +93,8 @@ public class DesireInstrument {
 		return implementationObject.getSatisfiersAtDB(desireID, categoryCode, tilesToScan, tilesToIgnore);
 	}
 
-	public SatisfySet getSatisfiersAtDBBasic(String login, Integer categoryCode, HashSet<String> tilesToScan, HashSet<String> tilesToIgnore) {
-		return implementationObject.getSatisfiersAtDBBasic(login, categoryCode, tilesToScan, tilesToIgnore);
+	public SatisfySet getSatisfiersAtDBWithoutCryteria(String login, Integer categoryCode, HashSet<String> tilesToScan, HashSet<String> tilesToIgnore) {
+		return implementationObject.getSatisfiersAtDBWithoutCryteria(login, categoryCode, tilesToScan, tilesToIgnore);
 	}
 
 	public  DesireSet getPersonalDesiresAtDB(String login, int searchCategory) throws Exception{

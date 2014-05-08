@@ -18,10 +18,10 @@ public class SatisfyPack extends ActionQueryObject{
 		tileDepth = newTileDepth;
 	}
 	
-	public SatisfyPack(String newDesireID, int newCategory, HashSet<String> newTiles, int newTileDepth){
+	public SatisfyPack(int newCategory, HashSet<String> newTiles, int newTileDepth){
 		super(CodesMaster.ActionCodes.SatisfyCode);
 		sCategoryCode = newCategory;
-		sDesireID = newDesireID;
+		sDesireID = null;
 		tiles = newTiles;
 		tileDepth = newTileDepth;
 	}
