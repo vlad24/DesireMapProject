@@ -90,21 +90,21 @@ public class DBSQLiteConstantsMaster extends GeneralDBConstantsMaster{
 	public final String cleanOnline = "delete from ONLINE_DEVICES";
 	
 	public final String createTableLIKES_CONTROL  =  "CREATE table IF NOT EXISTS LIKES_CONTROL ( " +
-			"desireID String NOT NULL REFERENCES DESIRES_MAIN(desireID), " +
-			"login String NOT NULL REFERENCES USERS(login)," +
+			"likedDesireID String NOT NULL REFERENCES DESIRES_MAIN(desireID) ON DELETE CASCADE ON UPDATE CASCADE, " +
+			"liker String NOT NULL REFERENCES USERS(login) ON DELETE CASCADE ON UPDATE CASCADE," +
 			"likeTime String NOT NULL," +
-			"UNIQUE(desireID, login))";
+			"UNIQUE(likedDesireID, liker))";
 	
 	public final String createTriggerOnLike = "CREATE TRIGGER IF NOT EXISTS liked AFTER INSERT ON LIKES_CONTROL " +
 			"	  BEGIN" +
-			"	    UPDATE DESIRES_MAIN SET likesAmount = (likesAmount + 1) WHERE (desireID = NEW.desireID);" +
-			"       UPDATE INFO SET rating = (rating + 1) WHERE (login = (select login from DESIRES_MAIN where (desireID = NEW.desireID)));" +
+			"	    UPDATE DESIRES_MAIN SET likesAmount = (likesAmount + 1) WHERE (desireID = NEW.likedDesireID);" +
+			"       UPDATE INFO SET rating = (rating + 1) WHERE (login = (select login from DESIRES_MAIN where (desireID = NEW.likedDesireID)));" +
 			"	  END;";
 	
 	public final String createTriggerOnDislike = "CREATE trigger IF NOT EXISTS disliked AFTER DELETE ON LIKES_CONTROL " +
 			"	  BEGIN" +
-			"	     UPDATE DESIRES_MAIN SET likesAmount = (likesAmount - 1) WHERE desireID = OLD.desireID;" +
-			"        UPDATE INFO SET rating = (rating + 1) WHERE (login = (select login from DESIRES_MAIN where (desireID = NEW.desireID)));" + 
+			"	     UPDATE DESIRES_MAIN SET likesAmount = (likesAmount - 1) WHERE desireID = OLD.likedDesireID;" +
+			"        UPDATE INFO SET rating = (rating + 1) WHERE (login = (select login from DESIRES_MAIN where (desireID = OLD.likedDesireID)));" + 
 			"	  END;";
 	
 

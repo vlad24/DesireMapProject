@@ -144,9 +144,13 @@ public class ResultSetMaster {
 					DesireContentDating content = getDatingContentFromCurrentRow(resultRows);
 					String author = resultRows.getString("login");
 					MainData authorInfo = getMainDataFromCurrentRow(resultRows);
+					String liked = resultRows.getString("likeTime");
+					if (liked != null){
+						toSend.likedByUser.add(resultRows.getString("desireID"));
+					}
 					toSend.dTree.insertData(content);
 					toSend.desireAuthors.put(author, authorInfo);
-				}
+					}
 				catch(SQLException outOfBound){
 					System.out.println("-Problems in DesireSetConverter");
 					resultRows.close();
@@ -170,11 +174,15 @@ public class ResultSetMaster {
 					DesireContentSport content = getSportContentFromCurrentRow(resultRows);
 					String author = resultRows.getString("login");
 					MainData authorInfo = getMainDataFromCurrentRow(resultRows);
+					String liked = resultRows.getString("likeTime");
+					if (liked != null){
+						toSend.likedByUser.add(resultRows.getString("desireID"));
+					}
 					toSend.dTree.insertData(content);
 					toSend.desireAuthors.put(author, authorInfo);
 				}
 				catch(SQLException outOfBound){
-					System.out.println("-Problems in DesireSetConverter");
+					System.out.println("-Problems in SatisfySetConverter");
 					break;
 				}
 			}

@@ -4,6 +4,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -210,6 +211,11 @@ public class UserProgram{
 					SatisfySet set = (SatisfySet)ins.readObject();
 					if (set != null){
 						set.dTree.print();
+						System.out.println("___________ You liked : ");
+						Iterator<String> iterator = set.likedByUser.iterator();
+						while(iterator.hasNext()){
+							System.out.println(iterator.next());
+						}
 						System.out.println(" | That's all");
 					}
 					else{

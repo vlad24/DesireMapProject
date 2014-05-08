@@ -213,7 +213,12 @@ public abstract class InstrumentImplementation{
 					String sport = centerSet.getString("sportName");
 					String adv = centerSet.getString("advantages");
 					centerSet.close();
-					String sportQuery = "SELECT * FROM ((DESIRES_SPORT inner join DESIRES_MAIN using (desireID)) inner join INFO using (login)) WHERE " + 
+					String sportQuery = "SELECT * FROM " +
+							"(" +
+							"DESIRES_SPORT_EXACT_INFO left outer join LIKES_CONTROL ON " +
+							"((desireID = likedDesireID) AND (liker = '" + login + "'))" +
+							")" +
+							" WHERE " + 
 							tileNotLikeCondition + tileLikeCondition +
 							" AND (" + timeCondition + ") " + 
 							" AND (advantages LIKE '%" + adv + "%') " + 
@@ -233,7 +238,12 @@ public abstract class InstrumentImplementation{
 					Integer pAgeFrom = centerSet.getInt("partnerAgeFrom");
 					Integer pAgeTo = centerSet.getInt("partnerAgeTo");
 					centerSet.close();
-					String datingQuery = "SELECT * FROM (((DESIRES_DATING inner join DESIRES_MAIN using (desireID)) inner join INFO using (login)) inner join AGES using(login)) WHERE" +
+					String datingQuery = "SELECT * FROM " +
+							"(" +
+							"DESIRES_DATING_EXACT_INFO left outer join LIKES_CONTROL ON " +
+							"(desireID = likedDesireID) AND (liker = '" + login + "'))" +
+							")" +
+							" WHERE " + 
 							tileNotLikeCondition + tileLikeCondition +
 							" AND (" + timeCondition + ") " + 
 							" AND (sex = '" + pSex + "')" + 
@@ -265,9 +275,9 @@ public abstract class InstrumentImplementation{
 		String category = owner.dataBaseSuffixes.get(searchCategory);
 		try (Statement selector = getAccessToDesireBase().createStatement()){
 			System.out.println("select * from (DESIRES" + category +" inner join DESIRES_MAIN using (desireID)) as DESIRES inner join USERS using (login) " +
-					"where USERS.LOGIN = '" + login + "' AND datetime(TIME) > datetime('now', '-5 hours')");
+					"where USERS.LOGIN = '" + login + "' AND datetime(TIME) > datetime('now', '-1200 hours')");
 			ResultSet rsDesires = selector.executeQuery("select * from (DESIRES" + category +" inner join DESIRES_MAIN using (desireID)) as DESIRES inner join USERS using (login) " +
-					"where USERS.LOGIN = '" + login + "' AND datetime(TIME) > datetime('now', '-5 hours')");
+					"where USERS.LOGIN = '" + login + "' AND datetime(TIME) > datetime('now', '-1200 hours')");
 			DesireSet result = owner.rsMaster.convertToDesireSetAndClose(rsDesires, searchCategory);
 			return result;
 		} catch (SQLException error){
