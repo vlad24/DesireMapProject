@@ -4,8 +4,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
-import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
-import desireMapApplicationPackage.desireContentPackage.DesireContent;
 import desireMapApplicationPackage.desireContentPackage.DesireContentDating;
 
 public class CategoryManagerDating extends CategoryManager {

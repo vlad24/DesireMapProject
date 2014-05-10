@@ -1,10 +1,8 @@
 package desireMapApplicationPackage.desireInstrumentPackage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireContentPackage.Coordinates;
@@ -20,191 +18,196 @@ import desireMapApplicationPackage.userDataPackage.MainData;
 
 public class ResultSetMaster {
 
-	public DesireContentDating getDatingContentFromCurrentRow(ResultSet resultRows) throws SQLException{
-		SimpleDateFormat formater = new SimpleDateFormat("HHHH-MM-DD hh:mm:ss");
+	public DesireContentDating getDatingContentFromCurrentRow(ResultSet resultRows){
 		try {
-			DesireContentDating content = new DesireContentDating(
+			return new DesireContentDating(
 					resultRows.getString("login"),
 					resultRows.getString("desireID"),
 					resultRows.getString("desireDescription"),
 					new Coordinates(resultRows.getDouble("latitude"), resultRows.getDouble("longitude")),
-					formater.parse(resultRows.getString("time")),
+					new SimpleDateFormat("HHHH-MM-DD hh:mm:ss").parse(resultRows.getString("time")),
 					resultRows.getInt("likesAmount"),
 					resultRows.getString("partnerSex").charAt(0),
 					resultRows.getInt("partnerAgeFrom"),
 					resultRows.getInt("partnerAgeTo")
-					                                              );
-			return content;
-		} catch (ParseException parseError) {
+					                       );
+		} catch (Exception parseError) {
 			System.out.println(parseError.getMessage());
 			System.out.println("-Parsing from DB Time to Java time failed");
 			return null;
 		}
 	}
 
-	public DesireContentSport getSportContentFromCurrentRow(ResultSet resultRows) throws SQLException{
-		String login = resultRows.getString("login");
-		String desireID = resultRows.getString("desireID");
-		String desDes = resultRows.getString("desireDescription");
-		Coordinates coordinates = new Coordinates(resultRows.getDouble("latitude"), resultRows.getDouble("longitude"));
-		String sport = resultRows.getString("sportName");
-		String advantages = resultRows.getString("advantages");
-		String dbTime = resultRows.getString("time");
-		int likes = resultRows.getInt("likesAmount");
-		SimpleDateFormat formater = new SimpleDateFormat("HHHH-MM-DD hh:mm:ss");
+	public DesireContentSport getSportContentFromCurrentRow(ResultSet resultRows){
 		try {
-			Date date = formater.parse(dbTime);
-			DesireContentSport content = new DesireContentSport(login, desireID, desDes, coordinates, date, likes, sport, advantages);
-			return content;
-		} catch (ParseException parseError) {
+			return new DesireContentSport(
+					resultRows.getString("login"),
+					resultRows.getString("desireID"),
+					resultRows.getString("desireDescription"),
+					new Coordinates(resultRows.getDouble("latitude"), resultRows.getDouble("longitude")),
+					new SimpleDateFormat("HHHH-MM-DD hh:mm:ss").parse(resultRows.getString("time")),
+					resultRows.getInt("likesAmount"),
+					resultRows.getString("sportName"),
+					resultRows.getString("advantages")
+		                                  );
+		} catch (Exception parseError) {
 			System.out.println(parseError.getMessage());
-			System.out.println("-Parsing from DB Time to Java time failed");
+			System.out.println("-Error at getting sportContent");
 			return null;
 		}
 	}
 
-	public DesireSet convertToDesireSetAndClose(ResultSet resultRows, int categoryCode) throws SQLException{
-		int counter = 0;
-		System.out.println("$ Convertion from DBResultSet to DesireSet");
-		DesireSet toSend = new DesireSet();
-		switch(categoryCode){
-		case (CodesMaster.Categories.DatingCode):{
-			while(resultRows.next())
-			{
-				counter++;
-				try{
-					DesireContentDating content = getDatingContentFromCurrentRow(resultRows);
-					toSend.dArray.add(content);
+	public DesireSet convertToDesireSetAndClose(ResultSet resultRows, int categoryCode){
+		try{
+			int counter = 0;
+			System.out.println("$ Convertion from DBResultSet to DesireSet...");
+			DesireSet toSend = new DesireSet();
+			switch(categoryCode){
+			case (CodesMaster.Categories.DatingCode):{
+				System.out.println("$ Convertion to DatingSet...");
+				while(resultRows.next())
+				{
+					counter++;
+					try{
+						toSend.dArray.add(getDatingContentFromCurrentRow(resultRows));
+					}
+					catch(Exception error){
+						System.out.println("-Problems in DesireSetConverter(Dating) : " + error.getMessage());
+						break;
+					}
 				}
-				catch(SQLException outOfBound){
-					System.out.println("-Problems in DesireSetConverter");
-					break;
-				}
+				System.out.println("$ Convertion completed. " + counter + " rows converted.");
+				return toSend;
 			}
-			resultRows.close();
-			System.out.println(counter);
-			System.out.println("$ Convertion completed");
-			return toSend;
-		}
-		case(CodesMaster.Categories.SportCode):{
-			while(resultRows.next())
-			{
-				counter++;
-				try{
-					DesireContentSport content = getSportContentFromCurrentRow(resultRows);
-					toSend.dArray.add(content);
+			case(CodesMaster.Categories.SportCode):{
+				System.out.println("$ Convertion to SportSet...");
+				while(resultRows.next())
+				{
+					counter++;
+					try{
+						toSend.dArray.add(getSportContentFromCurrentRow(resultRows));
+					}
+					catch(Exception error){
+						System.out.println("$ -Problems in DesireSetConverter(Sport) : " + error.getMessage());
+						break;
+					}
 				}
-				catch(SQLException outOfBound){
-					System.out.println("-Problems in DesireSetConverter");
-					break;
-				}
+				System.out.println("$ Convertion completed. " + counter + " rows converted.");
+				return toSend;
 			}
-			resultRows.close();
-			System.out.println(counter);
-			System.out.println("$ Convertion completed");
-			return toSend;
+			default:{
+				System.out.println("$ Category undefined (?)");
+				return null;
+			}
+			}
 		}
-		default:{
-			resultRows.close();
-			System.out.println("$ Category undefined");
+		catch(Exception error){
+			System.out.println("$ -Error at Covering to DesireSet : " + error.getMessage());
 			return null;
 		}
+		finally{
+			try {
+				resultRows.close();
+				System.out.println("$ ResultSet closed");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 
 	public MainData getMainDataFromCurrentRow(ResultSet resultRows) throws SQLException{
-		MainData data = new MainData(resultRows.getString("login"), resultRows.getString("name"), resultRows.getString("sex").charAt(0), resultRows.getString("birth"), resultRows.getInt("rating"));
-		return data;
+		return new MainData(
+				resultRows.getString("login"),
+				resultRows.getString("name"),
+				resultRows.getString("sex").charAt(0),
+				resultRows.getString("birth"),
+				resultRows.getInt("rating")
+				           );
 	}
 
 	public MainData convertToMainDataAndClose(ResultSet resultRows) throws SQLException {
 		try {
 			resultRows.next();
-			MainData data = getMainDataFromCurrentRow(resultRows);
-			return data;
-		} catch (SQLException e) {
-			e.printStackTrace();
+			return getMainDataFromCurrentRow(resultRows);
+		} catch (SQLException error) {
+			System.out.println("-Problems in convertion to Main Data" + error.getMessage());
 			return null;
 		}
 		finally{
 			resultRows.close();
 		}
-
 	}
 
-	public SatisfySet convertToSatisfySetAndClose(ResultSet resultRows, int categoryCode) throws Exception {
-		boolean empty = true;
-		System.out.println("$ Convertion from DBResultSet to SatisfySet");
-		SatisfySet toSend = new SatisfySet();
-		int counter = 0;
-		switch(categoryCode){
-		case (CodesMaster.Categories.DatingCode):{
-			while(resultRows.next())
-			{
-				empty = false;
-				try{
-					DesireContentDating content = getDatingContentFromCurrentRow(resultRows);
-					String author = resultRows.getString("login");
-					MainData authorInfo = getMainDataFromCurrentRow(resultRows);
-					String liked = resultRows.getString("likeTime");
-					if (liked != null){
+	public SatisfySet convertToSatisfySetAndClose(ResultSet resultRows, int categoryCode){
+		try{
+			System.out.println("$ Convertion from DBResultSet to SatisfySet...");
+			SatisfySet toSend = new SatisfySet();
+			int convertedRowsCounter = 0;
+			switch(categoryCode){
+			case (CodesMaster.Categories.DatingCode):{
+				while(resultRows.next())
+				{
+					if (resultRows.getString("likeTime") != null){
 						toSend.likedByUser.add(resultRows.getString("desireID"));
 					}
-					System.out.println(counter + " desire is inserted into quadTree");
-					toSend.dTree.insertData(content);
-					toSend.desireAuthors.put(author, authorInfo);
-					counter++;
-					}
-				catch(SQLException outOfBound){
-					System.out.println("-Problems in DesireSetConverter");
-					resultRows.close();
-					throw new Exception();
+					toSend.dTree.insertData(getDatingContentFromCurrentRow(resultRows));
+					toSend.desireAuthors.put(resultRows.getString("login"), getMainDataFromCurrentRow(resultRows));
+					convertedRowsCounter++;
 				}
+				System.out.println("$ Convertion completed : " + convertedRowsCounter + " rows converted. ");
+				if (convertedRowsCounter == 0){
+					System.out.println("$ Empty set.");
+					return null;
+				}
+				else{
+					System.out.println("$ Normal set is returned.");
+					return toSend;
+				}
+				
 			}
-			System.out.println("$ Convertion completed");
-			if (empty){
-				System.out.println("$ Empty set");
-				return null;
-			}
-			else{
-				return toSend;
-			}
-		}
-		case(CodesMaster.Categories.SportCode):{
-			while(resultRows.next())
-			{
-				empty = false;
-				try{
-					DesireContentSport content = getSportContentFromCurrentRow(resultRows);
-					String author = resultRows.getString("login");
-					MainData authorInfo = getMainDataFromCurrentRow(resultRows);
-					String liked = resultRows.getString("likeTime");
-					if (liked != null){
+			case(CodesMaster.Categories.SportCode):{
+				
+				while(resultRows.next())
+				{
+					if (resultRows.getString("likeTime") != null){
 						toSend.likedByUser.add(resultRows.getString("desireID"));
 					}
-					toSend.dTree.insertData(content);
-					toSend.desireAuthors.put(author, authorInfo);
+					toSend.dTree.insertData(getSportContentFromCurrentRow(resultRows));
+					toSend.desireAuthors.put(resultRows.getString("login"), getMainDataFromCurrentRow(resultRows));
+					convertedRowsCounter++;
 				}
-				catch(SQLException outOfBound){
-					System.out.println("-Problems in SatisfySetConverter");
-					break;
+				System.out.println("$ Convertion completed : " + convertedRowsCounter + " rows converted. ");
+				if (convertedRowsCounter == 0){
+					System.out.println("$ Empty set.");
+					return null;
 				}
+				else{
+					System.out.println("$ Normal set is returned.");
+					return toSend;
+				}
+				
 			}
-			resultRows.close();
-			System.out.println("$ Convertion completed");
-			if (empty){
+			default:{
+				
+				System.out.println("$ Category undefined (?)");
 				return null;
+				
 			}
-			else{
-				return toSend;
 			}
 		}
-		default:{
-			resultRows.close();
-			System.out.println("$ Category undefined");
+		catch(Exception error){
+			System.out.println("$ - Some problems in converting to SatisfySet : " + error.getMessage());
 			return null;
 		}
+		finally{
+			try {
+				resultRows.close();
+				System.out.println("$ ResultSet closed");
+			} catch (SQLException e) {
+				System.out.println("$ Cannot close ResulSet");
+				e.printStackTrace();
+			}
 		}
 
 	}
