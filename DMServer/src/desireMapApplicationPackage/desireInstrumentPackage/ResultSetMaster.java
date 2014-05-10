@@ -21,19 +21,19 @@ import desireMapApplicationPackage.userDataPackage.MainData;
 public class ResultSetMaster {
 
 	public DesireContentDating getDatingContentFromCurrentRow(ResultSet resultRows) throws SQLException{
-		String login = resultRows.getString("login");
-		String desireID = resultRows.getString("desireID");
-		String desDes = resultRows.getString("desireDescription");
-		Coordinates coordinates = new Coordinates(resultRows.getDouble("latitude"), resultRows.getDouble("longitude"));
-		int likes = resultRows.getInt("likesAmount");
-		char partnerSex = resultRows.getString("partnerSex").charAt(0);
-		int partnerAgeFrom = resultRows.getInt("partnerAgeFrom");
-		int partnerAgeTo = resultRows.getInt("partnerAgeTo");
-		String dbTime = resultRows.getString("time");
 		SimpleDateFormat formater = new SimpleDateFormat("HHHH-MM-DD hh:mm:ss");
 		try {
-			Date date = formater.parse(dbTime);
-			DesireContentDating content = new DesireContentDating(login, desireID, desDes, coordinates, date, likes, partnerSex, partnerAgeFrom, partnerAgeTo);
+			DesireContentDating content = new DesireContentDating(
+					resultRows.getString("login"),
+					resultRows.getString("desireID"),
+					resultRows.getString("desireDescription"),
+					new Coordinates(resultRows.getDouble("latitude"), resultRows.getDouble("longitude")),
+					formater.parse(resultRows.getString("time")),
+					resultRows.getInt("likesAmount"),
+					resultRows.getString("partnerSex").charAt(0),
+					resultRows.getInt("partnerAgeFrom"),
+					resultRows.getInt("partnerAgeTo")
+					                                              );
 			return content;
 		} catch (ParseException parseError) {
 			System.out.println(parseError.getMessage());
