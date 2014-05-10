@@ -53,14 +53,14 @@ public class ThreadStateBasic extends ThreadState{
 		if (isBasicSatisfyPack(sPack)){
 			Integer categoryCode = sPack.sCategoryCode;
 			SatisfySet set = owner.instrument.getSatisfiersAtDBWithoutCryteria(owner.getUserName() , categoryCode, sPack.tiles, null);
-			changeState(new ThreadStateMapScanning(owner, sPack, categoryCode));
+			changeState(owner.states.getFreshStateMapScanning(owner, sPack, categoryCode));
 			return set;
 		}
 		else{
 			Integer categoryCode = owner.instrument.getCategoryTableByID(sPack.sDesireID);
 			if (categoryCode != null){
 				SatisfySet set = owner.instrument.getSatisfiersAtDB(sPack.sDesireID, categoryCode, sPack.tiles, null);
-				changeState(new ThreadStateMapScanningDesire(owner, sPack, categoryCode));
+				changeState(owner.states.getFreshStateMapScanningDesire(owner, sPack, categoryCode));
 				return set;
 			}
 			else{

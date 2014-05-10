@@ -22,6 +22,7 @@ public class ThreadStateMapScanningDesire extends ThreadState{
 	private HashSet<String> loadedTiles;
 	private int lastDepth;
 	private String desireID;
+	//For convenience :
 	private Integer categoryCode;
 	
 	public ThreadStateMapScanningDesire(DesireThread newOwner, SatisfyPack sPack, Integer newCategoryCode){
@@ -50,13 +51,13 @@ public class ThreadStateMapScanningDesire extends ThreadState{
 
 	@Override
 	public void delete(DeletePack delPack) throws Exception {
-		changeState(new ThreadStateBasic(owner));
+		changeState(owner.states.getFreshStateBasic(owner));
 		owner.delete(delPack);
 	}
 
 	@Override
 	public SatisfySet getSatisfiers(SatisfyPack sPack) throws Exception {
-		changeState(new ThreadStateBasic(owner));
+		changeState(owner.states.getFreshStateBasic(owner));
 		return owner.getSatisfiers(sPack);
 	}
 	
@@ -104,44 +105,51 @@ public class ThreadStateMapScanningDesire extends ThreadState{
 
 	@Override
 	public DesireSet getPersonalDesires(int category) throws Exception {
-		changeState(new ThreadStateBasic(owner));
+		changeState(owner.states.getFreshStateBasic(owner));
 		return owner.getPersonalDesires(category);
 	}
 
 	@Override
 	public void exit() {
-		changeState(new ThreadStateBasic(owner));
+		changeState(owner.states.getFreshStateBasic(owner));
 		owner.exit();
 	}
 
 	@Override
 	public void postMessage(ClientMessage clientMessage) throws Exception {
-		changeState(new ThreadStateBasic(owner));
+		changeState(owner.states.getFreshStateBasic(owner));
 		owner.postMessage(clientMessage);
 		
 	}
 
 	@Override
 	public void loadNewMessages() throws Exception {
-		changeState(new ThreadStateBasic(owner));
+		changeState(owner.states.getFreshStateBasic(owner));
 		owner.loadNewMessages();
 	}
 
 	@Override
 	public MessageSet getOldMessagesByCryteria(MessageDeliverPack pack) throws Exception {
-		changeState(new ThreadStateBasic(owner));
+		changeState(owner.states.getFreshStateBasic(owner));
 		return owner.getOldMessagesByCryteria(pack);
 	}
 
 	@Override
 	public UserSet getUsersTalkedTo() throws Exception {
-		changeState(new ThreadStateBasic(owner));
+		changeState(owner.states.getFreshStateBasic(owner));
 		return owner.getUsersTalkedTo();
 	}
 
 	@Override
 	public void likeDesire(LikePack pack){
 		owner.instrument.likeDesireAtDB(owner.getUserName(), pack.desireID, pack.isLiked);
+	}
+
+	protected void refreshMinorFields(SatisfyPack sPack, Integer newCategoryCode) {
+		desireID = sPack.sDesireID;
+		loadedTiles = sPack.tiles;
+		lastDepth = sPack.tileDepth;
+		categoryCode = newCategoryCode;
 	}
 
 }

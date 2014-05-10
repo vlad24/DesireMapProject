@@ -327,7 +327,7 @@ public abstract class InstrumentImplementation{
 	public void cleanBaseOnExit(String userName, String deviceID) {
 		System.out.println("Cleaning the base");
 		try (Statement deleter = getAccessToDesireBase().createStatement()){
-			String delString = "delete from ONLINE_DEVICES WHERE ID = '" + deviceID + "';";
+			String delString = "delete from ONLINE_DEVICES WHERE owner = '" + userName + "';";
 			deleter.executeUpdate(delString);
 			System.out.println(userName + " with '" + deviceID + "' has been deleted from ONLINE_DEVICES");
 		} catch (Exception error) {
@@ -444,6 +444,5 @@ public abstract class InstrumentImplementation{
 				System.out.println("-Can't like now, nobody cares _ at instrImpl");
 			}
 		}
-
 
 }

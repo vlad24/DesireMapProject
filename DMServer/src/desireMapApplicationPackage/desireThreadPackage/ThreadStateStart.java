@@ -31,7 +31,7 @@ public class ThreadStateStart extends ThreadState{
         		try{
         			owner.instrument.logInAtDB(login, password);
         			owner.instrument.handleAndroidData(login, logPack.androidData);
-        			changeState(new ThreadStateBasic(owner));
+        			changeState(owner.states.getFreshStateBasic(owner));
         		}
         		catch(Exception error){
         			System.out.println("-Instrument hasn't logged in");
@@ -45,7 +45,7 @@ public class ThreadStateStart extends ThreadState{
         		System.out.println("Registered user");
         		owner.instrument.handleAndroidData(regPack.registrationData.login, regPack.androidData);
         		System.out.println("Registered android");
-        		changeState(new ThreadStateBasic(owner));
+        		changeState(owner.states.getFreshStateBasic(owner));
         	}
         	catch(Exception error){
         		System.out.println("-Instrument hasn't registered");
@@ -66,7 +66,7 @@ public class ThreadStateStart extends ThreadState{
         }
         
         public void exit() {
-        	System.out.println("+Already offline");
+        	System.out.println("+ Already offline");
         }
 
 		@Override

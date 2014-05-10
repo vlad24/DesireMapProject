@@ -15,6 +15,7 @@ public class CommandToLogIn extends CommandForDesireThread{
 		try{
 			System.out.println("*** Logging In executed");
 			receiver.authorize(logPack);
+			System.out.println("*** Setting credentials");
 			receiver.setCurrentUser(logPack.loginData.login);
 			receiver.setDeviceID(logPack.androidData.regID);
 			receiver.sendTrue();

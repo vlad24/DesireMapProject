@@ -25,7 +25,6 @@ import desireMapApplicationPackage.outputSetPackage.UserSet;
 import desireMapApplicationPackage.userDataPackage.MainData;
 
 public class DesireThread implements Runnable{
-	
 	private String currentUser;
 	private String deviceID;
 	private final HandlerTube tube;
@@ -36,13 +35,15 @@ public class DesireThread implements Runnable{
 	protected DesireInstrument instrument;
 	protected ThreadState stateObject;
 	public boolean isRunning;
+	StatePool states;
 	
 	public DesireThread(Socket givenSocket) throws IOException{
 		System.out.println("*** Thread is initializing\n");
 		setCurrentUser("?");
 		setDeviceID("?");
+		states = new StatePool();
 		isRunning = false;
-		stateObject = new ThreadStateStart(this);
+		stateObject = states.getFreshStateStart(this);
 		tube = new HandlerTube(this);
 		instrument = DesireInstrument.getInstance();
 		chater = ChatKing.getInstance();
