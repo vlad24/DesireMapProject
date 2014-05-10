@@ -245,27 +245,13 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 					outputList = ClusterizationAlgorithm.cluster(addingOnMapSet, newRadius);
 					break;
 				case ZOOMOUT:
-					//					//animate deleting markers from map
-					//					final Set<Marker> removingSet = globalClusterHashMap.keySet(); 
-					//					Log.d("ClientTag", "fadingThread removingSet size ="+removingSet.size());
-					//					for(Marker marker : removingSet){
-					//					    animateFadingMarker(marker);
-					//					}
-
 					addingOnMapSet.removeAll(oldSet);
 					Log.d("ClientTag", "AddingOnMapSet size = "+addingOnMapSet.size());
 					//start clustering algorithm based on already calculated globalClusterHashMap
 					outputList = ClusterizationAlgorithm.cluster(globalClusterHashMap, addingOnMapSet, newRadius);
 
-					//fadingThread.run();
-
-					//delete markers from hashmap
-					final Set<Marker> removingSet = globalClusterHashMap.keySet(); 
-					Log.d("ClientTag", "fadingThread removingSet size ="+removingSet.size());
-					for(Marker marker : removingSet){
-					//	globalClusterHashMap.remove(marker);
-						animateFadingMarker(marker);
-					}
+					//delete old markers from map
+					fadingThread.run();
 
 					break;
 				}
@@ -332,7 +318,6 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 						final Set<Marker> removingSet = globalClusterHashMap.keySet(); 
 						Log.d("ClientTag", "fadingThread removingSet size ="+removingSet.size());
 						for(Marker marker : removingSet){
-						//	globalClusterHashMap.remove(marker);
 							animateFadingMarker(marker);
 						}
 					}
