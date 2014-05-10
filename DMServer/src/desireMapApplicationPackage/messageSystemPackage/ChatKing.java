@@ -94,7 +94,6 @@ public class ChatKing {
 		System.out.println("...Undelivered messages fetched");
 		int deliveredMessagesAmount = 0;
 		int index = 0;
-		System.out.println("...If set is not empty, go!");
 		if (messageSet == null){
 			System.out.println("...Empty set");
 			System.out.println("...Messagses : " + 0);

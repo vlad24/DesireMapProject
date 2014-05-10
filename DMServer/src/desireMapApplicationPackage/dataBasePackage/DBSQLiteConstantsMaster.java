@@ -22,7 +22,7 @@ public class DBSQLiteConstantsMaster{
 			"category Integer NOT NULL, " +
 			"latitude Real NOT NULL, " +
 			"longitude Real NOT NULL, " +
-			"tile String NOT NULL, " +
+			"tile Text NOT NULL, " +
 			"time String NOT NULL, " +
 			"likesAmount INT NOT NULL" +
 			");";

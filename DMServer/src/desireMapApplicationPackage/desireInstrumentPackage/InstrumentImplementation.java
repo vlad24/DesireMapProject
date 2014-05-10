@@ -216,6 +216,7 @@ public abstract class InstrumentImplementation{
 			String timeCondition = "(time > datetime('now', '-120 hours')) ";
 			try(Statement selector = getAccessToDesireBase().createStatement()){
 				String fullQuery = "SELECT * FROM DESIRES_MAIN inner join DESIRES"+ suffix + " using (desireID) WHERE desireID = '" + desireID + "';";
+				System.out.println(fullQuery);
 				ResultSet centerSet = selector.executeQuery(fullQuery);
 				switch(categoryCode){
 				case(CodesMaster.Categories.SportCode):{
@@ -400,7 +401,7 @@ public abstract class InstrumentImplementation{
 
 	public MessageSet getOldMessagesForUserAtDB(String from, String to, int hoursRadius) throws Exception {
 		try(Statement selector = owner.getAccessToDesireBase().createStatement()){
-			String selectQuery = "select * from MESSAGES where (RECEIVER ='" + to + "') AND (SENDER = '" + from + "') AND time < datetime('now', '-" +hoursRadius + " hours' );";
+			String selectQuery = "select * from MESSAGES where (RECEIVER ='" + to + "') AND (SENDER = '" + from + "') AND time < datetime('now', '-" + hoursRadius + " hours' );";
 			System.out.println(selectQuery);
 			ResultSet set = selector.executeQuery(selectQuery);
 			MessageSet messageSet = owner.rsMaster.convertToMessageSetAndClose(set);

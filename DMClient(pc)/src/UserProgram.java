@@ -130,12 +130,13 @@ public class UserProgram{
 					double lat = askDouble("latitude");
 					double lon = askDouble("longitude");
 					Coordinates coord = new Coordinates(lat, lon);
+					String tile = askString("tile");
 					switch (catCode){
 					case (CodesMaster.Categories.SportCode):
 					{
 						String sport = askString("sport");
 						String advantages = askString("advantages");
-						outs.writeObject(new AddPack(new DesireContentSport(currentUser, null, desDes, coord, null, 0, sport, advantages), "10"));
+						outs.writeObject(new AddPack(new DesireContentSport(currentUser, null, desDes, coord, null, 0, sport, advantages), tile));
 						outs.flush();
 						System.out.println("Success : id = " + ins.readUTF());
 						break;
@@ -143,9 +144,9 @@ public class UserProgram{
 					case (CodesMaster.Categories.DatingCode):
 					{
 						char pSex = askString("partnerSex").charAt(0);
-						int ageFrom = askInt("age");
-						int ageTo = askInt("age");
-						outs.writeObject(new AddPack(new DesireContentDating(currentUser, null, desDes, coord, null,0, pSex, ageFrom, ageTo), "11"));
+						int ageFrom = askInt("ageFrom");
+						int ageTo = askInt("ageTo");
+						outs.writeObject(new AddPack(new DesireContentDating(currentUser, null, desDes, coord, null,0, pSex, ageFrom, ageTo), tile));
 						outs.flush();
 						System.out.println("Success : " + ins.readUTF());
 						break;

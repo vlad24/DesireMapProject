@@ -60,7 +60,7 @@ public class ThreadStateBasic extends ThreadState{
 			Integer categoryCode = owner.instrument.getCategoryTableByID(sPack.sDesireID);
 			if (categoryCode != null){
 				SatisfySet set = owner.instrument.getSatisfiersAtDB(sPack.sDesireID, categoryCode, sPack.tiles, null);
-				changeState(new ThreadStateMapScanning(owner, sPack, categoryCode));
+				changeState(new ThreadStateMapScanningDesire(owner, sPack, categoryCode));
 				return set;
 			}
 			else{

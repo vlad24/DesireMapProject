@@ -17,16 +17,18 @@ import desireMapApplicationPackage.outputSetPackage.SatisfySet;
 import desireMapApplicationPackage.outputSetPackage.UserSet;
 import desireMapApplicationPackage.userDataPackage.MainData;
 
-public class ThreadStateMapScanning extends ThreadState{
+public class ThreadStateMapScanningDesire extends ThreadState{
 
 	private HashSet<String> loadedTiles;
 	private int lastDepth;
+	private String desireID;
 	private Integer categoryCode;
 	
-	public ThreadStateMapScanning(DesireThread newOwner, SatisfyPack sPack, Integer newCategoryCode){
+	public ThreadStateMapScanningDesire(DesireThread newOwner, SatisfyPack sPack, Integer newCategoryCode){
 		owner = newOwner;
 		loadedTiles = sPack.tiles;
 		lastDepth = sPack.tileDepth; 
+		desireID = sPack.sDesireID;
 		categoryCode = newCategoryCode;
 	}
 	
@@ -68,7 +70,7 @@ public class ThreadStateMapScanning extends ThreadState{
 				return null;
 			}
 			else{
-				SatisfySet satisfySet = owner.instrument.getSatisfiersAtDBWithoutCryteria(owner.getUserName(), categoryCode, tilesPack.tiles, null);
+				SatisfySet satisfySet = owner.instrument.getSatisfiersAtDB(desireID, categoryCode, tilesPack.tiles, null);
 				//Adding new tiles at this level at already sent tiles
 				loadedTiles.addAll(tilesPack.tiles);
 				return satisfySet;
@@ -76,7 +78,7 @@ public class ThreadStateMapScanning extends ThreadState{
 		}
 		else if(currentDepth > lastDepth){
 			System.out.println("!!! Depth has increased : " + currentDepth +  ". Refreshing");
-			SatisfySet satisfySet = owner.instrument.getSatisfiersAtDBWithoutCryteria(owner.getUserName(), categoryCode, tilesPack.tiles,  null);
+			SatisfySet satisfySet = owner.instrument.getSatisfiersAtDB(desireID, categoryCode, tilesPack.tiles,  null);
 			loadedTiles = tilesPack.tiles;
 			System.out.println("!!! Loaded tiles has been updated");
 			lastDepth = currentDepth;
@@ -85,7 +87,7 @@ public class ThreadStateMapScanning extends ThreadState{
 		}
 		else{
 			System.out.println("!!! Depth has decreased. DB will account loaded tiles");
-			SatisfySet satisfySet = owner.instrument.getSatisfiersAtDBWithoutCryteria(owner.getUserName(), categoryCode, tilesPack.tiles, loadedTiles);
+			SatisfySet satisfySet = owner.instrument.getSatisfiersAtDB(desireID, categoryCode, tilesPack.tiles, loadedTiles);
 			loadedTiles = tilesPack.tiles;
 			System.out.println("!!! Loaded tiles has been updated");
 			lastDepth = currentDepth;
