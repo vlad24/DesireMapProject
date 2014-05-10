@@ -11,9 +11,9 @@ public final class DesireContentDating extends DesireContent{
 	public final int partnerAgeFrom;
 	public final int partnerAgeTo;
 	////
-	public DesireContentDating(String nLogin, String nDesireID, String nDesireDescription, Coordinates nCoordinates, Date nTime,
+	public DesireContentDating(String nLogin, String nDesireID, String nDesireDescription, Coordinates nCoordinates, Date nTime, int nLikes,
 			char newPartnerSex, int newPartnerAgeFrom, int newPartnerAgeTo){
-		super(nLogin , nDesireID, nDesireDescription, nCoordinates, CodesMaster.Categories.DatingCode, nTime);
+		super(nLogin , nDesireID, nDesireDescription, nCoordinates, CodesMaster.Categories.DatingCode, nTime, nLikes);
 		partnerSex = newPartnerSex;
 		partnerAgeFrom = newPartnerAgeFrom;
 		partnerAgeTo = newPartnerAgeTo;

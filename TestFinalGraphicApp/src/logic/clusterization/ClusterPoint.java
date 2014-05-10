@@ -2,6 +2,8 @@ package logic.clusterization;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import desireMapApplicationPackage.desireContentPackage.DesireContent;
@@ -25,15 +27,17 @@ public class ClusterPoint {
 		yCenter = (yCenter*count + newPoint.coordinates.longitude*1e5)/(count+1);
 
 		binaryInsert(newPoint);
-		
+	//	points.add(newPoint);
 		count++;
 	}
 
 	public void addToCluster(ClusterPoint newCluster){
-		xCenter = (xCenter*count + newCluster.xCenter*newCluster.count)/(count+newCluster.count);
-		yCenter = (yCenter*count + newCluster.yCenter*newCluster.count)/(count+newCluster.count);
+		double t = 1/(count+newCluster.count);
+		xCenter = (xCenter*count + newCluster.xCenter*newCluster.count)*t;
+		yCenter = (yCenter*count + newCluster.yCenter*newCluster.count)*t;
 
-		merge(newCluster.points);
+		//merge(newCluster.points);
+		points.addAll(newCluster.points);
 
 		count += newCluster.count;
 	}
@@ -50,15 +54,15 @@ public class ClusterPoint {
 		while(low <= high){
 			mid = (low + high) >>> 1;
 			int midVal = points.get(mid).likes;
-			if(newPoint.likes < midVal)
+			if(newPoint.likes > midVal)
 				high = midVal - 1;
-			else if(newPoint.likes > midVal)
+			else if(newPoint.likes < midVal)
 				low = midVal + 1;
 			else break;
 		}
 
 		//if mid element less than newPoint than put newPoint to next
-		if(points.get(mid).likes <= newPoint.likes)
+		if(points.get(mid).likes >= newPoint.likes)
 			index = mid + 1;
 		else index = mid;
 		

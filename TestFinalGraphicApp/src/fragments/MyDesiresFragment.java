@@ -136,7 +136,7 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 		initWheels();
 		initRadiogroup();
 		
-		gps = new GPSTracker(getActivity());
+		gps = GPSTracker.getInstance(getActivity());
 		
 		return view;
 	}
@@ -697,7 +697,7 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 			if(gps.canGetLocation()){
 				Coordinates coord = new Coordinates(gps.getLatitude(), gps.getLongitude());
 				DesireContentSport newContent = new DesireContentSport(Client.getName(), null, sportDescriptionString,
-						coord, null,
+						coord, null, 0,
 						sportNameString, sportAdvantageString);
 				sendDesire(newContent);
 				Toast.makeText(getActivity(), "Спорт: "+sportName.getText()+
@@ -719,7 +719,7 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 			if(gps.canGetLocation()){
 				Coordinates coord = new Coordinates(gps.getLatitude(), gps.getLongitude());
 				DesireContentDating newContent = new DesireContentDating(Client.getName(), null, datingDescriptionString,
-						coord, null,
+						coord, null, 0,
 						male, partnerAgeFrom, partnerAgeTo);
 				sendDesire(newContent);
 
@@ -727,8 +727,9 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 						+"\nMale: "+male
 						+"\nFromAge:"+(partnerAgeFrom)
 						+"\nToAge:"+(partnerAgeTo), Toast.LENGTH_SHORT).show();
-			} else Toast.makeText(getActivity(), "Введите желание", Toast.LENGTH_SHORT).show();
-		} else Toast.makeText(getActivity(), "Не может определить местоположение", Toast.LENGTH_SHORT).show();
+			} else Toast.makeText(getActivity(), "Не может определить местоположение", Toast.LENGTH_SHORT).show();
+			} else  Toast.makeText(getActivity(), "Введите желание", Toast.LENGTH_SHORT).show();
+ 
 	}
 
 }

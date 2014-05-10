@@ -6,15 +6,15 @@ import graphics.map.expand_graphic.ExpandingListView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 
 
 import logic.Client;
+import logic.GPSTracker;
 import logic.clusterization.ClusterPoint;
 import logic.clusterization.ClusterizationAlgorithm;
-import logic.clusterization.MySphericalUtil;
 
 import com.capricorn.RayMenu;
 import com.example.testfinalgraphicapp.R;
@@ -24,10 +24,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import com.google.android.gms.maps.GoogleMap.SnapshotReadyCallback;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
@@ -43,8 +41,9 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
+import desireMapApplicationPackage.desireContentPackage.Coordinates;
 import desireMapApplicationPackage.desireContentPackage.DesireContent;
-import desireMapApplicationPackage.outputSetPackage.DesireSet;
 import desireMapApplicationPackage.outputSetPackage.SatisfySet;
 import desireMapApplicationPackage.quadtree.DataQuadTreeNode;
 import desireMapApplicationPackage.quadtree.QuadTreeNode;
@@ -65,6 +64,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -81,19 +82,17 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 	private TextView tapTextView;
 	private QuadTreeNode worldRoot; //helps us to build quadCoordinates
 	private int quadDepth;
-	private CircleOptions circleOptions;
 	private LatLng myPosition;
 	private MarkerOptions myMarkerOptions;
 	private Marker myMarker;
 	private double newRadius;
-	private Circle myCircle;
+	private GPSTracker gps;
 
 	private float currentZoom;
 	private float zoomChanging;
 	private LatLng currentTarget;
 	private double deltaX;
 	private double deltaY;
-	private float deltaChanging;
 	private Handler handler;
 	private ArrayList<ClusterPoint> outputList;
 	private Thread clusteringThread;
@@ -118,12 +117,23 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 	private SlidingMenu subMenu;
 	private ExpandingListView lvMapDesires;
 	private ExpandingListView lvMapSubDesires;
+	private MapCustomAdapter mapAdapter;
+	private MapCustomAdapter subMapAdapter;
+	private ArrayList<DesireContent> listMapData;
+	private ArrayList<DesireContent> subListMapData;
+	//current selected login
+	private String currentLogin;
+
+	private static final int[] ITEM_DRAWABLES = {R.drawable.info, R.drawable.mail};
 
 	//declare map sets
 	private SatisfySet newSatisfySet;
+	//indicates if firstSending category
+	private boolean isFirstSendingCategory = true;
 	//for onMarkerClick() method to identify cluster
 	private ConcurrentHashMap<Marker, ClusterPoint> globalClusterHashMap;
 	private HashMap<String, MainData> globalMainDataHashMap;
+	public static HashSet<String> globalLikedByUser = new HashSet<String>();
 	private DataQuadTreeNode globalDataQuadTree;
 	private QuadTreeNodeBox screenBox;
 	private HashSet<DesireContent> oldSet;
@@ -136,7 +146,6 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 	enum MapAction { ZOOMIN, ZOOMOUT, NOZOOM }
 	private MapAction currentMapAction;
 
-	private static final int[] ITEM_DRAWABLES = {R.drawable.info, R.drawable.mail};
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -149,8 +158,6 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 		mapView = (MapView) v.findViewById(R.id.mapview);
 		mapView.onCreate(savedInstanceState);
-
-		initializeMap();
 
 		initMapSets();
 
@@ -166,7 +173,6 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 			private String TAG = "clusteringThread"; 
 			private Bitmap icon;
-			private Marker clusterMarker;
 			@Override
 			public void run() {
 
@@ -186,7 +192,7 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 					case ZOOMIN:
 						globalMainDataHashMap.clear();
 						globalClusterHashMap.clear();
-						//here must be deleting dataquadtree
+						globalLikedByUser.clear();
 						globalDataQuadTree = newSatisfySet.dTree;
 						break;
 					case ZOOMOUT:
@@ -201,6 +207,7 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 						break;
 					}
 					globalMainDataHashMap.putAll(newSatisfySet.desireAuthors);
+					globalLikedByUser.addAll(newSatisfySet.likedByUser);
 				}
 
 				//understand what points now on the screen
@@ -217,20 +224,34 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 				addingOnMapSet.addAll(newSet);
 				switch(currentMapAction){
 				case NOZOOM:
+					Log.d("ClientTag", "newSet size = "+newSet.size());
+					Log.d("ClientTag", "oldSet size = "+oldSet.size());
 					addingOnMapSet.removeAll(oldSet);
+					Log.d("ClientTag", "AddingOnMapSet size = "+addingOnMapSet.size());
+					for(DesireContent desire : addingOnMapSet){
+						Coordinates coord =desire.coordinates;
+						Log.d("ClientTag", "AddingOnMapSet desire coord = "+coord.latitude+" "+coord.longitude);
+					}
 					//start clustering algorithm based on deltaSet
 					outputList = ClusterizationAlgorithm.cluster(addingOnMapSet, newRadius);
 					break;
 				case ZOOMIN:
+					Log.d("ClientTag", "AddingOnMapSet size = "+addingOnMapSet.size());
+					for(DesireContent desire : addingOnMapSet){
+						Coordinates coord =desire.coordinates;
+						Log.d("ClientTag", "AddingOnMapSet desire coord = "+coord.latitude+" "+coord.longitude);
+					}
+					fadingThread.run();
 					//just start clustering algorithm on newSet; no need to subtract
 					outputList = ClusterizationAlgorithm.cluster(addingOnMapSet, newRadius);
 					break;
 				case ZOOMOUT:
 					addingOnMapSet.removeAll(oldSet);
+					Log.d("ClientTag", "AddingOnMapSet size = "+addingOnMapSet.size());
 					//start clustering algorithm based on already calculated globalClusterHashMap
 					outputList = ClusterizationAlgorithm.cluster(globalClusterHashMap, addingOnMapSet, newRadius);
 					//clear from old cluster points
-					globalClusterHashMap.clear();
+					fadingThread.run();
 					break;
 				}
 
@@ -239,13 +260,15 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 					@Override
 					public void run() {
+						Log.d("ClientTag", "outputlist size = "+outputList.size());
 						for (ClusterPoint cluster : outputList){
-							Log.d(TAG, "Here in creating");
+							Log.d("ClientTag", "Here in creating");
 							if(cluster.getCount()<100)
 								icon = iconGenerator.makeIcon("  "+cluster.getCount());
 							else
 								icon = iconGenerator.makeIcon(Integer.toString(cluster.getCount()));
-							clusterMarker = map.addMarker(new MarkerOptions().position(cluster.getCenter())
+							Log.d("ClientTag", "cluster: x: "+cluster.xCenter*1e-5+" y: "+cluster.yCenter*1e-5);
+							Marker clusterMarker = map.addMarker(new MarkerOptions().position(cluster.getCenter())
 									.icon(BitmapDescriptorFactory.fromBitmap(icon))
 									.title("Я").snippet("count: "+cluster.getCount()).alpha(0.6f).visible(false));
 
@@ -264,9 +287,12 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 			@Override
 			public void run() {
-				for(Marker marker : globalClusterHashMap.keySet()){
-					if(!marker.isVisible()){
+				final VisibleRegion currentRegion = map.getProjection().getVisibleRegion();
+				final Set<Marker> markerSet = globalClusterHashMap.keySet();
+				for(Marker marker : markerSet){
+					if(!currentRegion.latLngBounds.contains(marker.getPosition())){
 						globalClusterHashMap.remove(marker);
+						marker.remove();
 					}
 				}
 			}
@@ -280,7 +306,8 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 					@Override
 					public void run() {
-						for(Marker marker : globalClusterHashMap.keySet()){
+						final Set<Marker> removingSet = globalClusterHashMap.keySet(); 
+						for(Marker marker : removingSet){
 							animateFadingMarker(marker);
 						}
 					}
@@ -341,12 +368,12 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 		//init desires list
 		lvMapDesires = (ExpandingListView) menu.findViewById(R.id.lvMapDesires);
-		MapCustomAdapter mapAdapter = new MapCustomAdapter(getActivity(), menu);
+		mapAdapter = new MapCustomAdapter(getActivity(), menu);
 		lvMapDesires.setAdapter(mapAdapter);
 		lvMapDesires.setDivider(null);
 
 		lvMapSubDesires = (ExpandingListView) subMenu.findViewById(R.id.lvMapSubDesires);
-		MapCustomAdapter subMapAdapter = new MapCustomAdapter(getActivity(), subMenu, false);
+		subMapAdapter = new MapCustomAdapter(getActivity(), subMenu, false);
 		lvMapSubDesires.setAdapter(subMapAdapter);
 		lvMapSubDesires.setDivider(null);
 
@@ -373,10 +400,14 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 			}
 		});
 
+		subListMapData = new ArrayList<DesireContent>();
+
+		final TextView loginInfo = (TextView) subMenu.findViewById(R.id.map_loginInfo);
 		Button nextBtn = (Button) subMenu.findViewById(R.id.map_nextBtn);
-		nextBtn.setOnClickListener(new OnClickListener(){
+		nextBtn.setOnClickListener(new OnClickListener(){ 
 			@Override
 			public void onClick(View v) {
+
 				menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
 				subMenu.toggle(true);
 			}});
@@ -400,19 +431,43 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 	}
 
 	private void initializeMap(){
-		map = mapView.getMap();
-		map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-		map.setBuildingsEnabled(true);
-		map.setOnMapClickListener(this);
-		map.setOnCameraChangeListener(this);
-		map.setOnMarkerClickListener(this);
+		try{
+			if(mapView != null){
+				map = mapView.getMap();
+				map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+				map.setBuildingsEnabled(true);
+				map.setOnMapClickListener(this);
+				map.setOnCameraChangeListener(this);
+				map.setOnMarkerClickListener(this);
+			}
+		}catch(Exception e){
+			Toast.makeText(getActivity(), "Cant't access map", Toast.LENGTH_SHORT).show();
+		}
 
-		// Needs to call MapsInitializer before doing any CameraUpdateFactory calls
+		//			// Needs to call MapsInitializer before doing any CameraUpdateFactory calls
 		try {
 			MapsInitializer.initialize(this.getActivity());
 		} catch (GooglePlayServicesNotAvailableException e) {
 			e.printStackTrace();
-		}		
+		}
+
+		map.clear();
+		zoomChanging = 0;
+		deltaX = 0;
+		deltaY = 0;
+		currentZoom = map.getCameraPosition().zoom;
+		//remove old my marker
+		if(myMarker != null){
+			myMarker.remove();
+		}
+
+		gps = GPSTracker.getInstance(getActivity());
+		gps.getLocation();
+		myPosition = new LatLng(gps.getLatitude(), gps.getLongitude());
+		myMarkerOptions = new MarkerOptions().position(myPosition).icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_ball_azure_icon)).title("Я").snippet("красавчик ваще :)").alpha(0.8f);
+		myMarker = map.addMarker(myMarkerOptions);
+
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 13));
 
 	}
 
@@ -427,42 +482,6 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 		newSet = new HashSet<DesireContent>();
 		freeSet = new HashSet<DesireContent>();
 		addingOnMapSet = new HashSet<DesireContent>();
-	}
-
-	public void refresh(double latitude, double longitude){
-
-		if(myMarker != null)
-			myMarker.remove();
-		myPosition = new LatLng(latitude, longitude);
-		myMarkerOptions = new MarkerOptions().position(myPosition).icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_ball_azure_icon)).title("Я").snippet("красавчик ваще :)").alpha(0.8f);
-		myMarker = map.addMarker(myMarkerOptions);
-
-		Toast.makeText(getActivity(), "Latitude: "+latitude+"\nLongitude: "+longitude, Toast.LENGTH_SHORT).show();
-		VisibleRegion currentRegion = map.getProjection().getVisibleRegion();
-		double verticalScreenSize = currentRegion.latLngBounds.northeast.longitude - currentRegion.latLngBounds.southwest.longitude;
-		quadDepth = QuadTreeNode.getQuadDepth(verticalScreenSize);
-
-		zoomChanging = 0;
-		currentZoom = map.getCameraPosition().zoom;
-		currentTarget = map.getCameraPosition().target;
-		myPosition = new LatLng(latitude, longitude);
-		myMarkerOptions = new MarkerOptions().position(myPosition).icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_ball_azure_icon)).title("Я").snippet("красавчик ваще :)").alpha(0.8f);
-		myMarker = map.addMarker(myMarkerOptions);
-
-		inputList.clear();
-		Random r = new Random();
-		LatLng randomPosition;
-		for(int i = 0; i < 1000; i++){
-			randomPosition = new LatLng(latitude+r.nextDouble()/10, longitude+r.nextDouble()/10);
-			inputList.add(randomPosition);
-		}
-
-
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(myPosition, (map.getMaxZoomLevel()+map.getMinZoomLevel())/2));
-		Toast.makeText(getActivity(), String.format("MaxZoomLevel: %f\nMinZoomLevel: %f\nCurrentZoomLevel: %f",map.getMaxZoomLevel(),map.getMinZoomLevel(),map.getCameraPosition().zoom), Toast.LENGTH_SHORT).show();
-
-		//delete old points
-		//download new quadtree
 	}
 
 
@@ -512,15 +531,71 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 				if (t < 1.0) {
 					// Post again 16ms later.
 					handler.postDelayed(this, 16);
+				} else{
+					marker.remove();
 				}
 			}
 		});
 	}
 
 
+	public void changeLoginContent(String login){
+		if(currentLogin != null && !currentLogin.equals(login)){
+			final TextView loginInfo = (TextView) subMenu.findViewById(R.id.map_loginInfo);
+			final TextView nameInfo = (TextView) subMenu.findViewById(R.id.map_nameInfo);
+			final TextView ageInfo = (TextView) subMenu.findViewById(R.id.map_ageInfo);
+			final ImageView maleInfo = (ImageView) subMenu.findViewById(R.id.map_maleInfo);
+			final TextView allDesiresInfo = (TextView) subMenu.findViewById(R.id.map_allDesiresInfo);
+			//get main data linked to login name
+			MainData loginData = globalMainDataHashMap.get(login);
+
+			loginInfo.setText(login);
+			nameInfo.setText(loginData.name);
+			ageInfo.setText(loginData.birth);
+			if(loginData.sex == 'M')
+				maleInfo.setImageResource(R.drawable.user_male32);
+			else
+				maleInfo.setImageResource(R.drawable.user_female32);
+
+			//generate new sublist data
+			subListMapData.clear();
+			//get data from main list of desires
+			listMapData = mapAdapter.getData();
+
+			String loginInfoString = loginInfo.getText().toString();
+			for(DesireContent desire : listMapData){
+				if(loginInfoString.equals(desire.login))
+					subListMapData.add(desire);
+			}
+
+			//set number of current login's desires in cluster
+			allDesiresInfo.setText(Integer.toString(subListMapData.size()));
+
+			//refresh data in list
+			subMapAdapter.changeData(subListMapData);
+			currentLogin = login;
+		}
+
+	}
+
 	@Override
 	public void onMapClick(LatLng coord) {
 		tapTextView.setText("coordinates:"+coord.latitude+" "+coord.longitude+"\nquad: "+worldRoot.geoPointToQuad(coord.latitude, coord.longitude, quadDepth)+"\nnewRadius: "+newRadius);
+	}
+
+	@Override
+	public boolean onMarkerClick(final Marker marker) {
+		//define what cluster was clicked
+		ClusterPoint clusterPoint = globalClusterHashMap.get(marker);
+		//refresh data in list
+		if(clusterPoint != null){
+			mapAdapter.changeData(clusterPoint.points);
+			Animation bottomUp = AnimationUtils.loadAnimation(getActivity(),
+					R.animator.bottom_up);
+			panelLayout.startAnimation(bottomUp);
+			panelLayout.setVisibility(View.VISIBLE);
+		}
+		return true;
 	}
 
 	@Override
@@ -546,8 +621,8 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 				LatLngBounds currentRegionBounds = currentRegion.latLngBounds;
 				//set current screenBox
 				screenBox.setBounds(currentRegionBounds.southwest.latitude, currentRegionBounds.southwest.longitude,
-						            currentRegionBounds.northeast.latitude, currentRegionBounds.northeast.longitude);
-				
+						currentRegionBounds.northeast.latitude, currentRegionBounds.northeast.longitude);
+
 				sendToServerTilesPack(currentRegion.latLngBounds, verticalScreenSize);
 
 				zoomChanging = 0;
@@ -555,18 +630,19 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 				deltaY = 0;
 				newRadius = SphericalUtil.computeDistanceBetween(currentRegion.latLngBounds.northeast, currentRegion.latLngBounds.southwest)/10;
 
-				circleOptions = new CircleOptions().center(myPosition).fillColor(0x550099FF).radius(newRadius).strokeWidth(0);
-				if(myCircle != null)
-					myCircle.remove();
-				myCircle = map.addCircle(circleOptions);
-
 				return;
 			}
 		}
 
 		if(Math.abs(deltaX) + Math.abs(deltaY) > verticalScreenSize/3){
 			currentMapAction = MapAction.NOZOOM;
+			
+			LatLngBounds currentRegionBounds = currentRegion.latLngBounds;
+			//set current screenBox
+			screenBox.setBounds(currentRegionBounds.southwest.latitude, currentRegionBounds.southwest.longitude,
+					currentRegionBounds.northeast.latitude, currentRegionBounds.northeast.longitude);
 			sendToServerTilesPack(currentRegion.latLngBounds, verticalScreenSize);
+			
 			deltaX = 0;
 			deltaY = 0;
 		}
@@ -576,7 +652,7 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 	private void sendToServerTilesPack(LatLngBounds screenBounds, double verticalScreenSize){
 		quadDepth = QuadTreeNode.getQuadDepth(verticalScreenSize);
 		HashSet<String> tiles = worldRoot.getMapTiles(screenBounds.southwest, screenBounds.northeast, quadDepth);
-		getSatisfyDesires(null, tiles, quadDepth); //add here category
+		getSatisfyDesires(CodesMaster.Categories.DatingCode, tiles, quadDepth); //add here category
 	}
 
 	public Bitmap getMapImage(int width, int height) {  
@@ -593,46 +669,42 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 	}  
 
 
-	@Override
-	public boolean onMarkerClick(final Marker marker) {
 
+	//	private void getSatisfyDesires(final String desireID, final HashSet<String> tiles, final int tileDepth){
+	//		new AsyncTask<Void, Void, SatisfySet>(){
+	//			@Override
+	//			protected SatisfySet doInBackground(Void... params) {
+	//				try {
+	//					return Client.getSatisfyDesires(desireID, tiles, tileDepth);
+	//				} catch (Exception e) {
+	//					e.printStackTrace();
+	//					return null;
+	//				}
+	//			}
+	//
+	//			@Override
+	//			protected void onPostExecute(SatisfySet resultSet) {
+	//				newSatisfySet = resultSet;
+	//				if(currentMapAction == MapAction.NOZOOM){
+	//					removingThread.run();
+	//				} else fadingThread.run();
+	//				clusteringThread.run();
+	//
+	//			}
+	//
+	//		}.execute();
+	//	}
 
-		//		final long startTime = SystemClock.uptimeMillis();
-		//		final long duration = 2000;
-		//		
-		//		Projection proj = map.getProjection();
-		//		final LatLng markerLatLng = marker.getPosition();
-		//		Point startPoint = proj.toScreenLocation(markerLatLng);
-		//		startPoint.offset(0, -100);
-		//		final LatLng startLatLng = proj.fromScreenLocation(startPoint);
-		//
-		//		final Interpolator interpolator = new BounceInterpolator();
-		//
-		//		handler.post(new Runnable() {
-		//			@Override
-		//			public void run() {
-		//				long elapsed = SystemClock.uptimeMillis() - startTime;
-		//				float t = interpolator.getInterpolation((float) elapsed / duration);			
-		//				double lng = t * markerLatLng.longitude + (1 - t) * startLatLng.longitude;
-		//				double lat = t * markerLatLng.latitude + (1 - t) * startLatLng.latitude;
-		//				marker.setPosition(new LatLng(lat, lng));
-		//
-		//				if (t < 1.0) {
-		//					// Post again 16ms later.
-		//					handler.postDelayed(this, 16);
-		//				}
-		//			}
-		//		});
-		return true;
-	}
-
-
-	private void getSatisfyDesires(final String desireID, final HashSet<String> tiles, final int tileDepth){
+	private void getSatisfyDesires(final int category, final HashSet<String> tiles, final int tileDepth){
 		new AsyncTask<Void, Void, SatisfySet>(){
 			@Override
 			protected SatisfySet doInBackground(Void... params) {
 				try {
-					return Client.getSatisfyDesires(desireID, tiles, tileDepth);
+					if(isFirstSendingCategory){
+						isFirstSendingCategory = false;
+						return Client.getSatisfyDesires(category, tiles, tileDepth);
+					}else
+						return Client.getSatisfyDesires(tiles, tileDepth);
 				} catch (Exception e) {
 					e.printStackTrace();
 					return null;
@@ -642,14 +714,25 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 			@Override
 			protected void onPostExecute(SatisfySet resultSet) {
 				newSatisfySet = resultSet;
+				if(resultSet != null){
+					Log.d("ClientTag", "size of SatisfySet authors ="+resultSet.desireAuthors.size());
+				}
+
 				if(currentMapAction == MapAction.NOZOOM){
 					removingThread.run();
-				} else fadingThread.run();
+				}
+
 				clusteringThread.run();
 
 			}
 
 		}.execute();
+	}
+
+	@Override
+	public void onStart() {
+		initializeMap();
+		super.onStart();
 	}
 
 	@Override

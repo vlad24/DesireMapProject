@@ -1,17 +1,28 @@
 package graphics.map;
 
+import fragments.ChatFragment;
+import fragments.MapFragment;
 import graphics.map.expand_graphic.ExpandableListItem;
 import graphics.map.expand_graphic.ExpandingLayout;
 import graphics.map.expand_graphic.ViewHolder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+
+import logic.Client;
 
 import com.capricorn.RayMenu;
+import com.example.testfinalgraphicapp.MainActivity;
 import com.example.testfinalgraphicapp.R;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
+import desireMapApplicationPackage.desireContentPackage.DesireContent;
+import desireMapApplicationPackage.outputSetPackage.SatisfySet;
+
 
 import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,12 +38,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-class DesireContent{
-	String nameInfo = "Roma";
-	String desireInfo = "to walk through my arms i Would like to think about my life and expand its treasure ok i've found it";
-	int likes = 10;
-	boolean liked = false;
-}
+//class DesireContent{
+//	String nameInfo = "Roma";
+//	String desireInfo = "to walk through my arms i Would like to think about my life and expand its treasure ok i've found it";
+//	int likes = 10;
+//	boolean liked = false;
+//}
 
 public class MapCustomAdapter extends BaseAdapter {
 	private Context context;
@@ -44,19 +55,10 @@ public class MapCustomAdapter extends BaseAdapter {
 
 	private SlidingMenu menu;
 	private boolean isMainMenu = true;
+	private HashSet<String> likedByUser = MapFragment.globalLikedByUser;
 
 	static{	
 		desires = new ArrayList<DesireContent>();
-		desires.add(new DesireContent());
-		desires.add(new DesireContent());
-		desires.add(new DesireContent());
-		desires.add(new DesireContent());
-		desires.add(new DesireContent());
-		desires.add(new DesireContent());
-		desires.add(new DesireContent());
-		desires.add(new DesireContent());
-		desires.add(new DesireContent());
-
 	}
 
 	public MapCustomAdapter(Context context, SlidingMenu menu, boolean isMainMenu){
@@ -88,6 +90,15 @@ public class MapCustomAdapter extends BaseAdapter {
 		return position;
 	}
 
+	public void changeData(ArrayList<DesireContent> newDesireList){
+		desires = newDesireList;
+		this.notifyDataSetChanged();
+	}
+
+	public ArrayList<DesireContent> getData(){
+		return desires;
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		final DesireContent desire = desires.get(position);
@@ -99,6 +110,7 @@ public class MapCustomAdapter extends BaseAdapter {
 			holder.panelInfoView = (LinearLayout) convertView.findViewById(R.id.maplist_PanelInfoView);
 			holder.nameInfoView = (TextView) convertView.findViewById(R.id.maplist_nameInfoView);
 			holder.desireInfoView = (TextView) convertView.findViewById(R.id.maplist_desireInfoView);
+			holder.likeLayout = (LinearLayout) convertView.findViewById(R.id.maplist_likeLayout);
 			holder.likeInfoView = (TextView) convertView.findViewById(R.id.maplist_likeInfoView);
 			holder.likeImageView = (ImageView) convertView.findViewById(R.id.maplist_likeImageView);
 			holder.listRayMenu = (RayMenu) convertView.findViewById(R.id.maplist_ray_menu);
@@ -109,8 +121,27 @@ public class MapCustomAdapter extends BaseAdapter {
 					AbsListView.LayoutParams.WRAP_CONTENT);
 			holder.fullDesireInfoView = (TextView) convertView.findViewById(R.id.maplist_fullDesireInfoView);
 
-			holder.listRayMenu.setInfoView(holder.panelInfoView);
+			holder.likeLayout.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View v) {
+					final int positionInList = (Integer) holder.listRayMenu.getTag();
+					DesireContent desire = desires.get(positionInList);
+					boolean liked = likedByUser.contains(desire.desireID);
+					if(!liked){
+						likedByUser.add(desire.desireID);
+						desire.likes++;
+						sendLike(desire.desireID, true);
+						holder.likeImageView.setImageResource(R.drawable.red_heart);
+					} else{
+						likedByUser.remove(desire.desireID);
+						desire.likes--;
+						sendLike(desire.desireID, false);
+						holder.likeImageView.setImageResource(R.drawable.gray_heart);
+					}
+					holder.likeInfoView.setText(Integer.toString(desire.likes));
+				}});
 
+			holder.listRayMenu.setInfoView(holder.panelInfoView);
 
 			for (int i = 0; i < itemCount; i++) {
 				ImageView item = new ImageView(context);
@@ -125,13 +156,16 @@ public class MapCustomAdapter extends BaseAdapter {
 						switch(menu_position){
 						case 0:
 							if(isMainMenu){
+								//change slidingmenu content
+								changeLoginContent(desires.get(positionInList).login);
 								menu.showContent();
 							} else menu.toggle(true);
 							break;
 						case 1:
+							startChat(desires.get(positionInList).login);
 							break;
 						}
-						Toast.makeText(context,"position in list: " + positionInList + " menu position:" + menu_position, Toast.LENGTH_SHORT).show();
+						//	Toast.makeText(context,"position in list: " + positionInList + " menu position:" + menu_position, Toast.LENGTH_SHORT).show();
 					}
 				});
 			}
@@ -144,17 +178,17 @@ public class MapCustomAdapter extends BaseAdapter {
 
 		holder.listRayMenu.setTag(position);
 
-		holder.nameInfoView.setText(desire.nameInfo);
-		holder.desireInfoView.setText(desire.desireInfo);
-		holder.fullDesireInfoView.setText(desire.desireInfo);
+		holder.nameInfoView.setText(desire.login);
+		holder.desireInfoView.setText(desire.description);
+		holder.fullDesireInfoView.setText(desire.description);
 		holder.likeInfoView.setText(Integer.toString(desire.likes));
 
-		if(desire.liked){
+		if(likedByUser.contains(desire.desireID)){
 			holder.likeImageView.setImageResource(R.drawable.red_heart);
 		} else{
 			holder.likeImageView.setImageResource(R.drawable.gray_heart);
 		}
-
+     
 		convertView.setLayoutParams(holder.convertViewLayoutParams);
 
 		holder.expandingView.setExpandedHeight(holder.viewObject.mExpandedHeight);
@@ -168,5 +202,32 @@ public class MapCustomAdapter extends BaseAdapter {
 		return convertView;
 	}
 
+	private void startChat(String nameInfo){
+		if(context instanceof MainActivity){
+			MainActivity mainActivity = (MainActivity) context;
+			mainActivity.startChat(nameInfo);
+		}
+	}
+
+	private void changeLoginContent(String nameInfo){
+		if(context instanceof MainActivity){
+			MainActivity mainActivity = (MainActivity) context;
+			mainActivity.changeLoginContent(nameInfo);
+		}
+	}
+
+	private void sendLike(final String desireID, final boolean isLiked){
+		new AsyncTask<Void, Void, Void>(){
+			@Override
+			protected Void doInBackground(Void... params) {
+				try {
+					Client.sendLike(desireID, isLiked);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return null;
+			}
+		}.execute();
+	}
 
 }

@@ -105,7 +105,7 @@ public class MainActivity extends FragmentActivity {
 		mTitle = mDrawerTitle = getTitle();
 
 		handler = new Handler();
-		gps = new GPSTracker(this);
+		gps = GPSTracker.getInstance(this);
 		myDesiresFragment = new MyDesiresFragment();
 		chatFragment = new ChatFragment();
 		exploreFragment = new ExploreFragment();
@@ -221,7 +221,9 @@ public class MainActivity extends FragmentActivity {
 					break;
 				case 2:
 					nextFragment = chatFragment;
-				//	chatFragment.sendMessage("1", "Hello");
+					break;
+				case 3:
+					nextFragment = mapFragment;
 					break;
 				}
 
@@ -244,6 +246,17 @@ public class MainActivity extends FragmentActivity {
 			}
 
 		});
+	}
+	
+	public void startChat(String login){
+		//init chating
+		chatFragment.startChat(login);
+		//open chat
+		switchFragment(2);
+	}
+	
+	public void changeLoginContent(String login){
+		mapFragment.changeLoginContent(login);
 	}
 
 	private void exit(){

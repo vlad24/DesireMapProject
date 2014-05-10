@@ -31,7 +31,7 @@ public class ExploreFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				switchFragment(0);
+				switchFragment(3);
 			}});
         
         ParallaxHorizontalScrollView hscrollView2 = (ParallaxHorizontalScrollView) view.findViewById(R.id.hscroll2);

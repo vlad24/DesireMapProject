@@ -16,6 +16,7 @@ import android.util.Log;
 import desireMapApplicationPackage.actionQueryObjectPackage.AddPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.DeletePack;
 import desireMapApplicationPackage.actionQueryObjectPackage.ExitPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.LikePack;
 import desireMapApplicationPackage.actionQueryObjectPackage.LoginPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.MessageDeliverPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.MessageSendPack;
@@ -23,6 +24,7 @@ import desireMapApplicationPackage.actionQueryObjectPackage.RegistrationPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.SatisfyPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.ShowInfoPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.ShowPersonalDesiresPack;
+import desireMapApplicationPackage.actionQueryObjectPackage.TilesPack;
 import desireMapApplicationPackage.actionQueryObjectPackage.UserChatHistoryPack;
 import desireMapApplicationPackage.desireContentPackage.DesireContent;
 import desireMapApplicationPackage.messageSystemPackage.ClientMessage;
@@ -89,6 +91,11 @@ public class Client {
 
 	public static void closeSocket(){
 		socketIsEmpty = true;
+		try {
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static void initializeClient(final Context context) throws Exception {
@@ -178,6 +185,12 @@ public class Client {
 		String IDdesire = in.readUTF();
 		return IDdesire;
 	}
+	
+	public static void sendLike(String desireID, boolean isLiked) throws Exception{
+		LikePack likePack = new LikePack(desireID, isLiked);
+		out.writeObject(likePack);
+		out.reset();
+	}
 
 
 	public static MessageSet getMessages(String partnerName, int hoursRadius) throws Exception{
@@ -198,9 +211,10 @@ public class Client {
 		out.reset();
 		Log.d(TAG, "Try to receive UserSet");
 		userSet = (UserSet) in.readObject();
+		Log.d(TAG, "received UserSet");
 		return userSet;
 	}
-
+	
 	public static SatisfySet getSatisfyDesires(String desireID, HashSet<String> tiles, int tileDepth) throws Exception{
 		SatisfyPack satisfyPack = new SatisfyPack(desireID, tiles, tileDepth);
 		SatisfySet set;
@@ -208,6 +222,29 @@ public class Client {
 		out.reset();
 		Log.d(TAG, "Try to receive SatisfySet");
 		set = (SatisfySet) in.readObject();
+		Log.d(TAG, "received SatisfySet");
+		return set;		
+	}
+
+	public static SatisfySet getSatisfyDesires(int category, HashSet<String> tiles, int tileDepth) throws Exception{
+		SatisfyPack satisfyPack = new SatisfyPack(category, tiles, tileDepth);
+		SatisfySet set;
+		out.writeObject(satisfyPack);
+		out.reset();
+		Log.d(TAG, "Try to receive SatisfySet");
+		set = (SatisfySet) in.readObject();
+		Log.d(TAG, "received SatisfySet");
+		return set;		
+	}
+	
+	public static SatisfySet getSatisfyDesires(HashSet<String> tiles, int tileDepth) throws Exception{
+		TilesPack tilesPack = new TilesPack(tileDepth, tiles);
+		SatisfySet set;
+		out.writeObject(tilesPack);
+		out.reset();
+		Log.d(TAG, "Try to receive SatisfySet");
+		set = (SatisfySet) in.readObject();
+		Log.d(TAG, "received SatisfySet");
 		return set;		
 	}
 

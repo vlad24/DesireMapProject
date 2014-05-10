@@ -28,13 +28,21 @@ public class GPSTracker extends Service implements LocationListener {
 	private final int MIN_TIME = 2000;
 	private float accuracy;
 	private final String TAG = "GPSTracker";
+	private static GPSTracker gps;
 
-	public GPSTracker(Context context){
+	private GPSTracker(Context context){
 		appContext = context;
 		isNetworkEnabled = false;
 		isGPSEnabled = false;
 		canGetLocation = false;
 		accuracy = 200;
+	}
+	
+	public static GPSTracker getInstance(Context context){
+		if(gps == null)
+			gps = new GPSTracker(context);
+		
+		return gps;
 	}
 
 	public void getLocation(){

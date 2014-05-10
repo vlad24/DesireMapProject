@@ -12,6 +12,7 @@ public class ViewHolder
 	public LinearLayout panelInfoView;
 	public TextView nameInfoView;
 	public TextView desireInfoView;
+	public LinearLayout likeLayout;
 	public TextView likeInfoView;
 	public ImageView likeImageView;
 	public RayMenu listRayMenu;

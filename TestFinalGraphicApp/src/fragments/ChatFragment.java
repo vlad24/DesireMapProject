@@ -70,9 +70,11 @@ public class ChatFragment extends Fragment implements OnClickListener {
 	Button backButton;
 
 	static String sender;
-	String[] lst= {"1","q","vlad","her"};
+	//	String[] lst= {"1","q","vlad","her"};
 	ArrayList<String> chatFellowContent;
 	ArrayList<Boolean> loadedChat;
+	//identify user's position in list
+	HashMap<String, Integer> userPositionMap;
 	final int historyHoursRadius = 10;
 
 	@Override
@@ -81,6 +83,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 
 		progressHandler = new Handler();
 		usersHashMap = new HashMap<String, ChatCustomAdapter>();
+		userPositionMap = new HashMap<String, Integer>();
 
 		menuView = inflater.inflate(R.layout.chat_slidingmenu_layout, null, false);
 		Log.d(LOG_TAG, "all inflated");
@@ -138,9 +141,9 @@ public class ChatFragment extends Fragment implements OnClickListener {
 					int position, long id) {
 				if(!loadedChat.get(position)){
 					Log.d("GCM", "try to load from server for" + chatFellowContent.get(position));
-					loadHistory(position, chatFellowContent.get(position), historyHoursRadius);
+					loadHistory(chatFellowContent.get(position), historyHoursRadius);
 				}
-					
+
 				showChatPanel(position);
 				menu.showContent();
 			}
@@ -149,6 +152,35 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		lvFellows.setAdapter(chatFellowAdapter);
 		lvFellows.setOnItemClickListener(fellowListener);
 
+	}
+
+	public void startChat(String login){
+
+		if(usersHashMap.get(login) == null){
+			usersHashMap.put(login, new ChatCustomAdapter(getActivity(), 
+					new ArrayList<ChatMessage>()));
+
+			loadedChat.add(0, true);
+			chatFellowContent.add(0, login);
+			chatFellowAdapter.notifyDataSetChanged();
+			//update user index
+			for(String user : userPositionMap.keySet()){
+				userPositionMap.put(user, userPositionMap.get(user)+1);
+			}
+			userPositionMap.put(login, 0);
+		}
+
+		int userPosition = userPositionMap.get(login);
+
+		if(!loadedChat.get(userPosition)){
+			Log.d("GCM", "try to load from server for" + chatFellowContent.get(userPosition));
+			loadHistory(chatFellowContent.get(userPosition), historyHoursRadius);
+		}
+
+		showChatPanel(userPosition);
+		if(!menu.isMenuShowing()){
+			menu.toggle();
+		}
 	}
 
 	private void showChatPanel(int position){
@@ -222,9 +254,9 @@ public class ChatFragment extends Fragment implements OnClickListener {
 			@Override
 			protected UserSet doInBackground(Void... params) {
 				try {
-					chatFellowContent.addAll(Arrays.asList(lst));
-					return new UserSet(chatFellowContent);
-					//	return Client.getChatUsers();
+					//		chatFellowContent.addAll(Arrays.asList(lst));
+					//		return new UserSet(chatFellowContent);
+					return Client.getChatUsers();
 				} catch (Exception e) {
 					e.printStackTrace();
 					return null;
@@ -235,10 +267,12 @@ public class ChatFragment extends Fragment implements OnClickListener {
 			protected void onPostExecute(UserSet resultSet) {
 				if(resultSet != null){
 					chatFellowContent = resultSet.uSet;
-					loadedChat = new ArrayList<Boolean>(Collections.nCopies(4, false));  //chatFellowContent.size());
-                    Log.d("GCM", "size of loadedChat = "+loadedChat.size());
-					
+					loadedChat = new ArrayList<Boolean>(Collections.nCopies(chatFellowContent.size(), false));  //chatFellowContent.size());
+					Log.d("GCM", "size of loadedChat = "+loadedChat.size());
+
+					int position = 0;
 					for(String user : chatFellowContent){
+						userPositionMap.put(user, position++);
 						usersHashMap.put(user, new ChatCustomAdapter(getActivity(), 
 								new ArrayList<ChatMessage>()));
 					}
@@ -248,7 +282,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		}.execute();
 	}
 
-	public void loadHistory(final int position, final String partnerName, final int hoursRadius){
+	public void loadHistory(final String partnerName, final int hoursRadius){
 		new AsyncTask<Void, Void, MessageSet>(){
 			@Override
 			protected MessageSet doInBackground(Void... params) {
@@ -262,7 +296,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 
 			@Override
 			protected void onPostExecute(MessageSet resultSet) {
-				loadedChat.set(position, true);
+				loadedChat.set(userPositionMap.get(partnerName), true);
 				if(resultSet != null){
 					Log.d("GCM", "messageSet not null");
 					ArrayList<ChatMessage> chatHistoryMessages = new ArrayList<ChatMessage>();
@@ -314,7 +348,6 @@ public class ChatFragment extends Fragment implements OnClickListener {
 
 	public void addNewChatMessage(String receiver, ChatMessage message){
 
-		//эта проверка в картах будет
 		if(usersHashMap.get(receiver) == null){
 			usersHashMap.put(receiver, new ChatCustomAdapter(getActivity(), 
 					new ArrayList<ChatMessage>()));
@@ -322,6 +355,11 @@ public class ChatFragment extends Fragment implements OnClickListener {
 			loadedChat.add(0, true);
 			chatFellowContent.add(0, receiver);
 			chatFellowAdapter.notifyDataSetChanged();
+			//update user index
+			for(String user : userPositionMap.keySet()){
+				userPositionMap.put(user, userPositionMap.get(user)+1);
+			}
+			userPositionMap.put(receiver, 0);
 		}
 
 		usersHashMap.get(receiver).mMessages.add(message);

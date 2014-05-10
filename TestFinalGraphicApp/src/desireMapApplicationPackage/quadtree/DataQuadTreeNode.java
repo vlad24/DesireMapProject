@@ -24,12 +24,12 @@ public class DataQuadTreeNode implements Serializable{
 		points = new ArrayList<DesireContent>();
 	}
 	public DataQuadTreeNode(){
-		this.nodeBox = new QuadTreeNodeBox(-180,-90,180,90);
+		this.nodeBox = new QuadTreeNodeBox(-90,-180,90,180);
 		points = new ArrayList<DesireContent>();
 	}
 	
 
-	private DataQuadTreeNode subdivide(double x, double y){
+	private void subdivide(double x, double y){
 		double xMid = (nodeBox.x0 + nodeBox.x1) / 2;
 		double yMid = (nodeBox.y0 + nodeBox.y1) / 2;
 
@@ -39,13 +39,13 @@ public class DataQuadTreeNode implements Serializable{
 					QuadTreeNodeBox northWestBox = new QuadTreeNodeBox(nodeBox.x0, yMid, xMid, nodeBox.y1);
 					northWestNode = new DataQuadTreeNode(northWestBox);
 				}
-				return northWestNode;
+				return;
 			}
 			if(northEastNode == null){
 				QuadTreeNodeBox northEastBox = new QuadTreeNodeBox(xMid, yMid, nodeBox.x1, nodeBox.y1);
 				northEastNode = new DataQuadTreeNode(northEastBox);
 			}
-			return northEastNode;
+			return;
 		}
 
 		if(x < xMid){
@@ -53,18 +53,21 @@ public class DataQuadTreeNode implements Serializable{
 				QuadTreeNodeBox southWestBox = new QuadTreeNodeBox(nodeBox.x0, nodeBox.y0, xMid, yMid);
 				southWestNode = new DataQuadTreeNode(southWestBox);
 			}
-			return southWestNode;
+			return;
 		}
 		if(southEastNode == null){
 			QuadTreeNodeBox southEastBox = new QuadTreeNodeBox(xMid, nodeBox.y0, nodeBox.x1, yMid);
 			southEastNode = new DataQuadTreeNode(southEastBox);
 		}
-		return southEastNode;
+		return;
 
 	}
 
 
 	public boolean insertData(DataQuadTreeNode node, DesireContent desire){
+		if(node == null){
+			return false;
+		}
 		if(!node.nodeBox.contains(desire.coordinates.latitude, desire.coordinates.longitude))
 			return false;
 
@@ -75,13 +78,12 @@ public class DataQuadTreeNode implements Serializable{
 			return true;
 		}
 
-		if(northWestNode == null)
-			subdivide(desire.coordinates.latitude, desire.coordinates.longitude);
+		node.subdivide(desire.coordinates.latitude, desire.coordinates.longitude);
 
-		if(insertData(northEastNode, desire)) return true;
-		if(insertData(northWestNode, desire)) return true;
-		if(insertData(southWestNode, desire)) return true;
-		if(insertData(southEastNode, desire)) return true;
+		if(insertData(node.northEastNode, desire)) return true;
+		if(insertData(node.northWestNode, desire)) return true;
+		if(insertData(node.southWestNode, desire)) return true;
+		if(insertData(node.southEastNode, desire)) return true;
 
 		return false;			
 
