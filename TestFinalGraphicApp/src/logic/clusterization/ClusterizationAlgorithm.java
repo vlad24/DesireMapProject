@@ -15,6 +15,7 @@ import desireMapApplicationPackage.desireContentPackage.DesireContent;
 public class ClusterizationAlgorithm {
 
 	private static ArrayList<ClusterPoint> outputPoints = new ArrayList<ClusterPoint>();
+	private static Collection<ClusterPoint> oldClusterPoints = new HashSet<ClusterPoint>();
 
 	public static ArrayList<ClusterPoint> cluster(HashSet<DesireContent> inputPoints,  double radius){
 		outputPoints.clear();
@@ -58,7 +59,8 @@ public class ClusterizationAlgorithm {
 
 	public static ArrayList<ClusterPoint> cluster(ConcurrentHashMap<Marker, ClusterPoint> oldHashMap, HashSet<DesireContent> inputPoints,  double radius){
 		outputPoints.clear();
-		Collection<ClusterPoint> oldClusterPoints = oldHashMap.values();
+		oldClusterPoints.clear();
+		oldClusterPoints.addAll(oldHashMap.values());
 		if(!oldClusterPoints.isEmpty()){
 			ClusterPoint firstCluster = oldClusterPoints.iterator().next();
 
@@ -114,7 +116,7 @@ public class ClusterizationAlgorithm {
 				outputPoints.add(newClusterPoint);
 			}
 		}
-
+        Log.d("ClientTag", "clusterization ended");
 		return outputPoints;
 	}
 

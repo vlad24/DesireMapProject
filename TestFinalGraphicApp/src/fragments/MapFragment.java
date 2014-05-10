@@ -191,7 +191,6 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 						break;
 					case ZOOMIN:
 						globalMainDataHashMap.clear();
-						globalClusterHashMap.clear();
 						globalLikedByUser.clear();
 						globalDataQuadTree = newSatisfySet.dTree;
 						break;
@@ -236,22 +235,38 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 					outputList = ClusterizationAlgorithm.cluster(addingOnMapSet, newRadius);
 					break;
 				case ZOOMIN:
+					fadingThread.run();
 					Log.d("ClientTag", "AddingOnMapSet size = "+addingOnMapSet.size());
 					for(DesireContent desire : addingOnMapSet){
 						Coordinates coord =desire.coordinates;
 						Log.d("ClientTag", "AddingOnMapSet desire coord = "+coord.latitude+" "+coord.longitude);
 					}
-					fadingThread.run();
 					//just start clustering algorithm on newSet; no need to subtract
 					outputList = ClusterizationAlgorithm.cluster(addingOnMapSet, newRadius);
 					break;
 				case ZOOMOUT:
+					//					//animate deleting markers from map
+					//					final Set<Marker> removingSet = globalClusterHashMap.keySet(); 
+					//					Log.d("ClientTag", "fadingThread removingSet size ="+removingSet.size());
+					//					for(Marker marker : removingSet){
+					//					    animateFadingMarker(marker);
+					//					}
+
 					addingOnMapSet.removeAll(oldSet);
 					Log.d("ClientTag", "AddingOnMapSet size = "+addingOnMapSet.size());
 					//start clustering algorithm based on already calculated globalClusterHashMap
 					outputList = ClusterizationAlgorithm.cluster(globalClusterHashMap, addingOnMapSet, newRadius);
-					//clear from old cluster points
-					fadingThread.run();
+
+					//fadingThread.run();
+
+					//delete markers from hashmap
+					final Set<Marker> removingSet = globalClusterHashMap.keySet(); 
+					Log.d("ClientTag", "fadingThread removingSet size ="+removingSet.size());
+					for(Marker marker : removingSet){
+					//	globalClusterHashMap.remove(marker);
+						animateFadingMarker(marker);
+					}
+
 					break;
 				}
 
@@ -272,7 +287,11 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 									.icon(BitmapDescriptorFactory.fromBitmap(icon))
 									.title("ß").snippet("count: "+cluster.getCount()).alpha(0.6f).visible(false));
 
+							Log.d("ClientTag", "globalClusterHashMap before size ="+globalClusterHashMap.size());
+
 							globalClusterHashMap.put(clusterMarker, cluster);
+
+							Log.d("ClientTag", "globalClusterHashMap size ="+globalClusterHashMap.size());
 							animateCreatingMarker(clusterMarker);
 						}
 					}
@@ -306,8 +325,14 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 					@Override
 					public void run() {
+						Log.d("ClientTag", "fadingThread started");
+						if(globalClusterHashMap.isEmpty())
+							Log.d("ClientTag", "globalClusterHashMap is empty");
+
 						final Set<Marker> removingSet = globalClusterHashMap.keySet(); 
+						Log.d("ClientTag", "fadingThread removingSet size ="+removingSet.size());
 						for(Marker marker : removingSet){
+						//	globalClusterHashMap.remove(marker);
 							animateFadingMarker(marker);
 						}
 					}
@@ -531,8 +556,6 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 				if (t < 1.0) {
 					// Post again 16ms later.
 					handler.postDelayed(this, 16);
-				} else{
-					marker.remove();
 				}
 			}
 		});
@@ -588,6 +611,9 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 		//define what cluster was clicked
 		ClusterPoint clusterPoint = globalClusterHashMap.get(marker);
 		//refresh data in list
+		if(clusterPoint == null){
+			Log.d("ClientTag", "clusterPoint null");
+		}
 		if(clusterPoint != null){
 			mapAdapter.changeData(clusterPoint.points);
 			Animation bottomUp = AnimationUtils.loadAnimation(getActivity(),
@@ -636,13 +662,13 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 		if(Math.abs(deltaX) + Math.abs(deltaY) > verticalScreenSize/3){
 			currentMapAction = MapAction.NOZOOM;
-			
+
 			LatLngBounds currentRegionBounds = currentRegion.latLngBounds;
 			//set current screenBox
 			screenBox.setBounds(currentRegionBounds.southwest.latitude, currentRegionBounds.southwest.longitude,
 					currentRegionBounds.northeast.latitude, currentRegionBounds.northeast.longitude);
 			sendToServerTilesPack(currentRegion.latLngBounds, verticalScreenSize);
-			
+
 			deltaX = 0;
 			deltaY = 0;
 		}
