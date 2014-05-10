@@ -14,18 +14,12 @@ public class CategoryManagerDating extends CategoryManager {
 		owner = newOwner;
 	}
 
-	protected void tryToAddDesire(String desId, AddPack pack) throws SQLException {
-		if(myContent(pack.desireContent)){
+	protected void addDesire(String desId, AddPack pack) throws SQLException {
 			DesireContentDating datingContent = (DesireContentDating) pack.desireContent;
 			Statement adder =  owner.getAccessToDesireBase().createStatement();
 			System.out.println("__ADDING INTO DESIRES_DATING");
 			adder.execute("INSERT INTO DESIRES_DATING VALUES('"+ desId + "', '" + datingContent.partnerSex +"', " + datingContent.partnerAgeFrom + "," + datingContent.partnerAgeTo +");");
 			adder.close();
-		}
 	}
-
-	protected boolean myContent(DesireContent content) {
-		return content.category == CodesMaster.Categories.DatingCode;
-	}
-
+	
 }

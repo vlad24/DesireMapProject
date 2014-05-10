@@ -145,7 +145,7 @@ public abstract class InstrumentImplementation{
 	public String addDesireAtDB(AddPack pack) throws Exception {
 		String thisDesireID = getDesireID(pack);
 		System.out.println("+ID has been generated :" + thisDesireID);
-		owner.tube.tryToAdd(thisDesireID, pack);
+		owner.tube.add(thisDesireID, pack);
 		return thisDesireID;
 	}
 

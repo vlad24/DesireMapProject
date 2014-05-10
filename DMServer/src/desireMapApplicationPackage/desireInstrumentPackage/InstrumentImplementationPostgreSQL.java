@@ -22,7 +22,7 @@ public class InstrumentImplementationPostgreSQL extends	InstrumentImplementation
 		try {
 			owner.desireDataBase.connectToBase();
 			owner.desireDataBase.init();
-			owner.tube = new CategoryTube(owner);
+			owner.tube = new CategoryMap(owner);
 			System.out.println("+CATEGORY ADDERS - DONE");
 
 			owner.dataBaseSuffixes = new HashMap<Integer, String>();

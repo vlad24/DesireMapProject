@@ -28,7 +28,7 @@ public class DesireInstrument {
 	protected DataBase desireDataBase;
 	//Common parsers,handlers and constant-maps
 	protected ResultSetMaster rsMaster;
-	protected CategoryTube tube;
+	protected CategoryMap tube;
 	protected HashMap<Integer,String> dataBaseSuffixes;
 	//---------------------------------------------------------------//
 
