@@ -1,6 +1,5 @@
 package graphics.map;
 
-import fragments.ChatFragment;
 import fragments.MapFragment;
 import graphics.map.expand_graphic.ExpandableListItem;
 import graphics.map.expand_graphic.ExpandingLayout;
@@ -17,12 +16,10 @@ import com.example.testfinalgraphicapp.R;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import desireMapApplicationPackage.desireContentPackage.DesireContent;
-import desireMapApplicationPackage.outputSetPackage.SatisfySet;
 
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,15 +32,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
-//class DesireContent{
-//	String nameInfo = "Roma";
-//	String desireInfo = "to walk through my arms i Would like to think about my life and expand its treasure ok i've found it";
-//	int likes = 10;
-//	boolean liked = false;
-//}
 
 public class MapCustomAdapter extends BaseAdapter {
 	private Context context;

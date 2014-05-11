@@ -5,7 +5,6 @@ import graphics.chat.ChatCustomAdapter;
 import graphics.chat.ChatMessage;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -178,7 +177,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		}
 
 		showChatPanel(userPosition);
-		if(!menu.isMenuShowing()){
+		if(menu.isMenuShowing()){
 			menu.toggle();
 		}
 	}
@@ -266,7 +265,8 @@ public class ChatFragment extends Fragment implements OnClickListener {
 			@Override
 			protected void onPostExecute(UserSet resultSet) {
 				if(resultSet != null){
-					chatFellowContent = resultSet.uSet;
+					chatFellowContent.clear();
+					chatFellowContent.addAll(resultSet.uSet);
 					loadedChat = new ArrayList<Boolean>(Collections.nCopies(chatFellowContent.size(), false));  //chatFellowContent.size());
 					Log.d("GCM", "size of loadedChat = "+loadedChat.size());
 
@@ -301,7 +301,8 @@ public class ChatFragment extends Fragment implements OnClickListener {
 					Log.d("GCM", "messageSet not null");
 					ArrayList<ChatMessage> chatHistoryMessages = new ArrayList<ChatMessage>();
 					for(ClientMessage message : resultSet.mSet){
-						if(message.sender == Client.getName()){
+					    Log.d("GCM", "message sender = "+message.sender+" message receiver = "+message.receiver+" client name ="+Client.getName());
+					    if(message.sender.equals(Client.getName())){
 							chatHistoryMessages.add(new ChatMessage(message.text, true));
 						}else
 							chatHistoryMessages.add(new ChatMessage(message.text, false));

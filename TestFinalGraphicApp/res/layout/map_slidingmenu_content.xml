@@ -29,7 +29,6 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/map_loginText"
-            android:text="Vasya"
             android:textSize="18sp" />
     </RelativeLayout>
 
@@ -58,8 +57,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/map_nameText"
-            android:textSize="20sp"
-            android:text="Вася" />
+            android:textSize="20sp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -75,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginTop="7dp"
-            android:text="Возраст:"
+            android:text="Дата рождения:"
             android:textColor="#012060"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -87,7 +85,6 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/map_ageText"
-            android:text="18"
             android:textSize="20sp" />
     </RelativeLayout>
 
@@ -145,7 +142,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/map_allDesiresText"
-            android:text="20"
+            android:text="0"
             android:textSize="16sp" />
 
         <Button

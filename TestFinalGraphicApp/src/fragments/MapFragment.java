@@ -26,10 +26,9 @@ import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -77,9 +76,8 @@ import android.widget.Toast;
 public class MapFragment extends Fragment implements OnMarkerClickListener, OnCameraChangeListener, OnMapClickListener {
 
 
-	private MapView mapView;
+	private SupportMapFragment mapFragment;
 	private GoogleMap map;
-	private TextView tapTextView;
 	private QuadTreeNode worldRoot; //helps us to build quadCoordinates
 	private int quadDepth;
 	private LatLng myPosition;
@@ -122,7 +120,7 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 	private ArrayList<DesireContent> listMapData;
 	private ArrayList<DesireContent> subListMapData;
 	//current selected login
-	private String currentLogin;
+	private String currentLogin = "";
 
 	private static final int[] ITEM_DRAWABLES = {R.drawable.info, R.drawable.mail};
 
@@ -150,18 +148,14 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
+   		
 		View v = inflater.inflate(R.layout.map_layout, container, false);
 
 		slidingLayout = (SlidingUpPanelLayout) v.findViewById(R.id.sliding_layout);
 		initSlidingPanel();
 
-		mapView = (MapView) v.findViewById(R.id.mapview);
-		mapView.onCreate(savedInstanceState);
 
 		initMapSets();
-
-		tapTextView = (TextView) v.findViewById(R.id.tap_text);
 
 		handler = new Handler();
 
@@ -171,7 +165,6 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 		clusteringThread = new Thread(new Runnable(){
 
-			private String TAG = "clusteringThread"; 
 			private Bitmap icon;
 			@Override
 			public void run() {
@@ -315,7 +308,7 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 						if(globalClusterHashMap.isEmpty())
 							Log.d("ClientTag", "globalClusterHashMap is empty");
 
-						final Set<Marker> removingSet = globalClusterHashMap.keySet(); 
+						final Set<Marker> removingSet = globalClusterHashMap.keySet();
 						Log.d("ClientTag", "fadingThread removingSet size ="+removingSet.size());
 						for(Marker marker : removingSet){
 							animateFadingMarker(marker);
@@ -412,12 +405,10 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 		subListMapData = new ArrayList<DesireContent>();
 
-		final TextView loginInfo = (TextView) subMenu.findViewById(R.id.map_loginInfo);
 		Button nextBtn = (Button) subMenu.findViewById(R.id.map_nextBtn);
 		nextBtn.setOnClickListener(new OnClickListener(){ 
 			@Override
 			public void onClick(View v) {
-
 				menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
 				subMenu.toggle(true);
 			}});
@@ -442,8 +433,10 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 	private void initializeMap(){
 		try{
-			if(mapView != null){
-				map = mapView.getMap();
+			 mapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
+				        
+			if(mapFragment != null){
+				map = mapFragment.getMap();
 				map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 				map.setBuildingsEnabled(true);
 				map.setOnMapClickListener(this);
@@ -541,6 +534,9 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 				if (t < 1.0) {
 					// Post again 16ms later.
 					handler.postDelayed(this, 16);
+				} else{
+					marker.remove();
+					globalClusterHashMap.remove(marker);
 				}
 			}
 		});
@@ -548,7 +544,7 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 
 	public void changeLoginContent(String login){
-		if(currentLogin != null && !currentLogin.equals(login)){
+		if(!currentLogin.equals(login)){
 			final TextView loginInfo = (TextView) subMenu.findViewById(R.id.map_loginInfo);
 			final TextView nameInfo = (TextView) subMenu.findViewById(R.id.map_nameInfo);
 			final TextView ageInfo = (TextView) subMenu.findViewById(R.id.map_ageInfo);
@@ -557,6 +553,9 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 			//get main data linked to login name
 			MainData loginData = globalMainDataHashMap.get(login);
 
+			Log.d("ClientTag", "login ="+login);
+			Log.d("ClientTag", "login name ="+loginData.name);
+			Log.d("ClientTag", "login birth ="+loginData.birth);
 			loginInfo.setText(login);
 			nameInfo.setText(loginData.name);
 			ageInfo.setText(loginData.birth);
@@ -570,9 +569,8 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 			//get data from main list of desires
 			listMapData = mapAdapter.getData();
 
-			String loginInfoString = loginInfo.getText().toString();
 			for(DesireContent desire : listMapData){
-				if(loginInfoString.equals(desire.login))
+				if(login.equals(desire.login))
 					subListMapData.add(desire);
 			}
 
@@ -588,7 +586,17 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 	@Override
 	public void onMapClick(LatLng coord) {
-		tapTextView.setText("coordinates:"+coord.latitude+" "+coord.longitude+"\nquad: "+worldRoot.geoPointToQuad(coord.latitude, coord.longitude, quadDepth)+"\nnewRadius: "+newRadius);
+		//close panel animation
+		if(panelLayout.getVisibility() == View.VISIBLE){
+			Animation bottomDown = AnimationUtils.loadAnimation(getActivity(),
+					R.animator.bottom_down);
+			if(slidingLayout.isExpanded()){
+				slidingLayout.smoothSlideTo(1, 0);
+			}else{
+				panelLayout.startAnimation(bottomDown);
+				panelLayout.setVisibility(View.GONE);
+			}
+		}
 	}
 
 	@Override
@@ -596,13 +604,10 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 		//define what cluster was clicked
 		ClusterPoint clusterPoint = globalClusterHashMap.get(marker);
 		//refresh data in list
-		if(clusterPoint == null){
-			Log.d("ClientTag", "clusterPoint null");
-		}
 		if(clusterPoint != null){
 			mapAdapter.changeData(clusterPoint.points);
 			Animation bottomUp = AnimationUtils.loadAnimation(getActivity(),
-					R.animator.bottom_up);
+					R.animator.map_bottom_up);
 			panelLayout.startAnimation(bottomUp);
 			panelLayout.setVisibility(View.VISIBLE);
 		}
@@ -675,36 +680,9 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 		//        mapView.setDrawingCacheEnabled(false); 
 		Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		Canvas c = new Canvas(bmp);
-		mapView.draw(c);
 		return bmp;  
 	}  
 
-
-
-	//	private void getSatisfyDesires(final String desireID, final HashSet<String> tiles, final int tileDepth){
-	//		new AsyncTask<Void, Void, SatisfySet>(){
-	//			@Override
-	//			protected SatisfySet doInBackground(Void... params) {
-	//				try {
-	//					return Client.getSatisfyDesires(desireID, tiles, tileDepth);
-	//				} catch (Exception e) {
-	//					e.printStackTrace();
-	//					return null;
-	//				}
-	//			}
-	//
-	//			@Override
-	//			protected void onPostExecute(SatisfySet resultSet) {
-	//				newSatisfySet = resultSet;
-	//				if(currentMapAction == MapAction.NOZOOM){
-	//					removingThread.run();
-	//				} else fadingThread.run();
-	//				clusteringThread.run();
-	//
-	//			}
-	//
-	//		}.execute();
-	//	}
 
 	private void getSatisfyDesires(final int category, final HashSet<String> tiles, final int tileDepth){
 		new AsyncTask<Void, Void, SatisfySet>(){
@@ -742,26 +720,24 @@ public class MapFragment extends Fragment implements OnMarkerClickListener, OnCa
 
 	@Override
 	public void onStart() {
-		initializeMap();
 		super.onStart();
 	}
 
 	@Override
 	public void onResume() {
-		mapView.onResume();
+		initializeMap();
+		panelLayout.setVisibility(View.GONE);
 		super.onResume();
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		mapView.onDestroy();
 	}
 
 	@Override
 	public void onLowMemory() {
 		super.onLowMemory();
-		mapView.onLowMemory();
 	}
 
 }

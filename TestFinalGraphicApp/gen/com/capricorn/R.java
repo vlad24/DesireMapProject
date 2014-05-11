@@ -8,8 +8,8 @@ package com.capricorn;
 
 public final class R {
 	public static final class animator {
-		public static final int text_fade_in = 0x7f050013;
-		public static final int text_fade_out = 0x7f050014;
+		public static final int text_fade_in = 0x7f050014;
+		public static final int text_fade_out = 0x7f050015;
 	}
 	public static final class attr {
 		public static final int childSize = 0x7f010002;

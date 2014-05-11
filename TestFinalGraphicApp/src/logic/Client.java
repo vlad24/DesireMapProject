@@ -93,7 +93,7 @@ public class Client {
 		socketIsEmpty = true;
 		try {
 			out.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

@@ -32,9 +32,8 @@ public class ClusterPoint {
 	}
 
 	public void addToCluster(ClusterPoint newCluster){
-		double t = 1/(count+newCluster.count);
-		xCenter = (xCenter*count + newCluster.xCenter*newCluster.count)*t;
-		yCenter = (yCenter*count + newCluster.yCenter*newCluster.count)*t;
+		xCenter = (xCenter*count + newCluster.xCenter*newCluster.count)/(count+newCluster.count);
+		yCenter = (yCenter*count + newCluster.yCenter*newCluster.count)/(count+newCluster.count);
 
 		//merge(newCluster.points);
 		points.addAll(newCluster.points);
@@ -45,13 +44,15 @@ public class ClusterPoint {
 
 	private void binaryInsert(DesireContent newPoint){
 
+		Log.d("ClientTag", "binaryInsert before crash");
 		//try to find index
 		int low = 0;
 		int high = count-1;
 		//index to insert
 		int index;
 		int mid = 0;
-		while(low <= high){
+		while(low < high){
+			Log.d("ClientTag", "in binary insert low = "+low+" high ="+high);
 			mid = (low + high) >>> 1;
 			int midVal = points.get(mid).likes;
 			if(newPoint.likes > midVal)

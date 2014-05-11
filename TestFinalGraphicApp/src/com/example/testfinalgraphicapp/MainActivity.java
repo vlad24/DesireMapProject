@@ -100,74 +100,78 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.content_frame);
+		try{
+			setContentView(R.layout.content_frame);
 
-		mTitle = mDrawerTitle = getTitle();
+			mTitle = mDrawerTitle = getTitle();
 
-		handler = new Handler();
-		gps = GPSTracker.getInstance(this);
-		myDesiresFragment = new MyDesiresFragment();
-		chatFragment = new ChatFragment();
-		exploreFragment = new ExploreFragment();
-		mapFragment = new MapFragment();
-		
-		screenView = getWindow().getDecorView().findViewById(android.R.id.content);
-		blurImageView = (ImageView) findViewById(R.id.blur_image);
+			handler = new Handler();
+			gps = GPSTracker.getInstance(this);
+			myDesiresFragment = new MyDesiresFragment();
+			chatFragment = new ChatFragment();
+			exploreFragment = new ExploreFragment();
+			mapFragment = new MapFragment();
 
-		// load slide menu items
-		navMenuTitles = getResources().getStringArray(R.array.menu_items);
+			screenView = getWindow().getDecorView().findViewById(android.R.id.content);
+			blurImageView = (ImageView) findViewById(R.id.blur_image);
 
-		// nav drawer icons from resources
-		navMenuIcons = getResources()
-				.obtainTypedArray(R.array.menu_drawer_icons);
+			// load slide menu items
+			navMenuTitles = getResources().getStringArray(R.array.menu_items);
 
-		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		drawerLayout.setScrimColor(getResources().getColor(android.R.color.transparent));
-		menuList = (ListView) findViewById(R.id.lvMain);
+			// nav drawer icons from resources
+			navMenuIcons = getResources()
+					.obtainTypedArray(R.array.menu_drawer_icons);
 
-		menuDrawerItems = new ArrayList<MenuDrawerItem>();
+			drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+			drawerLayout.setScrimColor(getResources().getColor(android.R.color.transparent));
+			menuList = (ListView) findViewById(R.id.lvMain);
 
-		menuDrawerItems.add(new MenuDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-		menuDrawerItems.add(new MenuDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-		menuDrawerItems.add(new MenuDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, "25+"));
-		menuDrawerItems.add(new MenuDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
+			menuDrawerItems = new ArrayList<MenuDrawerItem>();
 
-		navMenuIcons.recycle();
+			menuDrawerItems.add(new MenuDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
+			menuDrawerItems.add(new MenuDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
+			menuDrawerItems.add(new MenuDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, "25+"));
+			menuDrawerItems.add(new MenuDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
 
-		initializeMenuList();
+			navMenuIcons.recycle();
 
-		getSupportFragmentManager()
-		.beginTransaction()
-		.add(R.id.content_frame_layout, myDesiresFragment)
-		.add(R.id.content_frame_layout, chatFragment)
-		.add(R.id.content_frame_layout, exploreFragment)
-		.add(R.id.content_frame_layout, mapFragment)
-		.hide(myDesiresFragment)
-		.hide(chatFragment)
-		.hide(exploreFragment)
-		.hide(mapFragment)
-		.commit();
+			initializeMenuList();
 
-		getActionBar().setDisplayShowCustomEnabled(true);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+			getSupportFragmentManager()
+			.beginTransaction()
+			.add(R.id.content_frame_layout, myDesiresFragment)
+			.add(R.id.content_frame_layout, chatFragment)
+			.add(R.id.content_frame_layout, exploreFragment)
+			.add(R.id.content_frame_layout, mapFragment)
+			.hide(myDesiresFragment)
+			.hide(chatFragment)
+			.hide(exploreFragment)
+			.hide(mapFragment)
+			.commit();
+
+			getActionBar().setDisplayShowCustomEnabled(true);
+			getActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-		drawerToggle = new BlurActionBarDrawerToggle(this, drawerLayout, blurImageView,
-				R.drawable.ic_navigation_drawer, //nav menu toggle icon
-				R.string.open,
-				R.string.close);
+			drawerToggle = new BlurActionBarDrawerToggle(this, drawerLayout, blurImageView,
+					R.drawable.ic_navigation_drawer, //nav menu toggle icon
+					R.string.open,
+					R.string.close);
 
-		drawerLayout.setDrawerListener(drawerToggle);
+			drawerLayout.setDrawerListener(drawerToggle);
 
-		if (savedInstanceState == null) {
-			// on first time display view for first nav item
-			switchFragment(1);
+			if (savedInstanceState == null) {
+				// on first time display view for first nav item
+				switchFragment(1);
+			}
+
+			// Create our IntentFilter, which will be used in conjunction with a
+			// broadcast receiver.
+			gcmFilter = new IntentFilter();
+			gcmFilter.addAction("GCM_RECEIVED_ACTION");
+		}catch(Exception e){
+			Client.closeSocket();
 		}
-
-		// Create our IntentFilter, which will be used in conjunction with a
-		// broadcast receiver.
-		gcmFilter = new IntentFilter();
-		gcmFilter.addAction("GCM_RECEIVED_ACTION");
 	}
 
 	// If our activity is paused, it is important to UN-register any
@@ -247,14 +251,14 @@ public class MainActivity extends FragmentActivity {
 
 		});
 	}
-	
+
 	public void startChat(String login){
 		//init chating
 		chatFragment.startChat(login);
 		//open chat
 		switchFragment(2);
 	}
-	
+
 	public void changeLoginContent(String login){
 		mapFragment.changeLoginContent(login);
 	}

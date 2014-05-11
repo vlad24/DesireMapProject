@@ -63,7 +63,7 @@ public class ClusterizationAlgorithm {
 		oldClusterPoints.addAll(oldHashMap.values());
 		if(!oldClusterPoints.isEmpty()){
 			ClusterPoint firstCluster = oldClusterPoints.iterator().next();
-
+			
 			outputPoints.add(firstCluster);
 			oldClusterPoints.remove(firstCluster);
 			outer : for(ClusterPoint oldHashmapCluster : oldClusterPoints){
