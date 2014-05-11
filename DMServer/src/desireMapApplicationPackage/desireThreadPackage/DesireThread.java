@@ -175,6 +175,22 @@ public class DesireThread implements Runnable{
 	public void exit(){
 		stateObject.exit();
 	}
+	
+	private void finalExit(){
+		isRunning = false;
+		Thread.currentThread().interrupt();
+		System.out.println("*** THREAD HAS BEEN INTERRUPTED ");
+		exit();
+		System.out.println("*** THREAD HAS EXITED ");
+		if (interactiveSocket != null){
+			try {
+				interactiveSocket.close();
+				System.out.println("****** Socket has been closed");
+			} catch (IOException socketError) {
+				System.out.println("****** Socket has not been closed. DANGER! : " + socketError.getMessage());
+			}
+		}
+	}
 	///API_END
 	
 	//////////////////////////////
@@ -185,7 +201,7 @@ public class DesireThread implements Runnable{
 		isRunning = true;
 		while(!Thread.currentThread().isInterrupted()){
 			try {
-				System.out.println("*** THREAD " + getUserName() + " : Waiting for a client command...");
+				System.out.println("*** THREAD " + getUserName() + " : Waiting for a client command ..." + stateObject.getClass().getName());
 				ActionQueryObject query = scanQuery();
 				CommandsList threadCommands = tube.processClientQuery(query);
 				//Here we can store our commands somewhere and if needed undo them 
@@ -193,26 +209,12 @@ public class DesireThread implements Runnable{
 					threadCommands.executeAllSafely();
 				}
 				catch(Exception error){
-					System.out.println("****** THREAD Commands failed during execution");
-					System.out.println(error.getMessage());
+					System.out.println("****** THREAD Commands failed during execution : " + error.getMessage());
 				}
 			}
 			catch(IOException | ClassNotFoundException error){
-				System.out.println("****** (Socket || Proceeding input) error" + error.getMessage());
-				try {
-					interactiveSocket.close();
-					System.out.println("****** Socket has been closed");
-				} 
-				catch(IOException socketError){
-					System.out.println("****** Socket has not been closed. DANGER! : " + socketError.getMessage());
-				}
-				finally{
-					isRunning = false;
-					Thread.currentThread().interrupt();
-					System.out.println("*** THREAD HAS BEEN INTERRUPTED ");
-					exit();
-					System.out.println("*** THREAD HAS EXITED ");
-				}
+				System.out.println("****** (Socket || Proceeding input) error : " + error.getMessage());
+				finalExit();
 			}
 		}
 	}

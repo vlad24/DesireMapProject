@@ -137,8 +137,8 @@ public class DesireInstrument {
 		return implementationObject.getOnlineReceiverIDAtDB(receiver);
 	}
 
-	public MessageSet getOldMessagesForUserAtDB(String from, String to, int hoursRadius) throws Exception {
-		return implementationObject.getOldMessagesForUserAtDB(from, to, hoursRadius);
+	public MessageSet getOldMessagesForUserAtDB(String partnerOne, String partnerTwo, int hoursRadius) throws Exception {
+		return implementationObject.getOldMessagesForUserAtDB(partnerOne, partnerTwo, hoursRadius);
 	}
 
 	public void unmarkAllDeliveredMessages(String userName) {

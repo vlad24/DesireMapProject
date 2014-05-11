@@ -399,9 +399,12 @@ public abstract class InstrumentImplementation{
 
 	}
 
-	public MessageSet getOldMessagesForUserAtDB(String from, String to, int hoursRadius) throws Exception {
+	public MessageSet getOldMessagesForUserAtDB(String partnerOne, String partnerTwo, int hoursRadius) throws Exception {
 		try(Statement selector = owner.getAccessToDesireBase().createStatement()){
-			String selectQuery = "select * from MESSAGES where (RECEIVER ='" + to + "') AND (SENDER = '" + from + "') AND time < datetime('now', '-" + hoursRadius + " hours' );";
+			String selectQuery = "select * from MESSAGES where " +
+					"(((RECEIVER ='" + partnerOne + "') AND (SENDER = '" + partnerTwo + "')) OR" +
+					" ((RECEIVER ='" + partnerTwo + "') AND (SENDER = '" + partnerOne + "'))) " +
+					"AND (time > datetime('now', '-" + hoursRadius + " hours' ));";
 			System.out.println(selectQuery);
 			ResultSet set = selector.executeQuery(selectQuery);
 			MessageSet messageSet = owner.rsMaster.convertToMessageSetAndClose(set);
@@ -415,7 +418,7 @@ public abstract class InstrumentImplementation{
 
 	public UserSet getUsersTalkedToAtDB(String userName) throws Exception {
 		try(Statement selector = owner.getAccessToDesireBase().createStatement()){
-			String selectQuery = "select distinct RECEIVER from MESSAGES where (SENDER = '" + userName + "');";
+			String selectQuery = "select distinct RECEIVER from MESSAGES where (SENDER = '" + userName + "') UNION select distinct SENDER from MESSAGES where (RECEIVER = '" + userName + "');";
 			System.out.println(selectQuery);
 			ResultSet set = selector.executeQuery(selectQuery);
 			UserSet userSet = owner.rsMaster.convertToUserSetAndClose(set);

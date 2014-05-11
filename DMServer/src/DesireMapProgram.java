@@ -3,6 +3,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
 import desireMapApplicationPackage.desireInstrumentPackage.DesireInstrument;
 import desireMapApplicationPackage.desireThreadPackage.DesireThread;
 
@@ -14,7 +15,6 @@ public class DesireMapProgram {
 	//--
 	public static void main(String[] args)
 	{
-		//TestMaster.jExec();
 		System.out.println("# Program is on.\n");	
 		try {
 			DesireInstrument.prepareInstrument();
