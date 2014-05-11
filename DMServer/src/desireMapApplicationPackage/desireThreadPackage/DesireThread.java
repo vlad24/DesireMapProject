@@ -197,15 +197,14 @@ public class DesireThread implements Runnable{
 					System.out.println(error.getMessage());
 				}
 			}
-			catch(IOException | ClassNotFoundException ioError){
-				System.out.println("****** (Socket || Proceeding input) error");
-				ioError.printStackTrace();
+			catch(IOException | ClassNotFoundException error){
+				System.out.println("****** (Socket || Proceeding input) error" + error.getMessage());
 				try {
 					interactiveSocket.close();
 					System.out.println("****** Socket has been closed");
 				} 
-				catch(IOException error){
-					System.out.println("****** Socket has not been closed. DANGER!");
+				catch(IOException socketError){
+					System.out.println("****** Socket has not been closed. DANGER! : " + socketError.getMessage());
 				}
 				finally{
 					isRunning = false;
