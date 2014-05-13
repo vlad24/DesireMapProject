@@ -1,26 +1,22 @@
 package fragments;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import logic.Client;
 import logic.GPSTracker;
 
-import com.example.testfinalgraphicapp.LoginActivity;
-import com.example.testfinalgraphicapp.MainActivity;
 import com.example.testfinalgraphicapp.R;
 
-import desireMapApplicationPackage.codeConstantsPackage.CodesMaster;
 import desireMapApplicationPackage.desireContentPackage.Coordinates;
 import desireMapApplicationPackage.desireContentPackage.DesireContent;
 import desireMapApplicationPackage.desireContentPackage.DesireContentDating;
 import desireMapApplicationPackage.desireContentPackage.DesireContentSport;
 import desireMapApplicationPackage.outputSetPackage.DesireSet;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -80,7 +76,6 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 	OnItemClickListener desiresListener;
 
 	StringBuffer removeBuffer;
-	String[] lst= {"Сгонять на турнички","Поиграть в волейбольчик", "Сходить на самбо"};
 
 	ArrayList<String> desiresContent;
 	DesireSet desireSet;
@@ -135,9 +130,9 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 		initMainList();
 		initWheels();
 		initRadiogroup();
-		
+
 		gps = GPSTracker.getInstance(getActivity());
-		
+
 		return view;
 	}
 
@@ -703,6 +698,8 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 				Toast.makeText(getActivity(), "Спорт: "+sportName.getText()+
 						"\nЖелание: "+sportDescription.getText()+
 						"\nУровень: "+sportAdvantage.getText(), Toast.LENGTH_SHORT).show();
+
+				gps.stopUsingGPS();	
 			} else Toast.makeText(getActivity(), "Не может определить местоположение", Toast.LENGTH_SHORT).show();
 		}
 	}
@@ -717,19 +714,21 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 
 			gps.getLocation();
 			if(gps.canGetLocation()){
-				Coordinates coord = new Coordinates(gps.getLatitude(), gps.getLongitude());
-				DesireContentDating newContent = new DesireContentDating(Client.getName(), null, datingDescriptionString,
-						coord, null, 0,
-						male, partnerAgeFrom, partnerAgeTo);
-				sendDesire(newContent);
+			Coordinates coord = new Coordinates(gps.getLatitude(), gps.getLongitude());
+			DesireContentDating newContent = new DesireContentDating(Client.getName(), null, datingDescriptionString,
+					coord, null, 0,
+					male, partnerAgeFrom, partnerAgeTo);
+			sendDesire(newContent);
 
-				Toast.makeText(getActivity(), "Desire: "+ datingDescriptionString
-						+"\nMale: "+male
-						+"\nFromAge:"+(partnerAgeFrom)
-						+"\nToAge:"+(partnerAgeTo), Toast.LENGTH_SHORT).show();
-			} else Toast.makeText(getActivity(), "Не может определить местоположение", Toast.LENGTH_SHORT).show();
-			} else  Toast.makeText(getActivity(), "Введите желание", Toast.LENGTH_SHORT).show();
- 
+			Toast.makeText(getActivity(), "Desire: "+ datingDescriptionString
+					+"\nMale: "+male
+					+"\nFromAge:"+(partnerAgeFrom)
+					+"\nToAge:"+(partnerAgeTo), Toast.LENGTH_SHORT).show();
+
+			gps.stopUsingGPS();	
+		} else Toast.makeText(getActivity(), "Не может определить местоположение", Toast.LENGTH_SHORT).show();
+		} else  Toast.makeText(getActivity(), "Введите желание", Toast.LENGTH_SHORT).show();
+
 	}
 
 }

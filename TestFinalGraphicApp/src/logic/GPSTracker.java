@@ -45,7 +45,7 @@ public class GPSTracker extends Service implements LocationListener {
 		return gps;
 	}
 
-	public void getLocation(){
+	public void getLocation(){	
 		try{
 			bestLocation = null;
 			manager = (LocationManager) appContext.getSystemService(LOCATION_SERVICE);
@@ -67,6 +67,7 @@ public class GPSTracker extends Service implements LocationListener {
 						}
 					}
 					if(bestLocation != null){
+				        
 						latitude = bestLocation.getLatitude();
 						longitude = bestLocation.getLongitude();
 					}
@@ -110,7 +111,8 @@ public class GPSTracker extends Service implements LocationListener {
 
 
 	public boolean canGetLocation(){
-		return canGetLocation;
+		String provider = Settings.Secure.getString(appContext.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);   
+		 return provider.contains("gps");
 	}
 
 
