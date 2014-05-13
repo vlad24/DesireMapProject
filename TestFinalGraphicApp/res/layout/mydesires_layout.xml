@@ -18,6 +18,7 @@
                 android:id="@+id/listNavPanel"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_marginTop="?android:attr/actionBarSize"
                 android:background="#EAF1F3"
                 android:visibility="gone" >
 
@@ -99,6 +100,7 @@
                 android:id="@+id/lvMain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="?android:attr/actionBarSize"
                 android:visibility="visible" >
             </ListView>
 

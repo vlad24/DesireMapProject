@@ -18,21 +18,21 @@ public final class R {
 		public static final int toDegrees = 0x7f010001;
 	}
 	public static final class drawable {
-		public static final int composer_button = 0x7f02009e;
-		public static final int composer_button_normal = 0x7f02009f;
-		public static final int composer_button_pressed = 0x7f0200a0;
-		public static final int composer_icn_plus = 0x7f0200a1;
-		public static final int composer_icn_plus_normal = 0x7f0200a2;
-		public static final int composer_icn_plus_pressed = 0x7f0200a3;
+		public static final int composer_button = 0x7f02009f;
+		public static final int composer_button_normal = 0x7f0200a0;
+		public static final int composer_button_pressed = 0x7f0200a1;
+		public static final int composer_icn_plus = 0x7f0200a2;
+		public static final int composer_icn_plus_normal = 0x7f0200a3;
+		public static final int composer_icn_plus_pressed = 0x7f0200a4;
 	}
 	public static final class id {
-		public static final int control_hint = 0x7f060058;
-		public static final int control_layout = 0x7f060057;
-		public static final int item_layout = 0x7f060056;
+		public static final int control_hint = 0x7f06005c;
+		public static final int control_layout = 0x7f06005b;
+		public static final int item_layout = 0x7f06005a;
 	}
 	public static final class layout {
-		public static final int arc_menu = 0x7f03001a;
-		public static final int ray_menu = 0x7f030031;
+		public static final int arc_menu = 0x7f03001b;
+		public static final int ray_menu = 0x7f030032;
 	}
 	public static final class styleable {
 		public static final int[] ArcLayout = { 0x7f010000, 0x7f010001, 0x7f010002 };

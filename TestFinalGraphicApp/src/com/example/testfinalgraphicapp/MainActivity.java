@@ -7,6 +7,7 @@ import logic.Client;
 import logic.GPSTracker;
 
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,13 +30,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import fragments.ChatFragment;
 import fragments.ExploreFragment;
@@ -59,7 +64,7 @@ public class MainActivity extends FragmentActivity {
 	private ListView menuList;
 	private DrawerLayout drawerLayout;
 	private BlurActionBarDrawerToggle drawerToggle;
-	private ActionBarDrawerToggle mDrawerToggle;
+	private boolean menuOpened = false;
 
 	private ImageView blurImageView;
 
@@ -92,6 +97,9 @@ public class MainActivity extends FragmentActivity {
 			String broadcastMessage = intent.getExtras().getString("message");
 
 			if (broadcastSender != null) {
+				if(chatFragment.needToBadge(broadcastSender)){
+
+				}
 				chatFragment.addNewChatMessage(broadcastSender, new ChatMessage(broadcastMessage, false));
 			}
 		}
@@ -137,6 +145,8 @@ public class MainActivity extends FragmentActivity {
 
 			initializeMenuList();
 
+			initActionBar();
+
 			getSupportFragmentManager()
 			.beginTransaction()
 			.add(R.id.content_frame_layout, myDesiresFragment)
@@ -145,7 +155,6 @@ public class MainActivity extends FragmentActivity {
 			.add(R.id.content_frame_layout, mapFragment)
 			.hide(myDesiresFragment)
 			.hide(chatFragment)
-			.hide(exploreFragment)
 			.hide(mapFragment)
 			.commit();
 
@@ -162,7 +171,7 @@ public class MainActivity extends FragmentActivity {
 
 			if (savedInstanceState == null) {
 				// on first time display view for first nav item
-				switchFragment(1);
+				currentFragment = exploreFragment;
 			}
 
 			// Create our IntentFilter, which will be used in conjunction with a
@@ -172,6 +181,36 @@ public class MainActivity extends FragmentActivity {
 		}catch(Exception e){
 			Client.closeSocket();
 		}
+	}
+
+	//initialize actionbar
+	private void initActionBar(){
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayShowCustomEnabled(true);
+		actionBar.setDisplayShowHomeEnabled(false);
+		actionBar.setDisplayShowTitleEnabled(false);
+		//	actionBar.setIcon(R.drawable.altai);
+
+		LayoutInflater inflater = (LayoutInflater) this .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View v = inflater.inflate(R.layout.actionbar_layout, null);
+		RelativeLayout menuLayout = (RelativeLayout) v.findViewById(R.id.menuLayout);
+		ImageView menuLogo = (ImageView) menuLayout.findViewById(R.id.menuLogo);
+
+		menuLayout.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				if(!menuOpened){
+					Log.d("ClientTag", "opened="+menuOpened);
+					menuOpened = true;
+					drawerLayout.openDrawer(Gravity.LEFT);
+				}
+				else{
+					Log.d("ClientTag", "opened="+menuOpened);
+					menuOpened = false;
+					drawerLayout.closeDrawer(Gravity.LEFT);
+				}
+			}});
+		actionBar.setCustomView(v);
 	}
 
 	// If our activity is paused, it is important to UN-register any
@@ -211,6 +250,7 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void run() {
 				drawerLayout.closeDrawers();
+				menuOpened = false;
 				FragmentManager manager = getSupportFragmentManager();
 				FragmentTransaction ft = manager.beginTransaction();
 				Fragment nextFragment = null;

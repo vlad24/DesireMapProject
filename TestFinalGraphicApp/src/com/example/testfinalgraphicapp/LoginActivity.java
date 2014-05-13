@@ -1,12 +1,14 @@
 package com.example.testfinalgraphicapp;
 
 
+
 import logic.Client;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -249,11 +251,22 @@ public class LoginActivity extends Activity implements OnClickListener {
 				Toast.makeText(LoginActivity.this, Boolean.toString(result), Toast.LENGTH_SHORT).show();
 				if(result){
 					Client.setName(login);
-					Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-					startActivity(intent);
+					changeActivity();
 				}
 			}
 		}.execute();
+	}
+
+	//here we change activity
+	private void changeActivity(){
+		final Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+				startActivity(intent);
+			}
+		}, 1000);
 	}
 
 }

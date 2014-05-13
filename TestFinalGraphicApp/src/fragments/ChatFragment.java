@@ -2,6 +2,7 @@ package fragments;
 
 
 import graphics.chat.ChatCustomAdapter;
+import graphics.chat.ChatListCustomAdapter;
 import graphics.chat.ChatMessage;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 	private SlidingMenu menu;
 
 	HashMap<String, ChatCustomAdapter> usersHashMap;
-	ArrayAdapter<String> chatFellowAdapter;
+	ChatListCustomAdapter chatFellowAdapter;
 	String currentFellowName;
 
 
@@ -131,9 +132,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 
 		chatFellowContent = new ArrayList<String>();
 
-		chatFellowAdapter = new ArrayAdapter<String>(
-				getActivity(), 
-				android.R.layout.simple_list_item_1, chatFellowContent);
+		chatFellowAdapter = new ChatListCustomAdapter(getActivity(), chatFellowContent);
 
 		OnItemClickListener fellowListener = new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -188,6 +187,11 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		fellowLogin.setText(currentFellowName);
 		//change content of chat
 		lvChat.setAdapter(usersHashMap.get(currentFellowName));
+	}
+	
+	//check if we need to badge chat list item and update menu badger
+	public boolean needToBadge(String login){
+		return menu.isMenuShowing() || (!login.equals(currentFellowName));
 	}
 
 	@Override

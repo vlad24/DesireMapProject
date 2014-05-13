@@ -1,5 +1,7 @@
 package graphics.slidingmenu;
 
+import graphics.view_badger.readystatesoftware.viewbadger.BadgeView;
+
 import java.util.ArrayList;
 
 import com.example.testfinalgraphicapp.R;
@@ -18,10 +20,15 @@ public class MenuCustomDrawerListAdapter extends BaseAdapter {
 	private final Context context;
 
 	private final ArrayList<MenuDrawerItem> menuDrawerItems;
+	private BadgeView chatBadge;
 
 	public MenuCustomDrawerListAdapter(Context context, ArrayList<MenuDrawerItem> menuDrawerItems){
 		this.context = context;
 		this.menuDrawerItems = menuDrawerItems;
+	}
+	
+	public BadgeView getChatBadge(){
+		return chatBadge;
 	}
 
 	@Override
@@ -62,6 +69,14 @@ public class MenuCustomDrawerListAdapter extends BaseAdapter {
 		}else{
 			// hide the counter view
 			txtCount.setVisibility(View.GONE);
+		}
+		
+		if((position == 2) && (chatBadge == null)){
+			chatBadge = new BadgeView(context, textTitle);
+			chatBadge.setBackgroundResource(R.drawable.counter_bg);
+			chatBadge.setTextSize(16);
+			chatBadge.setText("0");
+			chatBadge.hide();
 		}
 
 		return convertView;

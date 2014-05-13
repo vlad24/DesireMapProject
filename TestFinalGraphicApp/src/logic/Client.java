@@ -44,8 +44,8 @@ public class Client {
 
 	private static String TAG = "ClientTag";
 
-	private final static String server = "5.19.236.176";
-	//	private static String server = "192.168.1.227";
+//	private final static String server = "5.19.236.176";
+		private static String server = "jenrus.ru";
 	private final static int port = 9252;
 	private final static String PROJECT_NUMBER = "525115947093";
 	private static Socket socket;

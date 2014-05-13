@@ -3,18 +3,43 @@
 <!-- Generated with http://android-holo-colors.com -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <style name="AppTheme" parent="@style/_AppTheme"/>
+    <style name="AppTheme" parent="@style/_AppTheme" />
 
-  <style name="_AppTheme" parent="Theme.AppCompat.Light">
+    <style name="_AppTheme" parent="Theme.AppCompat.Light">
+        <item name="android:editTextStyle">@style/EditTextAppTheme</item>
+        <item name="android:textColorHighlight">#99012060</item>
+        <item name="android:progressBarStyleHorizontal">@style/ProgressBarAppTheme</item>
+        <item name="android:seekBarStyle">@style/SeekBarAppTheme</item>
+    </style>
 
-    <item name="android:editTextStyle">@style/EditTextAppTheme</item>
+    <style name="NoActionBar" parent="Theme.AppCompat.Light">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
 
-    <item name="android:textColorHighlight">#99012060</item>
+    <style name="MyTransparentTheme" parent="Theme.AppCompat.Light">
 
-    <item name="android:progressBarStyleHorizontal">@style/ProgressBarAppTheme</item>
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+        <item name="android:editTextStyle">@style/EditTextAppTheme</item>
+        
+        <item name="android:textColorHighlight">#99012060</item>
+        
+        <item name="android:progressBarStyleHorizontal">@style/ProgressBarAppTheme</item>
+        
+        <item name="android:seekBarStyle">@style/SeekBarAppTheme</item>
+        
+        <item name="actionBarSize">55dip</item>
+        <item name="android:actionBarSize">55dip</item>
+        <item name="android:actionBarStyle">@style/MyTransparentActionBar</item>
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
 
-    <item name="android:seekBarStyle">@style/SeekBarAppTheme</item>
-
-  </style>
+    <style name="MyTransparentActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/actionbar_background</item>
+    </style>
 
 </resources>

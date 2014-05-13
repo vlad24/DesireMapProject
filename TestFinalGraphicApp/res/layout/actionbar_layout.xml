@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="fill_horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/menuLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="7dp"
+        android:background="@drawable/actionbar_button"
+        android:clickable="true" >
+
+        <ImageView
+            android:id="@+id/menuLogo"
+            android:layout_width="50dp"
+            android:layout_height="80dp"
+            android:src="@drawable/altai" />
+        
+        <TextView
+        android:id="@+id/actionbar_notifcation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/menuLogo"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="-12dp"
+        android:background="@drawable/counter_bg"
+        android:text="9"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/menuFragmentTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@+id/menuLogo"
+            android:text="Хер"
+            android:textColor="#fefefd"
+            android:textSize="26sp" />
+    </RelativeLayout>
+
+</RelativeLayout>

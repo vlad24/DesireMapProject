@@ -21,5 +21,8 @@
 	
 	<color name="counter_text_bg">#7E7EE1</color>
 	<color name="counter_text_color">#FFFFFF</color>
+	
+	<color name="actionbar_button_color">#33b5e5</color>
+	<color name="actionbar_background">#b3000000</color>
 
 </resources>
