@@ -2,6 +2,7 @@ package com.example.testfinalgraphicapp;
 
 
 
+import graphics.KeyboardClient;
 import logic.Client;
 import android.app.Activity;
 import android.content.Context;
@@ -13,8 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -139,8 +142,8 @@ public class LoginActivity extends Activity implements OnClickListener {
 			signupEditPanelLayout.setVisibility(View.VISIBLE);
 			break;
 
-		case R.id.btnSignin: 
-			Toast.makeText(this, "signin button", Toast.LENGTH_SHORT).show();
+		case R.id.btnSignin:
+			KeyboardClient.hideKeyboard(this);
 			try {
 				EditText signinLogin = (EditText) findViewById(R.id.signinLoginEditText);
 				EditText signinPassword = (EditText) findViewById(R.id.signinPasswordEditText);
@@ -152,7 +155,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 			break;
 
 		case R.id.btnSignup:
-			Toast.makeText(this, "here sign up + gcm", Toast.LENGTH_SHORT).show();
+			KeyboardClient.hideKeyboard(this);
 			try {
 				EditText signupName = (EditText) findViewById(R.id.signupNameEditText);
 				EditText signupLogin = (EditText) findViewById(R.id.signupLoginEditText);
@@ -222,12 +225,11 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 			@Override
 			protected void onPostExecute(Boolean result) {
-				Toast.makeText(LoginActivity.this, Boolean.toString(result), Toast.LENGTH_SHORT).show();
 				if(result){
 					Client.setName(login);
 					Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 					startActivity(intent);
-				}
+				} else Toast.makeText(LoginActivity.this, "Возникли проблемы", Toast.LENGTH_SHORT).show();
 			}
 		}.execute();
 	}
@@ -248,7 +250,6 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 			@Override
 			protected void onPostExecute(Boolean result) {
-				Toast.makeText(LoginActivity.this, Boolean.toString(result), Toast.LENGTH_SHORT).show();
 				if(result){
 					Client.setName(login);
 					changeActivity();

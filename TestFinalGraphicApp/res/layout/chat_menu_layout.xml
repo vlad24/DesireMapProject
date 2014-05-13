@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/lvChatFellows"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#FFE9A3" >
+    android:layout_height="match_parent" >
 
-</ListView>
+    <ListView
+        android:id="@+id/lvChatFellows"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?android:attr/actionBarSize"
+        android:background="#FFE9A3" >
+    </ListView>
+
+</RelativeLayout>

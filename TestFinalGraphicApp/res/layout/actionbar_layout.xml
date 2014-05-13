@@ -20,16 +20,16 @@
             android:src="@drawable/altai" />
         
         <TextView
-        android:id="@+id/actionbar_notifcation"
+        android:id="@+id/menuBadge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/menuLogo"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="-12dp"
         android:background="@drawable/counter_bg"
-        android:text="9"
         android:textSize="18sp"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:visibility="gone" />
 
         <TextView
             android:id="@+id/menuFragmentTitle"
@@ -38,9 +38,9 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
             android:layout_toRightOf="@+id/menuLogo"
-            android:text="Хер"
             android:textColor="#fefefd"
-            android:textSize="26sp" />
+            android:textSize="22sp"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </RelativeLayout>

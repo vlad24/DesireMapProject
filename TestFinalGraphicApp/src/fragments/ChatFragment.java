@@ -1,6 +1,7 @@
 package fragments;
 
 
+import graphics.KeyboardClient;
 import graphics.chat.ChatCustomAdapter;
 import graphics.chat.ChatListCustomAdapter;
 import graphics.chat.ChatMessage;
@@ -8,10 +9,12 @@ import graphics.chat.ChatMessage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import logic.Client;
 
 
+import com.example.testfinalgraphicapp.MainActivity;
 import com.example.testfinalgraphicapp.R;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
@@ -21,6 +24,7 @@ import desireMapApplicationPackage.outputSetPackage.MessageSet;
 import desireMapApplicationPackage.outputSetPackage.UserSet;
 
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,10 +33,13 @@ import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -61,17 +68,18 @@ public class ChatFragment extends Fragment implements OnClickListener {
 
 	HashMap<String, ChatCustomAdapter> usersHashMap;
 	ChatListCustomAdapter chatFellowAdapter;
+	HashMap<String, Integer> newGCMmessages;
+	boolean isUserSetReceived = false;
 	String currentFellowName;
-
 
 	EditText chatEditText;
 	Button sendButton;
 	Button backButton;
 
-	static String sender;
-	//	String[] lst= {"1","q","vlad","her"};
+
 	ArrayList<String> chatFellowContent;
 	ArrayList<Boolean> loadedChat;
+	HashMap<String, Integer> unreadMessages;
 	//identify user's position in list
 	HashMap<String, Integer> userPositionMap;
 	final int historyHoursRadius = 10;
@@ -83,12 +91,23 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		progressHandler = new Handler();
 		usersHashMap = new HashMap<String, ChatCustomAdapter>();
 		userPositionMap = new HashMap<String, Integer>();
+		newGCMmessages = new HashMap<String, Integer>();
+		loadedChat = new ArrayList<Boolean>();
 
 		menuView = inflater.inflate(R.layout.chat_slidingmenu_layout, null, false);
 		Log.d(LOG_TAG, "all inflated");
 
 		lvFellows = (ListView) menuView.findViewById(R.id.lvChatFellows);
+
 		lvChat = (ListView) menuView.findViewById(R.id.lvChat);
+		lvChat.setOnItemClickListener(new OnItemClickListener(){
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+			KeyboardClient.hideKeyboard(getActivity());	
+			}
+		});
+
 		fellowLogin = (TextView) menuView.findViewById(R.id.chatFellowLoginText);
 		chatProgressBar = (ProgressBar) menuView.findViewById(R.id.chatProgressBar);
 		chatProgressBar.setMax(progressMax);
@@ -99,7 +118,6 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		sendButton = (Button) menuView.findViewById(R.id.sendButton);
 		backButton.setOnClickListener(this);
 		sendButton.setOnClickListener(this);
-		sender = "Romchic";
 
 		initFellowList();
 		initSlidingMenu();
@@ -116,6 +134,7 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		menu.setShadowWidth(0);
 		menu.setFadeDegree(0.0f);
 		menu.setBehindScrollScale(0.0f);
+		menu.setActionBarOverlay(true);
 
 		menu.setBehindCanvasTransformer(new CanvasTransformer() {
 			@Override
@@ -130,15 +149,19 @@ public class ChatFragment extends Fragment implements OnClickListener {
 	private void initFellowList(){
 
 		chatFellowContent = new ArrayList<String>();
+		unreadMessages = new HashMap<String, Integer>();
 
-		chatFellowAdapter = new ChatListCustomAdapter(getActivity(), chatFellowContent);
+		chatFellowAdapter = new ChatListCustomAdapter(getActivity(), chatFellowContent, unreadMessages);
 
 		OnItemClickListener fellowListener = new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				String userName = chatFellowContent.get(position);
+				removeBadge(userName);
+
 				if(!loadedChat.get(position)){
 					Log.d("GCM", "try to load from server for" + chatFellowContent.get(position));
-					loadHistory(chatFellowContent.get(position), historyHoursRadius);
+					loadHistory(userName, historyHoursRadius);
 				}
 
 				showChatPanel(position);
@@ -187,10 +210,21 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		//change content of chat
 		lvChat.setAdapter(usersHashMap.get(currentFellowName));
 	}
-	
+
 	//check if we need to badge chat list item and update menu badger
 	public boolean needToBadge(String login){
 		return menu.isMenuShowing() || (!login.equals(currentFellowName));
+	}
+
+	//remove badge associated with userName
+	private void removeBadge(String userName){
+		//notify menu badge
+		MainActivity ma = (MainActivity) getActivity();			
+		ma.notifyMenuBadge(unreadMessages.get(userName));
+
+		//update chat fellow list 
+		unreadMessages.put(userName, 0);
+		chatFellowAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -200,7 +234,6 @@ public class ChatFragment extends Fragment implements OnClickListener {
 		menu.toggle();
 		getChatUsers();
 
-		getActivity().setTitle(sender);
 	}
 
 	private void startAnimateProgressBar(){
@@ -256,8 +289,6 @@ public class ChatFragment extends Fragment implements OnClickListener {
 			@Override
 			protected UserSet doInBackground(Void... params) {
 				try {
-					//		chatFellowContent.addAll(Arrays.asList(lst));
-					//		return new UserSet(chatFellowContent);
 					return Client.getChatUsers();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -268,18 +299,33 @@ public class ChatFragment extends Fragment implements OnClickListener {
 			@Override
 			protected void onPostExecute(UserSet resultSet) {
 				if(resultSet != null){
-					chatFellowContent.clear();
+
 					chatFellowContent.addAll(resultSet.uSet);
-					loadedChat = new ArrayList<Boolean>(Collections.nCopies(chatFellowContent.size(), false));  //chatFellowContent.size());
+					loadedChat.addAll(Collections.nCopies(chatFellowContent.size(), false));  //chatFellowContent.size());
 					Log.d("GCM", "size of loadedChat = "+loadedChat.size());
 
 					int position = 0;
 					for(String user : chatFellowContent){
+						//check if gcm not already put this value
+						if(unreadMessages.get(user) == null){
+							unreadMessages.put(user, 0);
+						}
 						userPositionMap.put(user, position++);
-						usersHashMap.put(user, new ChatCustomAdapter(getActivity(), 
-								new ArrayList<ChatMessage>()));
+						//check if gcm not already put this value
+						if(usersHashMap.get(user) == null){
+							usersHashMap.put(user, new ChatCustomAdapter(getActivity(), 
+									new ArrayList<ChatMessage>()));
+						}
 					}
+
 					chatFellowAdapter.notifyDataSetChanged();
+
+					isUserSetReceived = true;
+
+					//iterate through newGCMmessages and refresh unreadMessages
+					for(Entry<String, Integer> pair : newGCMmessages.entrySet()){
+						unreadMessages.put(pair.getKey(), pair.getValue());
+					}
 				}
 			}
 		}.execute();
@@ -304,12 +350,16 @@ public class ChatFragment extends Fragment implements OnClickListener {
 					Log.d("GCM", "messageSet not null");
 					ArrayList<ChatMessage> chatHistoryMessages = new ArrayList<ChatMessage>();
 					for(ClientMessage message : resultSet.mSet){
-					    Log.d("GCM", "message sender = "+message.sender+" message receiver = "+message.receiver+" client name ="+Client.getName());
-					    if(message.sender.equals(Client.getName())){
+						Log.d("GCM", "message sender = "+message.sender+" message receiver = "+message.receiver+" client name ="+Client.getName());
+						if(message.sender.equals(Client.getName())){
 							chatHistoryMessages.add(new ChatMessage(message.text, true));
 						}else
 							chatHistoryMessages.add(new ChatMessage(message.text, false));
 					}
+					//add two invisible elements
+					usersHashMap.get(partnerName).mMessages.add(new ChatMessage(true, "invisible 1"));
+					usersHashMap.get(partnerName).mMessages.add(new ChatMessage(true, "invisible 2"));
+
 					usersHashMap.get(partnerName).mMessages.addAll(chatHistoryMessages);
 					usersHashMap.get(partnerName).notifyDataSetChanged();
 				}else Log.d("GCM", "messageSet null");
@@ -350,15 +400,30 @@ public class ChatFragment extends Fragment implements OnClickListener {
 
 	}
 
+	//notify chat fragment that new gcm message received
+	public void notifyNewChatMessage(String receiver, ChatMessage message){
+		//if user set received we can add this message
+		if(isUserSetReceived){
+			addNewChatMessage(receiver, message);
+		} else {
+			if(newGCMmessages.get(receiver) == null){
+				newGCMmessages.put(receiver, 1);
+			} else
+				//increase number of unread messsages	
+				newGCMmessages.put(receiver, newGCMmessages.get(receiver)+1);
+		}
+	}
+
 	public void addNewChatMessage(String receiver, ChatMessage message){
 
+		Log.d("ClientTag", "receiver= "+receiver);
 		if(usersHashMap.get(receiver) == null){
 			usersHashMap.put(receiver, new ChatCustomAdapter(getActivity(), 
 					new ArrayList<ChatMessage>()));
 
 			loadedChat.add(0, true);
 			chatFellowContent.add(0, receiver);
-			chatFellowAdapter.notifyDataSetChanged();
+			unreadMessages.put(receiver, 0);
 			//update user index
 			for(String user : userPositionMap.keySet()){
 				userPositionMap.put(user, userPositionMap.get(user)+1);
@@ -368,6 +433,13 @@ public class ChatFragment extends Fragment implements OnClickListener {
 
 		usersHashMap.get(receiver).mMessages.add(message);
 		usersHashMap.get(receiver).notifyDataSetChanged();
+
+		//check if need to badge chat fellow content
+		if(needToBadge(receiver)){
+			unreadMessages.put(receiver, unreadMessages.get(receiver)+1);
+		}
+
+		chatFellowAdapter.notifyDataSetChanged(); //new
 
 		lvChat.setSelection(usersHashMap.get(receiver).mMessages.size()-1);
 	}
@@ -384,6 +456,17 @@ public class ChatFragment extends Fragment implements OnClickListener {
 			menu.toggle(true);
 			break;
 		}
+	}
+
+	public void clear(){
+		chatFellowContent.clear();
+		userPositionMap.clear();
+		usersHashMap.clear();
+		unreadMessages.clear();
+		loadedChat.clear();
+		newGCMmessages.clear();
+		currentFellowName = "";
+		isUserSetReceived = false;
 	}
 
 }

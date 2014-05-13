@@ -57,25 +57,17 @@ public class MenuCustomDrawerListAdapter extends BaseAdapter {
 		
 		TextView textTitle = (TextView) convertView.findViewById(R.id.itemTitleTextView);
 		ImageView imageIcon = (ImageView)convertView.findViewById(R.id.listImage);
-		TextView txtCount = (TextView) convertView.findViewById(R.id.counter);
 		
 		imageIcon.setImageResource(menuDrawerItems.get(position).getIcon());        
 		textTitle.setText(menuDrawerItems.get(position).getTitle());
 
-		// displaying count
-		// check whether it set visible or not
-		if(menuDrawerItems.get(position).getCounterVisibility()){
-			txtCount.setText(menuDrawerItems.get(position).getCount());
-		}else{
-			// hide the counter view
-			txtCount.setVisibility(View.GONE);
-		}
 		
 		if((position == 2) && (chatBadge == null)){
 			chatBadge = new BadgeView(context, textTitle);
 			chatBadge.setBackgroundResource(R.drawable.counter_bg);
-			chatBadge.setTextSize(16);
-			chatBadge.setText("0");
+			chatBadge.setBadgePosition(BadgeView.POSITION_CENTER_RIGHT);
+			chatBadge.setBadgeMargin(0, 0);
+			chatBadge.setTextSize(18);
 			chatBadge.hide();
 		}
 

@@ -4,7 +4,6 @@ package com.example.testfinalgraphicapp;
 import java.util.ArrayList;
 
 import logic.Client;
-import logic.GPSTracker;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -36,16 +35,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import fragments.ChatFragment;
 import fragments.ExploreFragment;
 import fragments.MapFragment;
 import fragments.MyDesiresFragment;
+import graphics.KeyboardClient;
 import graphics.blur.FastBlur;
 import graphics.chat.ChatMessage;
 import graphics.slidingmenu.MenuCustomDrawerListAdapter;
@@ -59,6 +64,12 @@ public class MainActivity extends FragmentActivity {
 	private MapFragment mapFragment;
 	private Fragment currentFragment;
 	private int currentFragmentPosition;
+	
+	public static final int myDesirePosition = 0;
+	public static final int explorePosition = 1;
+	public static final int chatPosition = 2;
+	public static final int exitPosition = 3;
+	public static final int mapPosition = 4;
 
 	private View screenView;
 	private ListView menuList;
@@ -68,8 +79,6 @@ public class MainActivity extends FragmentActivity {
 
 	private ImageView blurImageView;
 
-	// nav drawer title
-	private CharSequence mDrawerTitle;
 
 	// used to store app title
 	private CharSequence mTitle;
@@ -79,11 +88,13 @@ public class MainActivity extends FragmentActivity {
 	private TypedArray navMenuIcons;
 
 	private ArrayList<MenuDrawerItem> menuDrawerItems;
-	private MenuCustomDrawerListAdapter adapter;
+	private MenuCustomDrawerListAdapter menuAdapter;
+	private TextView menuBadge;
+	private TextView menuFragmentTitle;
+	private String currentMenuFragmentTitle = "В округе";
+	private int menuBadgeValue = 0;
 
 	private Handler handler;
-	private GPSTracker gps;
-	private String TAG = "DrawerAppMainActivity";
 
 	// This intent filter will be set to filter on the string "GCM_RECEIVED_ACTION"
 	private IntentFilter gcmFilter;
@@ -97,13 +108,46 @@ public class MainActivity extends FragmentActivity {
 			String broadcastMessage = intent.getExtras().getString("message");
 
 			if (broadcastSender != null) {
-				if(chatFragment.needToBadge(broadcastSender)){
+				Log.d("ClientTag","sender="+broadcastSender);
 
+				//understand if sender chat not visible now
+				if(chatFragment.needToBadge(broadcastSender)){
+					menuBadgeValue++;
+					menuBadge.setText(Integer.toString(menuBadgeValue));
+					menuAdapter.getChatBadge().setText(Integer.toString(menuBadgeValue));
+
+					Animation fadeIn  = new AlphaAnimation(0, 1);
+					fadeIn.setInterpolator(new DecelerateInterpolator());
+					fadeIn.setDuration(200);
+					menuBadge.setAnimation(fadeIn);
+					menuBadge.setVisibility(View.VISIBLE);
+
+					menuAdapter.getChatBadge().show(true);
 				}
-				chatFragment.addNewChatMessage(broadcastSender, new ChatMessage(broadcastMessage, false));
+				Log.d("ClientTag","adding from GCM sender="+broadcastSender);
+				chatFragment.notifyNewChatMessage(broadcastSender, new ChatMessage(broadcastMessage, false));
 			}
 		}
 	};
+
+	//notify menu badge how many messages were read
+	public void notifyMenuBadge(int readCount){
+		menuBadgeValue -= readCount;
+		//animate hiding menu badge
+		if(menuBadgeValue == 0 && menuBadge.getVisibility() == View.VISIBLE){
+			//here menuBadge animation
+			Animation fadeOut = new AlphaAnimation(1, 0);
+			fadeOut.setInterpolator(new AccelerateInterpolator());
+			fadeOut.setDuration(200);
+			menuBadge.setAnimation(fadeOut);
+			menuBadge.setVisibility(View.GONE);
+
+			menuAdapter.getChatBadge().hide(true);
+		} else{
+			menuBadge.setText(Integer.toString(menuBadgeValue));
+			menuAdapter.getChatBadge().setText(Integer.toString(menuBadgeValue));
+		}
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -111,10 +155,7 @@ public class MainActivity extends FragmentActivity {
 		try{
 			setContentView(R.layout.content_frame);
 
-			mTitle = mDrawerTitle = getTitle();
-
 			handler = new Handler();
-			gps = GPSTracker.getInstance(this);
 			myDesiresFragment = new MyDesiresFragment();
 			chatFragment = new ChatFragment();
 			exploreFragment = new ExploreFragment();
@@ -138,7 +179,7 @@ public class MainActivity extends FragmentActivity {
 
 			menuDrawerItems.add(new MenuDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
 			menuDrawerItems.add(new MenuDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-			menuDrawerItems.add(new MenuDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, "25+"));
+			menuDrawerItems.add(new MenuDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
 			menuDrawerItems.add(new MenuDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
 
 			navMenuIcons.recycle();
@@ -172,6 +213,15 @@ public class MainActivity extends FragmentActivity {
 			if (savedInstanceState == null) {
 				// on first time display view for first nav item
 				currentFragment = exploreFragment;
+
+				menuList.setItemChecked(1, true);
+
+				menuFragmentTitle.setText(currentMenuFragmentTitle);
+				Animation fadeIn  = new AlphaAnimation(0, 1);
+				fadeIn.setInterpolator(new DecelerateInterpolator());
+				fadeIn.setDuration(600);
+				menuFragmentTitle.setAnimation(fadeIn);
+				menuFragmentTitle.setVisibility(View.VISIBLE);
 			}
 
 			// Create our IntentFilter, which will be used in conjunction with a
@@ -194,19 +244,19 @@ public class MainActivity extends FragmentActivity {
 		LayoutInflater inflater = (LayoutInflater) this .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflater.inflate(R.layout.actionbar_layout, null);
 		RelativeLayout menuLayout = (RelativeLayout) v.findViewById(R.id.menuLayout);
-		ImageView menuLogo = (ImageView) menuLayout.findViewById(R.id.menuLogo);
+		menuBadge = (TextView) menuLayout.findViewById(R.id.menuBadge);
+		menuFragmentTitle = (TextView) menuLayout.findViewById(R.id.menuFragmentTitle);
 
 		menuLayout.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
+				KeyboardClient.hideKeyboard(MainActivity.this);
 				if(!menuOpened){
 					Log.d("ClientTag", "opened="+menuOpened);
-					menuOpened = true;
 					drawerLayout.openDrawer(Gravity.LEFT);
 				}
 				else{
 					Log.d("ClientTag", "opened="+menuOpened);
-					menuOpened = false;
 					drawerLayout.closeDrawer(Gravity.LEFT);
 				}
 			}});
@@ -234,14 +284,14 @@ public class MainActivity extends FragmentActivity {
 		menuList.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
-				if(position != 3)
+				if(position != exitPosition)
 					switchFragment(position);
 				else exit();
 			}
 		});
 
-		adapter = new MenuCustomDrawerListAdapter(this, menuDrawerItems);
-		menuList.setAdapter(adapter);
+		menuAdapter = new MenuCustomDrawerListAdapter(this, menuDrawerItems);
+		menuList.setAdapter(menuAdapter);
 	}
 
 	public void switchFragment(final int position){
@@ -254,20 +304,24 @@ public class MainActivity extends FragmentActivity {
 				FragmentManager manager = getSupportFragmentManager();
 				FragmentTransaction ft = manager.beginTransaction();
 				Fragment nextFragment = null;
+				String nextFragmentName = "";
 
 				switch(position){
-				case 0:{
+				case myDesirePosition:
 					nextFragment = myDesiresFragment;
+					nextFragmentName = "Мои желания";
 					break;
-				}
-				case 1:
+				case explorePosition:
 					nextFragment = exploreFragment;
+					nextFragmentName = "В округе";
 					break;
-				case 2:
+				case chatPosition:
 					nextFragment = chatFragment;
+					nextFragmentName = "Сообщения";
 					break;
-				case 3:
+				case mapPosition:
 					nextFragment = mapFragment;
+					nextFragmentName = "Карта";
 					break;
 				}
 
@@ -284,9 +338,34 @@ public class MainActivity extends FragmentActivity {
 				ft.show(nextFragment);
 				currentFragment = nextFragment;
 
+
 				ft.commit();
-				menuList.setItemChecked(position, true);
+				//check if it is not map
+				if(position != mapPosition){
+					menuList.setItemChecked(position, true);
+				}
 				currentFragmentPosition = position;
+
+				final long animDuration = 500;
+
+				Animation fadeOut  = new AlphaAnimation(1, 0);
+				fadeOut.setInterpolator(new DecelerateInterpolator());
+				fadeOut.setDuration(animDuration);
+				menuFragmentTitle.startAnimation(fadeOut);
+
+				currentMenuFragmentTitle = nextFragmentName;
+
+				//wait while fadeOut not stop
+				handler.postDelayed(new Runnable(){
+					@Override
+					public void run() {
+						menuFragmentTitle.setText(currentMenuFragmentTitle);	
+
+						Animation fadeIn  = new AlphaAnimation(0, 1);
+						fadeIn.setInterpolator(new DecelerateInterpolator());
+						fadeIn.setDuration(animDuration);
+						menuFragmentTitle.startAnimation(fadeIn);
+					}}, animDuration);
 			}
 
 		});
@@ -296,7 +375,7 @@ public class MainActivity extends FragmentActivity {
 		//init chating
 		chatFragment.startChat(login);
 		//open chat
-		switchFragment(2);
+		switchFragment(chatPosition);
 	}
 
 	public void changeLoginContent(String login){
@@ -317,11 +396,14 @@ public class MainActivity extends FragmentActivity {
 
 			@Override
 			protected void onPostExecute(Boolean result) {
-				Toast.makeText(MainActivity.this, Boolean.toString(result), Toast.LENGTH_SHORT).show();
 				if(result){
+					chatFragment.clear();
+					menuBadgeValue = 0;
+					menuBadge.setVisibility(View.GONE);
+					menuAdapter.getChatBadge().hide();
 					Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 					startActivity(intent);
-				}
+				} else Toast.makeText(MainActivity.this, "Can not exit", Toast.LENGTH_SHORT).show();
 			}
 		}.execute();
 	}
@@ -405,6 +487,12 @@ public class MainActivity extends FragmentActivity {
 		public void onDrawerClosed(View drawerView) {
 			Log.d(TAG, "in onDrawerClosed");
 			clearBlurImage();
+			menuOpened = false;
+		}
+
+		@Override
+		public void onDrawerOpened(View drawerView){
+			menuOpened = true;
 		}
 
 
@@ -436,7 +524,7 @@ public class MainActivity extends FragmentActivity {
 			blurImage.bringToFront();
 
 
-			if(currentFragmentPosition != 0){
+			if(currentFragmentPosition != mapPosition){
 				//get screenshot of screenView
 				Bitmap bmp = Bitmap.createBitmap(screenView.getWidth(), screenView.getHeight(), Bitmap.Config.ARGB_8888);
 				Canvas c = new Canvas(bmp);

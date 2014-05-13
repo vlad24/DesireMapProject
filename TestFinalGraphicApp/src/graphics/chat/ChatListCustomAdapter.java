@@ -10,6 +10,7 @@ import com.example.testfinalgraphicapp.R;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +29,11 @@ public class ChatListCustomAdapter extends BaseAdapter{
 	private HashMap<String, Integer> unreadMessages;
 
 
-	public ChatListCustomAdapter(Context context, ArrayList<String> chatFellowContent) {
+	public ChatListCustomAdapter(Context context, ArrayList<String> chatFellowContent, HashMap<String, Integer> unreadMessages) {
 		super();
 		this.mContext = context;
 		this.chatFellowContent = chatFellowContent;
+		this.unreadMessages = unreadMessages;
 	}
 	
 	@Override
@@ -47,7 +49,8 @@ public class ChatListCustomAdapter extends BaseAdapter{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		String fellowNameString = chatFellowContent.get(position);
-
+		int unreadMessagesCount = unreadMessages.get(fellowNameString);
+        Log.d("ClientTag", "fellowName= "+fellowNameString+" unreadMessagesCount= "+unreadMessagesCount);
 		ViewHolder holder; 
 		if(convertView == null)
 		{
@@ -56,7 +59,9 @@ public class ChatListCustomAdapter extends BaseAdapter{
 			holder.fellowName = (TextView) convertView.findViewById(android.R.id.text1);
 			holder.badge = new BadgeView(mContext, holder.fellowName);
 			holder.badge.setBackgroundResource(R.drawable.counter_bg);
-			holder.badge.setTextSize(16);
+			holder.badge.setBadgePosition(BadgeView.POSITION_CENTER_RIGHT);
+			holder.badge.setBadgeMargin(15, 0);
+			holder.badge.setTextSize(18);
 			holder.badge.setText("0");
 			holder.badge.hide();
 			convertView.setTag(holder);
@@ -65,6 +70,12 @@ public class ChatListCustomAdapter extends BaseAdapter{
 			holder = (ViewHolder) convertView.getTag();
 
 		holder.fellowName.setText(fellowNameString);
+		if(unreadMessagesCount > 0){
+			holder.badge.setText(Integer.toString(unreadMessagesCount));
+			holder.badge.show(true);
+		} else {
+			holder.badge.hide();
+		}
 
 		return convertView;
 	}

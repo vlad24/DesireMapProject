@@ -61,12 +61,12 @@ public class ChatCustomAdapter extends BaseAdapter{
 		holder.message.setText(message.getMessage());
 		
 		LayoutParams lp = (LayoutParams) holder.message.getLayoutParams();
-		//check if it is a status message then remove background, and change text color.
+		//check if it is a status message then make it invisible
 		if(message.isStatusMessage())
 		{
-			holder.message.setBackgroundDrawable(null);
 			lp.gravity = Gravity.LEFT;
-			holder.message.setTextColor(R.color.textFieldColor);
+			holder.message.setText("");
+			holder.message.setBackgroundResource(0);
 		}
 		else
 		{		

@@ -16,7 +16,7 @@
 	
 	<color name="list_divider">#333333</color>
 	<color name="list_background_pressed">#FF3232</color>
-	<color name="list_background">#404040</color>
+	<color name="list_background">#CC404040</color>
 	<color name="list_item_title">#FFFFFF</color>
 	
 	<color name="counter_text_bg">#7E7EE1</color>

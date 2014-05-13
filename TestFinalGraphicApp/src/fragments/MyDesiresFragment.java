@@ -1,5 +1,7 @@
 package fragments;
 
+import graphics.KeyboardClient;
+
 import java.util.ArrayList;
 
 import logic.Client;
@@ -288,6 +290,7 @@ public class MyDesiresFragment extends Fragment implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
+		KeyboardClient.hideKeyboard(getActivity());
 		backPressed = false;
 		switch(v.getId()){
 		case R.id.backBtn:
